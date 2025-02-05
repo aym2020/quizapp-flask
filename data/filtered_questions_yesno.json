@@ -1,0 +1,602 @@
+[
+    {
+        "id": "3",
+        "choices": "YN",
+        "question": "Your company's Azure subscription includes a Basic support plan. \nThey would like to request an assessment of an Azure environment's design from Microsoft. \nThis is, however, not supported by the existing plan. \nYou want to make sure that the company subscribes to a support plan that allows this functionality, while keeping expenses to a minimum. \nSolution: You recommend that the company subscribes to the Professional Direct support plan. Does the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "The solution does not meet the goal of keeping expenses to a minimum. The Professional Direct support plan is a higher-tier support plan that incurs additional costs compared to the Basic support plan. While the Professional Direct support plan does provide access to design assessments from Microsoft, it may not be the most cost-effective option for the company. It would be more appropriate to recommend a support plan that includes design assessments but still keeps expenses low, such as the Developer or Standard support plans.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "4",
+        "choices": "YN",
+        "question": "You are tasked with deploying Azure virtual machines for your company.\nYou need to make use of the appropriate cloud deployment solution.\nSolution: You should make use of Software as a Service (SaaS).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "The solution does not meet the goal. Software as a Service (SaaS) is a cloud computing model where software applications are delivered over the internet. It typically refers to using web-based applications provided by a third-party vendor. However, in this scenario, the goal is to deploy Azure virtual machines, which is an Infrastructure as a Service (IaaS) offering. With IaaS, you can deploy and manage virtual machines in the cloud, giving you more control over the infrastructure layer. Therefore, the appropriate cloud deployment solution in this case would be Infrastructure as a Service (IaaS), not Software as a Service (SaaS).",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "5",
+        "choices": "YN",
+        "question": "You are tasked with deploying Azure virtual machines for your company.\nYou need to make use of the appropriate cloud deployment solution.\nSolution: You should make use of Platform as a Service (PaaS).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Platform as a service refers to cloud computing services that supply an on-demand environment for developing, testing, delivering, and managing software applications. PaaS is designed to make it easier for developers to quickly create web or mobile apps, without worrying about setting up or managing the underlying infrastructure of servers, storage, network, and databases needed for development. However, in this scenario, the goal is to deploy Azure virtual machines, which is an Infrastructure as a Service (IaaS) offering. With IaaS, you can deploy and manage virtual machines in the cloud, giving you more control over the infrastructure layer. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "6",
+        "choices": "YN",
+        "question": "You are tasked with deploying Azure virtual machines for your company.\nYou need to make use of the appropriate cloud deployment solution.\nSolution: You should make use of Infrastructure as a Service (IaaS).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "With IaaS, you can deploy and manage virtual machines in the cloud, giving you more control over the infrastructure layer. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "8",
+        "choices": "YN",
+        "question": "You are planning to migrate a company to Azure. Each of the company's numerous divisions will have an administrator in place to manage the Azure resources used by their respective division.\nYou want to make sure that the Azure deployment you employ allows for Azure to be segmented for the divisions, while keeping administrative effort to a minimum.\nSolution: You plan to make use of several Azure Active Directory (Azure AD) directories.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure Active Directory (AAD) is Microsoft's cloud-based identity and access management service, helping organizations manage and secure access to applications and resources. Using multiple Azure Active Directory (AAD) instances increases complexity due to separate management, inconsistent security policies, difficulty in collaboration, and challenges in implementing single sign-on across directories.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "10",
+        "choices": "YN",
+        "question": "Your company is planning to migrate all their virtual machines to an Azure pay-as-you-go subscription. The virtual machines are currently hosted on the Hyper-V hosts in a data center.\nYou are required make sure that the intended Azure solution uses the correct expenditure model.\nSolution: You should recommend the use of the elastic expenditure model.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "The solution does not meet the goal. There is no specific expenditure model called the \"elastic expenditure model\" in Azure. When migrating virtual machines to an Azure pay-as-you-go subscription, the appropriate expenditure model to consider is the \"pay-as-you-go\" or \"consumption-based\" model. This means that you will be billed based on the actual usage of Azure resources, such as virtual machines, storage, and networking, on an hourly or per-minute basis. Therefore, the correct solution would be to recommend the use of the \"pay-as-you-go\" expenditure model, not the \"elastic expenditure model.\"",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "11",
+        "choices": "YN",
+        "question": "Your company is planning to migrate all their virtual machines to an Azure pay-as-you-go subscription. The virtual machines are currently hosted on the Hyper-V hosts in a data center.\nYou are required make sure that the intended Azure solution uses the correct expenditure model.\nSolution: You should recommend the use of the scalable expenditure model.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "There is no such thing as a \"scalable expenditure model\" in Azure. The two expenditure models in Azure are pay-as-you-go and reserved instances. Pay-as-you-go is the default and most common expenditure model in Azure. It means you pay for resources you consume on an hourly or per-minute basis. It offers flexibility to scale resources up and down as needed. Reserved instances is an expenditure model where you commit to a one- or three-year term for a particular virtual machine instance type, size, and region. This commitment provides you with a discount compared to pay-as-you-go pricing. Since the question states that the company is planning to migrate all of their virtual machines to an Azure pay-as-you-go subscription, the correct expenditure model is pay-as-you-go. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "12",
+        "choices": "YN",
+        "question": "Your company is planning to migrate all their virtual machines to an Azure pay-as-you-go subscription. The virtual machines are currently hosted on the Hyper-V hosts in a data center.\nYou are required make sure that the intended Azure solution uses the correct expenditure model.\nSolution: You should recommend the use of the operational expenditure model.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Operating expenditures are ongoing costs of doing business. Consuming cloud services in a pay-as-you-go model could qualify as an operating expenditure. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "13",
+        "choices": "YN",
+        "question": "You are required to deploy an Artificial Intelligence (AI) solution in Azure.\nYou want to make sure that you are able to build, test, and deploy predictive analytics for the solution.\nSolution: You should make use of Azure Cosmos DB.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure Cosmos DB is a globally distributed, multi-model database service optimized for managing schema-less data at a global scale, offering high availability and low latency. For deploying an AI solution that involves building, testing, and deploying predictive analytics, services like Azure Machine Learning or Azure Cognitive Services are more appropriate, as they are specifically designed for AI workloads, including predictive analytics.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "14",
+        "choices": "YN",
+        "question": "Your company's Active Directory forest includes thousands of user accounts.\nYou have been informed that all network resources will be migrated to Azure. Thereafter, the on-premises data center will be retired.\nYou are required to employ a strategy that reduces the effect on users, once the planned migration has been completed.\nSolution: You plan to sync all the Active Directory user accounts to Azure Active Directory (Azure AD).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Syncing all the Active Directory user accounts to Azure Active Directory (Azure AD) is a common strategy to ensure a smooth migration to the cloud while minimizing the impact on users. This approach is often referred to as implementing a hybrid identity model. By syncing the user accounts to Azure AD using tools like Azure AD Connect, users can continue using their existing credentials to access cloud resources after the migration. This provides a seamless experience for users and reduces the disruption typically associated with migrations. Therefore, the solution of syncing Active Directory user accounts to Azure AD meets the goal of reducing the impact on users during the migration to Azure.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "15",
+        "choices": "YN",
+        "question": "You are required to deploy an Artificial Intelligence (AI) solution in Azure.\nYou want to make sure that you are able to build, test, and deploy predictive analytics for the solution.\nSolution: You should make use of Azure Machine Learning Studio.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Machine Learning Studio (classic) is a drag-and-drop tool you can use to build, test, and deploy predictive analytics solutions. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "16",
+        "choices": "YN",
+        "question": "Your company's infrastructure includes a number of business units that each need a large number of various Azure resources for everyday operation.\nThe resources required by each business unit are identical.\nYou are required to sanction a strategy to create Azure resources automatically.\nSolution: You recommend that the Azure API Management service be included in the strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure API Management is a service that helps create consistent and modern API gateways for existing back-end services. It does not provide a direct means to automate the creation of Azure resources. For automating resource creation, services like Azure Resource Manager templates, Azure Automation, or Azure DevOps would be more appropriate as they are designed to handle deployment and automation of resources on Azure.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "17",
+        "choices": "YN",
+        "question": "Your company's infrastructure includes a number of business units that each need a large number of various Azure resources for everyday operation.\nThe resources required by each business unit are identical.\nYou are required to sanction a strategy to create Azure resources automatically.\nSolution: You recommend that management groups be included in the strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Management groups are used to organize resources and manage access, policy, and compliance across multiple subscriptions, but they are not specifically designed for automatically creating Azure resources. Instead, consider using Azure Resource Manager templates (ARM templates) or Azure Blueprints for automating the creation and management of Azure resources.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "18",
+        "choices": "YN",
+        "question": "Your company's infrastructure includes a number of business units that each need a large number of various Azure resources for everyday operation.\nThe resources required by each business unit are identical.\nYou are required to sanction a strategy to create Azure resources automatically.\nSolution: You recommend that the Azure Resource Manager templates be included in the strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Using Azure Resource Manager (ARM) templates is a highly effective strategy for automatically creating and managing Azure resources, especially when you have identical requirements for multiple business units. ARM templates allow you to define your infrastructure as code, specifying the resources, configurations, and relationships in a declarative manner. By creating ARM templates that represent the required resources, you can deploy them consistently across different business units while ensuring that the configurations are identical. This approach is efficient, repeatable, and scalable, making it a suitable solution for automating resource deployment.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "19",
+        "choices": "YN",
+        "question": "You are tasked with deploying a critical LOB application, which will be installed on a virtual machine, to Azure.\nYou are informed that the application deployment strategy should allow for a guaranteed availability of 99.99 percent. You need to make sure that the strategy requires as little virtual machines and availability zones as possible.\nSolution: You include two virtual machines and one availability zone in your strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure's SLA for Virtual Machines with a single instance is 99.5% availability. To achieve a guaranteed availability of 99.99%, you would need to deploy the application in an architecture that takes advantage of Azure's higher availability options, such as Availability Zones. For an SLA of 99.99%, deploying the application in at least two Availability Zones would be recommended. This would ensure that your application is highly available across separate physical locations, each with its own power, cooling, and networking, reducing the risk of a single point of failure. Simply deploying two virtual machines in a single Availability Zone would not achieve the desired level of availability.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "20",
+        "choices": "YN",
+        "question": "You are tasked with deploying a critical LOB application, which will be installed on a virtual machine, to Azure.\nYou are informed that the application deployment strategy should allow for a guaranteed availability of 99.99 percent. You need to make sure that the strategy requires as little virtual machines and availability zones as possible.\nSolution: You include one virtual machine and two availability zones in your strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Deploying one virtual machine and two availability zones does not meet the goal of achieving a guaranteed availability of 99.99 percent. To achieve such a high level of availability, you typically need to distribute your application across multiple instances in multiple availability zones or sets.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "21",
+        "choices": "YN",
+        "question": "You are tasked with deploying a critical LOB application, which will be installed on a virtual machine, to Azure.\nYou are informed that the application deployment strategy should allow for a guaranteed availability of 99.99 percent. You need to make sure that the strategy requires as little virtual machines and availability zones as possible.\nSolution: You include two virtual machines and two availability zones in your strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Deploying one virtual machine and two availability zones does not meet the goal of achieving a guaranteed availability of 99.99 percent. To achieve such a high level of availability, you typically need to distribute your application across multiple instances in multiple availability zones or sets.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "22",
+        "choices": "YN",
+        "question": "Your company's developers intend to deploy a large number of custom virtual machines on a weekly basis. They will also be removing these virtual machines during the same week it was deployed. Sixty percent of the virtual machines have Windows Server 2016 installed, while the other forty percent has Ubuntu Linux installed.\nYou are required to make sure that the administrative effort, needed for this process, is reduced by employing a suitable Azure service.\nSolution: You recommend the use of Microsoft Managed Desktop.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Microsoft Managed Desktop is not an appropriate solution for deploying and managing a large number of custom virtual machines on a weekly basis. Microsoft Managed Desktop is a service that provides managed Windows 10 devices for organizations, and it's not designed for managing virtual machines, especially with the frequency and diversity described in your scenario. For managing virtual machines in Azure, a more suitable solution would be to use Azure Automation or Azure Resource Manager (ARM) templates. These tools allow you to automate the deployment and management of virtual machines, including the creation, configuration, and deletion of resources. You can define your desired state in code, and these tools will handle the provisioning and management tasks, reducing administrative effort.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "23",
+        "choices": "YN",
+        "question": "Your company's developers intend to deploy a large number of custom virtual machines on a weekly basis. They will also be removing these virtual machines during the same week it was deployed. Sixty percent of the virtual machines have Windows Server 2016 installed, while the other forty percent has Ubuntu Linux installed.\nYou are required to make sure that the administrative effort, needed for this process, is reduced by employing a suitable Azure service.\nSolution: You recommend the use of Azure Reserved Virtual Machines (VM) Instances.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure Reserved Virtual Machine (VM) Instances are not the most suitable solution for deploying and managing a large number of custom virtual machines on a weekly basis that are also removed during the same week. Reserved VM Instances are used to save costs by committing to a specific VM instance type for a one- or three-year term, which is not aligned with the short-term and frequent deployment and removal pattern described in your scenario. To reduce administrative effort for your specific use case, you might consider using Azure DevTest Labs. Azure DevTest Labs allows you to quickly create environments in Azure while managing costs by setting up policies for resource usage. You can create a lab that aligns with your requirements, including Windows Server and Ubuntu Linux VMs, and allow your developers to deploy and remove VMs easily in a controlled environment.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "24",
+        "choices": "YN",
+        "question": "Your company's developers intend to deploy a large number of custom virtual machines on a weekly basis. They will also be removing these virtual machines during the same week it was deployed. Sixty percent of the virtual machines have Windows Server 2016 installed, while the other forty percent has Ubuntu Linux installed.\nYou are required to make sure that the administrative effort, needed for this process, is reduced by employing a suitable Azure service.\nSolution: You recommend the use of Azure DevTest Labs.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Azure DevTest Labs is a suitable Azure service for managing the deployment and lifecycle of custom virtual machines, especially when they need to be created and removed frequently, as in your scenario. With Azure DevTest Labs, you can create a lab environment where developers can quickly create and manage virtual machines for development and testing purposes. The lab management capabilities allow you to set up policies, quotas, and schedules, which can help reduce administrative effort and manage costs. By using Azure DevTest Labs, developers can easily deploy custom virtual machines with Windows Server 2016 and Ubuntu Linux as needed, and these VMs can be automatically cleaned up or removed at the end of the week. This approach streamlines the deployment and management process, ensuring that administrative effort is reduced while meeting the dynamic requirements of your developers. ",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "26",
+        "choices": "YN",
+        "question": "You have been informed by your superiors of the company's intentions to automate server deployment to Azure. There is, however, some concern that administrative credentials could be uncovered during this process.\nYou are required to make sure that during the deployment, the administrative credentials are encrypted using a suitable Azure solution.\nSolution: You recommend the use of Azure Information Protection.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure Information Protection is primarily used for classifying, labeling, and protecting documents and emails containing sensitive information. It's not designed for encrypting administrative credentials during server deployment processes. For encrypting administrative credentials during server deployment to Azure, a more suitable solution would be to use Azure Key Vault. Azure Key Vault is a cloud service that allows you to safeguard cryptographic keys, certificates, and secrets used by cloud applications and services. You can store the administrative credentials securely in Azure Key Vault and retrieve them when needed during the deployment process. This ensures that the credentials are properly protected and managed.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "27",
+        "choices": "YN",
+        "question": "You have been informed by your superiors of the company's intentions to automate server deployment to Azure. There is, however, some concern that administrative credentials could be uncovered during this process.\nYou are required to make sure that during the deployment, the administrative credentials are encrypted using a suitable Azure solution.\nSolution: You recommend the use of Azure Multi-Factor Authentication (MFA).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "No, the recommended solution of Azure Multi-Factor Authentication (MFA) does not encrypt administrative credentials during server deployment to Azure. MFA is a solution that adds an additional layer of authentication to the login process, and it can help prevent unauthorized access to resources. To encrypt administrative credentials during server deployment to Azure, a better solution would be to use Azure Key Vault. Azure Key Vault is a cloud-based service that provides secure storage of keys, secrets, and certificates. By storing the administrative credentials in Azure Key Vault, they can be encrypted and protected from unauthorized access.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "29",
+        "choices": "YN",
+        "question": "Your company has an Azure Active Directory (Azure AD) environment. Users occasionally connect to Azure AD via the Internet.\nYou have been tasked with making sure that users who connect to Azure AD via the internet from an unidentified IP address, are automatically encouraged to change passwords.\nSolution: You configure the use of Azure AD Identity Protection.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Azure AD Identity Protection is a comprehensive solution that helps you protect your organization's identities and detect and respond to potential identity-related risks. One of its features is the ability to configure risk-based policies. In this case, you can set up a risk-based policy that triggers a password change prompt for users when they connect to Azure AD via the internet from an unidentified IP address. This helps enhance security by encouraging users to change their passwords in case of suspicious activity.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "30",
+        "choices": "YN",
+        "question": "Your company has an Azure Active Directory (Azure AD) environment. Users occasionally connect to Azure AD via the Internet.\nYou have been tasked with making sure that users who connect to Azure AD via the internet from an unidentified IP address, are automatically encouraged to change passwords.\nSolution: You configure the use of Azure AD Privileged Identity Management.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure AD Privileged Identity Management (PIM) manages, controls, and monitors access within Azure AD, Azure, and other Microsoft Online Services. It's used for managing privileged accounts and doesn't directly handle password policies or enforce password changes based on IP address recognition. Instead, to meet the goal, you should consider using Azure AD Identity Protection, which can enforce risk-based conditional access policies that might prompt users for password changes if an unfamiliar sign-in is detected.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "31",
+        "choices": "YN",
+        "question": "You are planning a strategy to deploy numerous web servers and database servers to Azure.\nThis strategy should allow for connection types between the web servers and database servers to be controlled.\nSolution: You include network security groups (NSGs) in your strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "You can use an Azure network security group to filter network traffic between Azure resources in an Azure virtual network. A network security group contains security rules that allow or deny inbound network traffic to, or outbound network traffic from, several types of Azure resources. For each rule, you can specify source and destination, port, and protocol",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "32",
+        "choices": "YN",
+        "question": "You are planning a strategy to deploy numerous web servers and database servers to Azure.\nThis strategy should allow for connection types between the web servers and database servers to be controlled.\nSolution: You include a local network gateway in your strategy.\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "A local network gateway in Azure is typically used when you want to establish a connection between your Azure virtual network and an on-premises network or another network outside of Azure. It's not directly related to controlling connection types between web servers and database servers within the same Azure virtual network. To control the connection types between web servers and database servers in Azure, you would typically use Network Security Groups (NSGs), which allow you to define inbound and outbound traffic rules to control the flow of traffic between resources in a virtual network. You might also consider using Azure Firewall or Azure Application Gateway depending on your specific requirements.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "33",
+        "choices": "YN",
+        "question": "Your company's Active Directory forest includes thousands of user accounts.\nYou have been informed that all network resources will be migrated to Azure. Thereafter, the on-premises data center will be retired.\nYou are required to employ a strategy that reduces the effect on users, once the planned migration has been completed.\nSolution: You plan to require Azure Multi-Factor Authentication (MFA).\nDoes the solution meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Multi-factor authentication doesn't reduce the effect or have any kind of effect on this issue. MFA is used to verify the reinforce the security to identify a user, but it doesn't help at all in arranging the user's accounts",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "41",
+        "choices": "YN",
+        "question": "Your company plans to migrate all its data and resources to Azure.\nThe company's migration plan states that only Platform as a Service (PaaS) solutions must be used in Azure.\nYou need to deploy an Azure environment that meets the company migration plan.\nSolution: You create an Azure App Service and Azure SQL databases.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Azure App Service and Azure SQL databases are examples of Azure PaaS solutions. Therefore, this solution does meet the goal.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "42",
+        "choices": "YN",
+        "question": "Your company plans to migrate all its data and resources to Azure.\nThe company's migration plan states that only Platform as a Service (PaaS) solutions must be used in Azure.\nYou need to deploy an Azure environment that meets the company migration plan.\nSolution: You create an Azure App Service and Azure virtual machines that have Microsoft SQL Server installed.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "VM installed with Azure SQL fall under IaaS user will have OS access.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "43",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nYour company plans to migrate all its data and resources to Azure.\nThe company's migration plan states that only Platform as a Service (PaaS) solutions must be used in Azure.\nYou need to deploy an Azure environment that meets the company migration plan.\nSolution: You create an Azure App Service and Azure Storage accounts.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure App Service is a PaaS but Azure Storage accounts is not a service.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "65",
+        "choices": "YN",
+        "question": "Your company plans to migrate all its data and resources to Azure.\nThe company's migration plan states that only Platform as a Service (PaaS) solutions must be used in Azure.\nYou need to deploy an Azure environment that meets the company migration plan.\nSolution: You create Azure virtual machines, Azure SQL databases, and Azure Storage accounts.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "N",
+        "explanation": "Remember, they want ONLY PaaS. As soon as you see VM, it's an IaaS, meaning the answer to this is no. Storage account is currently still debatable but since VM is included in the suggestions, the answer is immediately No",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "98",
+        "choices": "YN",
+        "question": "You plan to deploy several Azure virtual machines.\nYou need to ensure that the services running on the virtual machines are available if a single data center fails.\nSolution: You deploy the virtual machines to two or more resource groups.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Resource groups has never been a fault tolerance approach, resource groups are used to easy manage a group of resources.\nIt is a logical container for Azure resources. When you create a resource group, you specify which location to create the resource group in.\nHowever, when you create a virtual machine and place it in the resource group, the virtual machine can still be in a different location (different datacenter).\nTherefore, creating multiple resource groups, even if they are in separate datacenters does not ensure that the services running on the virtual machines are available if a single data center fails.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "99",
+        "choices": "YN",
+        "question": "You plan to deploy several Azure virtual machines.\nYou need to ensure that the services running on the virtual machines are available if a single data center fails.\nSolution: You deploy the virtual machines to a scale set.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "This answer does not specify that the scale set will be configured across multiple data centers so this solution does not meet the goal.\nAzure virtual machine scale sets let you create and manage a group of load balanced VMs. The number of VM instances can automatically increase or decrease in response to demand or a defined schedule. Scale sets provide high availability to your applications, and allow you to centrally manage, configure, and update many VMs.\nVirtual machines in a scale set can be deployed across multiple update domains and fault domains to maximize availability and resilience to outages due to data center outages, and planned or unplanned maintenance events.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "122",
+        "choices": "YN",
+        "question": "You plan to deploy several Azure virtual machines.\nYou need to ensure that the services running on the virtual machines are available if a single data center fails.\nSolution: You deploy the virtual machines to two or more scale sets.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "N",
+        "explanation": "This answer does not specify that the scale set will be configured across multiple data centers so this solution does not meet the goal.\nAzure virtual machine scale sets let you create and manage a group of load balanced VMs. The number of VM instances can automatically increase or decrease in response to demand or a defined schedule. Scale sets provide high availability to your applications, and allow you to centrally manage, configure, and update many VMs.\nVirtual machines in a scale set can be deployed across multiple update domains and fault domains to maximize availability and resilience to outages due to data center outages, and planned or unplanned maintenance events.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "153",
+        "choices": "YN",
+        "question": "You plan to deploy several Azure virtual machines.\nYou need to ensure that the services running on the virtual machines are available if a single data center fails.\nSolution: You deploy the virtual machines to two or more availability zones.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Availability zones expand the level of control you have to maintain the availability of the applications and data on your VMs. An Availability Zone is a physically separate zone, within an Azure region. There are three Availability Zones per supported Azure region.\nEach Availability Zone has a distinct power source, network, and cooling. By architecting your solutions to use replicated VMs in zones, you can protect your apps and data from the loss of a datacenter. If one zone is compromised, then replicated apps and data are instantly available in another zone.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "155",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nYou plan to deploy several Azure virtual machines.\nYou need to ensure that the services running on the virtual machines are available if a single data center fails.\nSolution: You deploy the virtual machines to two or more regions.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "2 or more AZ\n2 or more Region",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "164",
+        "choices": "YN",
+        "question": "An Azure administrator plans to run a PowerShell script that creates Azure resources.\nYou need to recommend which computer configuration to use to run the script.\nSolution: Run the script from a computer that runs Linux and has the Azure CLI tools installed.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "A PowerShell script is a file that contains PowerShell cmdlets and code. A PowerShell script needs to be run in PowerShell.\nPowerShell can now be installed on Linux. However, the question states that the computer has Azure CLI tools, not PowerShell installed. Therefore, this solution does not meet the goal.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "165",
+        "choices": "YN",
+        "question": "An Azure administrator plans to run a PowerShell script that creates Azure resources.\nYou need to recommend which computer configuration to use to run the script.\nSolution: Run the script from a computer that runs Chrome OS and uses Azure Cloud Shell.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "A PowerShell script is a file that contains PowerShell cmdlets and code. A PowerShell script needs to be run in PowerShell.\nWith the Azure Cloud Shell, you can run PowerShell cmdlets and scripts in a Web browser. You log in to the Azure Portal and select the Azure Cloud Shell option.\nThis will open a PowerShell session in the Web browser. The Azure Cloud Shell has the necessary Azure PowerShell module installed.\nNote: to run a PowerShell script in the Azure Cloud Shell, you need to change to the directory where the PowerShell script is stored.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "167",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nAn Azure administrator plans to run a PowerShell script that creates Azure resources.\nYou need to recommend which computer configuration to use to run the script.\nSolution: Run the script from a computer that runs macOS and has PowerShell Core 6.0 installed.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Answer is B.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "172",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nYou have an Azure environment. You need to create a new Azure virtual machine from a tablet that runs the Android operating system.\nSolution: You use Bash in Azure Cloud Shell.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "With Azure Cloud Shell, you can create virtual machines using Bash or PowerShell.\nAzure Cloud Shell is an interactive, authenticated, browser-accessible shell for managing Azure resources. It provides the flexibility of choosing the shell experience that best suits the way you work, either Bash or PowerShell.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "184",
+        "choices": "YN",
+        "question": "You have an Azure subscription named Subscription1. You sign in to the Azure portal and create a resource group named RG1.\nFrom Azure documentation, you have the following command that creates a virtual machine named VM1. az vm create --resource-group RG1 --name VM1 --image UbuntuLTS --generate-ssh-keys\nYou need to create VM1 in Subscription1 by using the command.\nSolution: From the Azure portal, launch Azure Cloud Shell and select PowerShell. Run the command in Cloud Shell.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The command can be run in the Azure Cloud Shell. Although this question says you select PowerShell rather than Bash, the Az commands will work in\nPowerShell.\nThe Azure Cloud Shell is a free interactive shell. It has common Azure tools preinstalled and configured to use with your account.\nTo open the Cloud Shell, just select Try it from the upper right corner of a code block. You can also launch Cloud Shell in a separate browser tab by going to",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "185",
+        "choices": "YN",
+        "question": "You have an Azure subscription named Subscription1. You sign in to the Azure portal and create a resource group named RG1.\nFrom Azure documentation, you have the following command that creates a virtual machine named VM1. az vm create --resource-group RG1 --name VM1 --image UbuntuLTS\n--generate-ssh-keys\nYou need to create VM1 in Subscription1 by using the command.\nSolution: From a computer that runs Windows 10, install Azure CLI. From PowerShell, sign in to Azure and then run the command.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The command can be run from PowerShell or the command prompt if you have the Azure CLI installed.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "186",
+        "choices": "YN",
+        "question": "You have an Azure subscription named Subscription1. You sign in to the Azure portal and create a resource group named RG1.\nFrom Azure documentation, you have the following command that creates a virtual machine named VM1. az vm create --resource-group RG1 --name VM1 --image UbuntuLTS\n--generate-ssh-keys\nYou need to create VM1 in Subscription1 by using the command.\nSolution: From a computer that runs Windows 10, install Azure CLI. From a command prompt, sign in to Azure and then run the command.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The command can be run from PowerShell or the command prompt if you have the Azure CLI installed.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "191",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nAn Azure administrator plans to run a PowerShell script that creates Azure resources.\nYou need to recommend which computer configuration to use to run the script.\nSolution: Run the script from a computer that runs Windows 10 and has the Azure PowerShell module installed.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "A PowerShell script is a file that contains PowerShell cmdlets and code. A PowerShell script needs to be run in PowerShell.\nIn this question, the computer has the Azure PowerShell module installed. Therefore, this solution does meet the goal.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "195",
+        "choices": "YN",
+        "question": "After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.\nYou have an Azure subscription named Subscription1. You sign in to the Azure portal and create a resource group named RG1.\nFrom Azure documentation, you have the following command that creates a virtual machine named VM1. az vm create --resource-group RG1 --name VM1 --image UbuntuLTS --generate-ssh-keys\nYou need to create VM1 in Subscription1 by using the command.\nSolution: From the Azure portal, launch Azure Cloud Shell and select Bash. Run the command in Cloud Shell.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The answer is correct, the given command is a bash one, and Azure CLI accessed from the Azure cloud shell is the right approach to writing and running it.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "206",
+        "choices": "YN",
+        "question": "You have an Azure environment. You need to create a new Azure virtual machine from a tablet that runs the Android operating system.\nSolution: You use PowerShell in Azure Cloud Shell.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "Azure Cloud Shell is a browser-based shell experience to manage and develop Azure resources.\nCloud Shell offers a browser-accessible, pre-configured shell experience for managing Azure resources without the overhead of installing, versioning, and maintaining a machine yourself.\nBeing browser-based, Azure Cloud Shell can be run on a browser from a tablet that runs the Android operating system.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "207",
+        "choices": "YN",
+        "question": "You have an Azure environment. You need to create a new Azure virtual machine from a tablet that runs the Android operating system.\nSolution: You use the PowerApps portal.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "PowerApps lets you quickly build business applications with little or no code. It is not used to create Azure virtual machines. Therefore, this solution does not meet the goal.\nPowerApps Portals allow organizations to create websites which can be shared with users external to their organization either anonymously or through the login provider of their choice like LinkedIn, Microsoft Account, other commercial login providers.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "208",
+        "choices": "YN",
+        "question": "You have an Azure environment. You need to create a new Azure virtual machine from a tablet that runs the Android operating system.\nSolution: You use the Azure portal.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The Azure portal is a web-based, unified console that provides an alternative to command-line tools. With the Azure portal, you can manage your Azure subscription using a graphical user interface. You can build, manage, and monitor everything from simple web apps to complex cloud deployments. Create custom dashboards for an organized view of resources. Configure accessibility options for an optimal experience.\nBeing web-based, the Azure portal can be run on a browser from a tablet that runs the Android operating system.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "217",
+        "choices": "YN",
+        "question": "Your Azure environment contains multiple Azure virtual machines.\nYou need to ensure that a virtual machine named VM1 is accessible from the Internet over HTTP.\nSolution: You modify an Azure Traffic Manager profile.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "Azure Traffic Manager is a DNS-based load balancing solution. It is not used to ensure that a virtual machine named VM1 is accessible from the Internet over\nHTTP.\nTo ensure that a virtual machine named VM1 is accessible from the Internet over HTTP, you need to modify a network security group or Azure Firewall.\nIn this question, we need to add a rule to a network security group or Azure Firewall to allow the connection to the virtual machine on port 80 (HTTP).",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "259",
+        "choices": "YN",
+        "question": "Your Azure environment contains multiple Azure virtual machines.\nYou need to ensure that a virtual machine named VM1 is accessible from the Internet over HTTP.\nSolution: You modify a network security group (NSG).\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "A network security group works like a firewall. You can attach a network security group to a virtual network and/or individual subnets within the virtual network.\nYou can also attach a network security group to a network interface assigned to a virtual machine. You can use multiple network security groups within a virtual network to restrict traffic between resources such as virtual machines and subnets.\nYou can filter network traffic to and from Azure resources in an Azure virtual network with a network security group. A network security group contains security rules that allow or deny inbound network traffic to, or outbound network traffic from, several types of Azure resources.\nIn this question, we need to add a rule to the network security group to allow the connection to the virtual machine on port 80 (HTTP).",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "260",
+        "choices": "YN",
+        "question": "Your Azure environment contains multiple Azure virtual machines.\nYou need to ensure that a virtual machine named VM1 is accessible from the Internet over HTTP.\nSolution: You modify a DDoS protection plan.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "DDoS is a form of attack on a network resource. A DDoS protection plan is used to protect against DDoS attacks; it does not provide connectivity to a virtual machine.\nTo ensure that a virtual machine named VM1 is accessible from the Internet over HTTP, you need to modify a network security group or Azure Firewall.\nDDOS is protected attacks and NSG and Azure Firewall is for allowing HTTP. So, the answer is correct.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "262",
+        "choices": "YN",
+        "question": "Your Azure environment contains multiple Azure virtual machines.\nYou need to ensure that a virtual machine named VM1 is accessible from the Internet over HTTP.\nSolution: You modify an Azure firewall.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "We can choose Azure Firewall or NSG. It's also working together. We also can create a VM without NSG. Almost the example they created the VM with NSG because it's free. Azure Firewall is not free. That's all.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "311",
+        "choices": "YN",
+        "question": "Your company plans to purchase an Azure subscription.\nThe company's support policy states that the Azure environment must provide an option to access support engineers by phone or email.\nYou need to recommend which support plan meets the support policy requirement.\nSolution: Recommend a Basic support plan.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "The Basic support plan does not have any technical support for engineers.\nAccess to Support Engineers via email or phone is available in the following support plans: Premier, Professional Direct and standard.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "312",
+        "choices": "YN",
+        "question": "Your company plans to purchase an Azure subscription.\nThe company's support policy states that the Azure environment must provide an option to access support engineers by phone or email.\nYou need to recommend which support plan meets the support policy requirement.\nSolution: Recommend a Standard support plan.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The Standard, Professional Direct, and Premier support plans have technical support for engineers via email and phone.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "313",
+        "choices": "YN",
+        "question": "Your company plans to purchase an Azure subscription.\nThe company's support policy states that the Azure environment must provide an option to access support engineers by phone or email.\nYou need to recommend which support plan meets the support policy requirement.\nSolution: Recommend a Premier support plan.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The Standard, Professional Direct, and Premier support plans have technical support for engineers via email and phone.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "318",
+        "choices": "YN",
+        "question": "Your company plans to purchase an Azure subscription.\nThe company's support policy states that the Azure environment must provide an option to access support engineers by phone or email.\nYou need to recommend which support plan meets the support policy requirement.\nSolution: Recommend a Professional Direct support plan.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "A",
+        "explanation": "The Basic support plan does not have any technical support for engineers.\nThe Developer support plan has only technical support for engineers via email.\nThe Standard, Professional Direct, and Premier support plans have technical support for engineers via email and phone.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "362",
+        "choices": "YN",
+        "question": "Your company has an Azure subscription that contains the following unused resources:\n- 20 user accounts in Azure Active Directory (Azure AD)\n- Five groups in Azure AD\n- 10 public IP addresses\n- 10 network interfaces\nYou need to reduce the Azure costs for the company.\nSolution: You remove the unused network interfaces.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "N",
+        "explanation": "You are not charged for unused network interfaces. Therefore, deleting unused network interfaces will not reduce the Azure costs for the company.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "363",
+        "choices": "YN",
+        "question": "Your company has an Azure subscription that contains the following unused resources:\n- 20 user accounts in Azure Active Directory (Azure AD)\n- Five groups in Azure AD \n- 10 public IP addresses\n- 10 network interfaces\nYou need to reduce the Azure costs for the company.\nSolution: You remove the unused public IP addresses.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "Y",
+        "explanation": "You are charged for public IP addresses. Therefore, deleting unused public IP addresses will reduce the Azure costs.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "364",
+        "choices": "YN",
+        "question": "Your company has an Azure subscription that contains the following unused resources:\n- 20 user accounts in Azure Active Directory (Azure AD)\n- Five groups in Azure AD\n- 10 public IP addresses\n- 10 network interfaces\nYou need to reduce the Azure costs for the company.\nSolution: You remove the unused user accounts.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "N",
+        "explanation": "You are not charged for user accounts. Therefore, deleting unused user accounts will not reduce the Azure costs for the company.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    },
+    {
+        "id": "370",
+        "choices": "YN",
+        "question": "Your company has an Azure subscription that contains the following unused resources:\n- 20 user accounts in Azure Active Directory (Azure AD)\n- Five groups in Azure AD\n- 10 public IP addresses\n- 10 network interfaces\nYou need to reduce the Azure costs for the company.\nSolution: You remove the unused groups.\nDoes this meet the goal?\nA. Yes\nB. No",
+        "answer": "B",
+        "explanation": "You are not charged for Azure Active Directory Groups. Therefore, deleting unused groups will not reduce your Azure costs.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "yesno"
+    }
+]

@@ -1,0 +1,312 @@
+[
+    {
+        "id": "54",
+        "choices": "ABCD1234",
+        "question": "Match the Azure services benefits to the correct descriptions.\nA. Disaster recovery \nB. Fault tolerance\nC. Low latency\nD. Dynamic scalability\n1. A cloud service that remains available after a failure occurs\n2. A cloud service that can be recovered after a failure occurs \n3. A cloud service that performs quickly when demand increases\n4. A cloud service that can be accessed quickly from the internet",
+        "answer": "A2B1C4D3",
+        "explanation": "Box 1: Fault tolerance is the ability of a service to remain available after a failure of one of the components of the service. For example, a service running on multiple servers can withstand the failure of one of the servers.\nBox 2: Disaster recovery is the recovery of a service after a failure. For example, restoring a virtual machine from backup after a virtual machine failure.\nBox 3: Dynamic scalability is the ability for compute resources to be added to a service when the service is under heavy load. For example, in a virtual machine scale set, additional instances of the virtual machine are added when the existing virtual machines are under heavy load.\nBox 4: Latency is the time a service to respond to requests. For example, the time it takes for a web page to be returned from a web server. Low latency means low response time which means a quicker response.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "61",
+        "choices": "ABC123",
+        "question": "Match the cloud model to the correct advantage.\nA. Hybrid Cloud\nB. Private Cloud\nC. Public Cloud\n1. No required capital expenditure\n2. Provides complete control over security\n3. Provides a choice to use on-premises or cloud-based resources",
+        "answer": "A3B2C1",
+        "explanation": "Box 1: Public Cloud -\nWith a public cloud, there is no capital expenditure on server hardware etc. You only pay for cloud resources that you use as you use them.\n\nBox 2: Private Cloud -\nA private cloud exists on premises, so you have complete control over security.\n\nBox 3: Hybrid Cloud -\nA hybrid cloud is a mix of public cloud resources and on-premises resources. Therefore, you have a choice to use either.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "80",
+        "choices": "ABC123",
+        "question": "Match the cloud model to the correct advantage.\nA. Agility\nB. Geo-Distribution\nC. Scalability\n1. Resources can be provisioned dynamically to meet demands.\n2. Applications and data can be deployed to multiple regions.\n3. Applications can be developed, tested, and launched rapidly.",
+        "answer": "A3B2C1",
+        "explanation": "Answer is A3B2C1.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "94",
+        "choices": "ABCD123",
+        "question": "A. Disaster recovery\nB. Geo-Distribution\nC. High Availability\nD. Scalability \n1. Increase the compute capacity of apps in the cloud\n2. Provide a continuous user experience with no apparent downtime\n3. Ensures that users always have the best experience by deploying apps to all the regions where there are users",
+        "answer": "B3C2D1",
+        "explanation": "Answer is B3C2D1.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "124",
+        "choices": "ABC123",
+        "question": "A. Azure Sphere\nB. IoT Central\nC. IoT Hub\n1. A software and hardware solution that provides communication and security features for IoT devices\n2. A fully managed software as a service (SaaS) solution to connect, monitor, and manage IoT devices at scale\n3. A managed service that provides bidirectional communication between IoT devices and Azure\n\n\n\n\n",
+        "answer": "A3B2C1",
+        "explanation": "hu(b) = (b)iderectional\n(c)entral = (c)onnect\n(s)phere = (s)ecurity",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "133",
+        "choices": "ABC123",
+        "question": "A. Azure Cosmos DB\nB. Azure HDInsight\nC. Azure Synapse Analytics\n1. A fully managed data warehouse that has integral security at every level of scale at no extra cost.\n2. A globally distributed database that supports NoSQL.\n3. Managed Apache Hadoop clusters in the cloud that enable you to process massive amounts of data.",
+        "answer": "A2B3C1",
+        "explanation": "Azure synapse analytics = Warehouse\nAzure cosmos = even larger than the globe (global) : cosmos\nAzure HDInsight = HaDoop",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "137",
+        "choices": "AB12",
+        "question": "A. Azure Functions\nB. Azure Logic Apps\n1. Executes code and is always stateful\n2. Runs only in the cloud",
+        "answer": "A1B2",
+        "explanation": "Box 1: Azure Functions -\nAzure Functions allows you to implement your system's logic into readily available blocks of code called \"functions\". Different functions can run anytime you need to respond to critical events.\nAzure Logic Apps can have multiple stateful and stateless workflows.\n\nBox 2: Azure Logic Apps -\nAzure Logic Apps is a cloud-based platform for creating and running automated workflows that integrate your apps, data, services, and systems.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "138",
+        "choices": "ABCD123",
+        "question": "A. Azure Blueprints\nB. Azure Policy\nC. Azure resource group\nD. Azure tags\n1. Restrict which VM types can be created in a subscrption\n2. Identify Azure resources that are associated with specific cost centers\n3. Deploy a complete Azure application environment including resources configuration and role assigments",
+        "answer": "A3D2B1",
+        "explanation": "Policy = Restrict\nTag = Identify\nBP = Deploy",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "140",
+        "choices": "ABCD1234",
+        "question": "A. Azure Functions\nB. Azure App Service\nC. Azure Virtual Machines\nD. Azure Container Instances\n1. Provide operating system virtualization\n2. Provide portable environment for virtualized applications\n3. Used to build, deploy, and scale web apps\n4. Provide a platform for serverless code",
+        "answer": "A4B3C1D2",
+        "explanation": "Easy to memorize, VM, CONTAINER = PART OF VM OS, APP = APP SERVICE , CODE = FUNCTION\n\nBox 1: Azure virtual machines -\nBox 2: Azure Container instances\nAzure Container Instances (ACI) is a managed service that allows you to run containers directly on the Microsoft Azure public cloud, without requiring the use of virtual machines (VMs).\nDevelop apps fast without managing virtual machines or having to learn new toolsג€\"it's just your application, in a container, running in the cloud.\n\nBox 3: Azure App Service -\nAzure App Service is a fully managed platform for building web applications.\nApplications run and scale with ease on both Windows and Linux-based environments.\n\nBox 4: Azure Functions -\nAzure Functions (from Microsoft Azure) is a cloud-based serverless service that allows running event-triggered code in a scalable way without providing or managing infrastructure.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "149",
+        "choices": "ABC123",
+        "question": "A. IaaS\nB. PaaS\nC. SaaS\n1. Azure App Service\n2. Azure VM\n3. Microsoft Dynamic 365",
+        "answer": "A2B1C3",
+        "explanation": "Box 1: Platform as a service (PaaS)\nAzure App Service is a fully managed platform for building web applications.\nPlatform as a service (PaaS) is a complete development and deployment environment in the cloud, with resources that enable you to deliver everything from simple cloud-based apps to sophisticated, cloud-enabled enterprise applications.\nBox 2: Infrastructure as a service (IaaS)\nWindows Azure Virtual Machines, an Infrastructure-as-a-Service (IaaS) offering in Windows Azure, was released back in 2012.\nBox 3: Software as a service (SaaS)\nDynamics 365 is a set of interconnected, modular Software-as-a-Service (SaaS) applications and services designed to both transform and enable your core customers, employees, and business activities.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "150",
+        "choices": "ABC123",
+        "question": "A. IaaS\nB. PaaS\nC. SaaS\n1. A cloud-based file server\n2. A cloud-based accounting system\n3. A cloud-based service for custom apps",
+        "answer": "A1B3C2",
+        "explanation": "Box 1: Infrastructure as a service (IaaS)\nAzure Files is a simple, secure, and serverless enterprise-grade cloud file shares.\nInfrastructure as a service (IaaS) is a type of cloud computing service that offers essential compute, storage, and networking resources on demand, on a pay-as- you-go basis.\nBox 2: Software as a service (SaaS)\nDynamics 365 is a set of interconnected, modular Software-as-a-Service (SaaS) applications and services designed to both transform and enable your core customers, employees, and business activities. It includes Dynamics 365 Finance: use the guided, rules-based chart of accounts and no-code configuration service to simplify regulatory reporting, electronic invoicing, and global payments.\nBox 3: Platform as a service (PaaS)\nPlatform as a service (PaaS) is a complete development and deployment environment in the cloud, with resources that enable you to deliver everything from simple cloud-based apps to sophisticated, cloud-enabled enterprise applications.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "161",
+        "choices": "ABC123",
+        "question": "You have an Azure environment that contains 10 web apps. To which URL should you connect to manage all the Azure resources?\nHttps://[…][…].com\nA. admin.\nB. portal.\nC. www.\n1. azure.\n2. azurewebsites.\n3. microsoft.",
+        "answer": "B1",
+        "explanation": "The Azure portal is a web-based management interface where you can view and manage all your Azure resources in one unified hub, including web apps, databases, virtual machines, virtual networks, storage and Visual Studio team projects.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "169",
+        "choices": "ABCD1234",
+        "question": "A. Azure Advisor\nB. Azure Cognitive Services\nC. Azure Application Insights\nD. Azure DevOps\n1. An integrated solution for the deployment of code\n2. A tool that provides guidance and recommandations to improve an Azure environment\n3. A simplified tool to build intelligent Artificial Intelligence applications\n4. Monitors web applications",
+        "answer": "A2B3C4D1",
+        "explanation": "DevOps = code deploy\nAdvisor = guidance\nCognitive = Intelligence\nInsight = Monitor\n\nBox 1: Azure DevOps.\nAzure DevOps is Microsoft's primary software development and deployment platform.\nDevOps influences the application lifecycle throughout its plan, develop, deliver and operate phases.\nBox 2: Azure Advisor.\nAdvisor is a personalized cloud consultant that helps you follow best practices to optimize your Azure deployments. It analyzes your resource configuration and usage telemetry and then recommends solutions that can help you improve the cost effectiveness, performance, high availability, and security of your Azure resources.\nBox 3: Azure Cognitive Services.\nAzure Cognitive Services are APIs, SDKs, and services available to help developers build intelligent applications without having direct AI or data science skills or knowledge. Azure Cognitive Services enable developers to easily add cognitive features into their applications. The goal of Azure Cognitive Services is to help developers create applications that can see, hear, speak, understand, and even begin to reason. The catalog of services within Azure Cognitive Services can be categorized into five main pillars - Vision, Speech, Language, Web Search, and Decision.\nBox 4. Azure Application Insights.\nAzure Application Insights detects and diagnoses anomalies in web apps.\nApplication Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals.\nUse it to monitor your live applications. It will automatically detect performance anomalies, and includes powerful analytics tools to help you diagnose issues and to understand what users actually do with your app.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "170",
+        "choices": "ABCD1234",
+        "question": "A. Azure HDInsight\nB. Azure Data Lake Analytics\nC. Azure SQL Synapse Analytics\nD. Azure SQL Database\n1. Azure HDInsight is an open-source framework for distributed processing and analysis of big data sets in clusters\n2. A cloud-based service that leverages massively parallel processing (MPP) to quickly run complex queries across petabytes of data in a relational database.\n3. Can run massively parallel data transformation and processing programs across petabytes of data.\n4. A managed relational cloud database service.",
+        "answer": "A4B3C2D1",
+        "explanation": "Relational: Sql\nMassive: Synapse\nMessive PetaByte: Lake\nOPenshource: Insight",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "171",
+        "choices": "ABCD123",
+        "question": "You need to identify which blades in the Azure portal must be used to perform the following tasks:\n- View security recommendations.\n- Monitor the health of Azure services.\n- Browse available virtual machine images.\nWhich blade should you identify for each task?\n\nA. Monitor\nB. Subscriptions\nC. Marketplace\nD. Advisor\n1. Monitor the health of Azure services.\n2. Browse available VM images.\n3. View security recommandations.",
+        "answer": "A1C2D3",
+        "explanation": "Box 1:\nAzure Monitor is used to monitor the health of Azure services.\nAzure Monitor maximizes the availability and performance of your applications and services by delivering a comprehensive solution for collecting, analyzing, and acting on telemetry from your cloud and on-premises environments. It helps you understand how your applications are performing and proactively identifies issues affecting them and the resources they depend on.\nBox 2:\nYou can browse available virtual machine images in the Azure Marketplace.\nAzure Marketplace provides access and information on solutions and services available from Microsoft and their partners. Customers can discover, try, or buy cloud software solutions built on or for Azure. The catalog of 8,000+ listings provides Azure building blocks, such as Virtual Machines (VMs), APIs, Azure apps,\nSolution Templates and managed applications, SaaS apps, containers, and consulting services.\nBox 3.\nAzure Advisor displays security recommendations.\nAzure Advisor provides you with a consistent, consolidated view of recommendations for all your Azure resources. It integrates with Azure Security Center to bring you security recommendations. You can get security recommendations from the Security tab on the Advisor dashboard.\nSecurity Center helps you prevent, detect, and respond to threats with increased visibility into and control over the security of your Azure resources. It periodically analyzes the security state of your Azure resources. When Security Center identifies potential security vulnerabilities, it creates recommendations. The recommendations guide you through the process of configuring the controls you need.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "180",
+        "choices": "ABCD1234",
+        "question": "A. Azure Machine Learning\nB. Azure Synapse Analytics\nC. Azure IoT Hub\nD. Azure Functions\n1. Provides a cloud-based Enterprise Data Warehouse (EDW)\n2. Uses past training  to provide predictions that have high probability\n3. Provides serverless computing functionalities\n4. Processes data from millions of sensors",
+        "answer": "A2B1C4D3",
+        "explanation": "Box 1: Azure SQL Synapse Analytics\nAzure SQL Synapse Analytics (previously called Data Warehouse) is a cloud-based Platform-as-a-Service (PaaS) offering from Microsoft. It is a large-scale, distributed, MPP (massively parallel processing) relational database technology in the same class of competitors as Amazon Redshift or Snowflake. Azure SQL\nSynapse Analytics is an important component of the Modern Data Warehouse multi-platform architecture. Because Azure SQL Synapse Analytics is an MPP system with a shared-nothing architecture across distributions, it is meant for large-scale analytical workloads which can take advantage of parallelism.\nBox 2:\nAzure Machine Learning uses past trainings to provide predictions that have high probability.\nMachine learning is a data science technique that allows computers to use existing data to forecast future behaviors, outcomes, and trends. By using machine learning, computers learn without being explicitly programmed.\nForecasts or predictions from machine learning can make apps and devices smarter. For example, when you shop online, machine learning helps recommend other products you might want based on what you've bought.\nBox 3:\nAzure Functions provides serverless computing functionalities.\nAzure Functions is a serverless compute service that lets you run event-triggered code without having to explicitly provision or manage infrastructure.\nBox 4:\nIoT Hub (Internet of things Hub) provides data from millions of sensors.\nIoT Hub is a managed service, hosted in the cloud, that acts as a central message hub for bi-directional communication between your IoT application and the devices it manages. You can use Azure IoT Hub to build IoT solutions with reliable and secure communications between millions of IoT devices and a cloud- hosted solution backend. You can connect virtually any device to IoT Hub.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "190",
+        "choices": "ABCD4",
+        "question": "A. Azure Machine Learning\nB. Azure IoT Hub\nC. Azure Bot Services\nD. Azure Functions\n1.Provides a digital online assistant that provides speech support.\n2.Uses past trainings to provide predictions that have high probability.\n3.Provides serverless computing functionalities.\n4. Processes data from millions of sensors.",
+        "answer": "A2B4C1D3",
+        "explanation": "Box 1:\nAzure Bot Services provides a digital online assistant that provides speech support.\nBots provide an experience that feels less like using a computer and more like dealing with a person - or at least an intelligent robot. They can be used to shift simple, repetitive tasks, such as taking a dinner reservation or gathering profile information, on to automated systems that may no longer require direct human intervention. Users converse with a bot using text, interactive cards, and speech. A bot interaction can be a quick question and answer, or it can be a sophisticated conversation that intelligently provides access to services.\nBox 2:\nAzure Machine Learning uses past trainings to provide predictions that have high probability.\nMachine learning is a data science technique that allows computers to use existing data to forecast future behaviors, outcomes, and trends. By using machine learning, computers learn without being explicitly programmed.\nForecasts or predictions from machine learning can make apps and devices smarter. For example, when you shop online, machine learning helps recommend other products you might want based on what you've bought.\nBox 3:\nAzure Functions provides serverless computing functionalities.\nAzure Functions is a serverless compute service that lets you run event-triggered code without having to explicitly provision or manage infrastructure.\nBox 4:\nIoT Hub (Internet of things Hub) provides data from millions of sensors.\nIoT Hub is a managed service, hosted in the cloud, that acts as a central message hub for bi-directional communication between your IoT application and the devices it manages. You can use Azure IoT Hub to build IoT solutions with reliable and secure communications between millions of IoT devices and a cloud- hosted solution backend. You can connect virtually any device to IoT Hub.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "192",
+        "choices": "ABCD1234",
+        "question": "A. Azure Functions\nB. Azure App Service\nC. Azure Virtual Machines\nD. Azure Container Instances\n1. Provide operating system virtualization\n2. Provide portable environment for virtualized applications\n3. Used to build, deploy, and scale web apps\n4. Provide a platform for serverless code",
+        "answer": "A4B3C1D2",
+        "explanation": "Box 1:\nAzure virtual machines provide operation system virtualization.\nAzure Virtual Machines (VM) is one of several types of on-demand, scalable computing resources that Azure offers. Typically, you choose a VM when you need more control over the computing environment than the other choices offer.\nBox 2:\nAzure Container Instances provide portable environments for virtualized applications.\nContainers are becoming the preferred way to package, deploy, and manage cloud applications. Azure Container Instances offers the fastest and simplest way to run a container in Azure, without having to manage any virtual machines and without having to adopt a higher-level service.\nContainers offer significant startup benefits over virtual machines (VMs). Azure Container Instances can start containers in Azure in seconds, without the need to provision and manage VMs.\nBox 3:\nAzure App Service is used to build, deploy and scale web apps.\nAzure App Service is a platform-as-a-service (PaaS) offering that lets you create web and mobile apps for any platform or device and connect to data anywhere, in the cloud or on-premises. App Service includes the web and mobile capabilities that were previously delivered separately as Azure Websites and Azure Mobile\nServices.\nBox 4:\nAzure Functions provide a platform for serverless code.\nAzure Functions is a serverless compute service that lets you run event-triggered code without having to explicitly provision or manage infrastructure.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "202",
+        "choices": "ABCD1234",
+        "question": "A. Azure Databricks\nB. Azure Functions\nC. Azure App Service\nD. Azure Application Insights\n1. Provides the platform for serverless code\n2. A big data analysis service for machine learning\n3. Detects and diagnoses anomalies in web apps\n4. Hosts web apps",
+        "answer": "A2B1C4D3",
+        "explanation": "Box 1:\nAzure Functions provides the platform for serverless code.\nAzure Functions is a serverless compute service that lets you run event-triggered code without having to explicitly provision or manage infrastructure.\nBox 2:\nAzure Databricks is a big analysis service for machine learning.\nAzure Databricks is an Apache Spark-based analytics platform. The platform consists of several components including 'MLib'. Mlib is a Machine Learning library consisting of common learning algorithms and utilities, including classification, regression, clustering, collaborative filtering, dimensionality reduction, as well as underlying optimization primitives.\nBox 3:\nAzure Application Insights detects and diagnoses anomalies in web apps.\nApplication Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals.\nUse it to monitor your live applications. It will automatically detect performance anomalies, and includes powerful analytics tools to help you diagnose issues and to understand what users actually do with your app.\nBox 4:\nAzure App Service hosts web apps.\nAzure App Service is an HTTP-based service for hosting web applications, REST APIs, and mobile back ends. You can develop in your favorite language, be it\n.NET, .NET Core, Java, Ruby, Node.js, PHP, or Python. Applications run and scale with ease on both Windows and Linux-based environments.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "224",
+        "choices": "ABCDE123",
+        "question": "A. Azure Active Directory (Azure AD)\nB. Azure Key Vault\nC. Azure Lighthouse\nD. Azure Security Center\nE. Azure Sentinel\n1. Analyse security log from Azure VM\n2. Display the secure score for an Azure Subscription\n3. Store passwords for use by Azure Function applications",
+        "answer": "E1D2B3",
+        "explanation": "Box 1: Azure Sentinel -\n\nBox 2: Azure Security Center -\n\nBox 3: Azure Key Vault -\n- Azure Active Directory (Azure AD)\nAzure AD is an identity and access management service, which helps your employees sign in and access resources\n- Azure Lighthouse\nAzure Lighthouse is used for cross- and multi-tenant management.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "234",
+        "choices": "ABCDE123",
+        "question": "A. Azure Active Directory (Azure AD)\nB. Azure Key Vault\nC. Azure Lighthouse\nD. Microsoft Defender for Cloud\nE. Microsoft Sentinel\n1. Provide security information event management (SIEM) functionnality \n2. Display the secure score for an Azure subsciption\n3. Store passwords for use by Azure Function applications",
+        "answer": "E1D2B3",
+        "explanation": "Box 1: Microsoft Sentinel -\nMicrosoft Sentinel is a scalable, cloud-native, security information and event management (SIEM) and security orchestration, automation, and response (SOAR) solution. Microsoft Sentinel delivers intelligent security analytics and threat intelligence across the enterprise, providing a single solution for attack detection, threat visibility, proactive hunting, and threat response.\n\nBox 2: Microsoft Defender for Cloud\nYou can find your overall secure score, as well as your score per subscription, through the Azure portal. Defender for Cloud displays your secure score prominently in the portal.\n\nBox 3: Azure Key Vault -\nA favored approach to store the credentials or keys in the Azure Key Vault as secrets and reference the secrets as environment variables in our Azure functions apps.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "243",
+        "choices": "ABC123",
+        "question": "A. authorization\nB. multi-factor authentication (MFA)\nC. single sign-on (SSO)\n1. The ability to use the same credentials to access multiple resources and applications from different providers.\n2. The process of identifying the access level of a user or service.\n3. Requires several elements to identify a user or a service.",
+        "answer": "C1B3A2",
+        "explanation": "Single sign-on (SSO) enables a user to sign in one time and use that credential to access multiple resources and applications from different providers. For SSO to work, the different applications and providers must trust the initial authenticator.\n\nMultifactor authentication is the process of prompting a user for an extra form (or factor) of identification during the sign-in process. MFA helps protect against a password compromise in situations where the password was compromised but the second factor wasn't.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "249",
+        "choices": "ABCD12",
+        "question": "You plan to implement several security services for an Azure environment. You need to identify which Azure services must be used to meet the following security requirements:\n- Monitor threats by using sensors\n- Enforce Azure Multi-Factor Authentication (MFA) based on a condition\nWhich Azure service should you identify for each requirement? To answer, select the appropriate options in the answer area.\n\nA. Azure Monitor\nB. Azure Security Center\nC. Azure Active Directory (Azure AD) Identity Protection\nD. Azure Advanced Threat Protection (ATP)\n1. Monitor threats by using sensors\n2. Enforce Azure MFA based on a condition\n",
+        "answer": "C2D1",
+        "explanation": "Box 1:\nTo monitor threats by using sensors, you would use Azure Advanced Threat Protection (ATP).\nAzure Advanced Threat Protection (ATP) is a cloud-based security solution that leverages your on-premises Active Directory signals to identify, detect, and investigate advanced threats, compromised identities, and malicious insider actions directed at your organization.\nSensors are software packages you install on your servers to upload information to Azure ATP.\nBox 2:\nTo enforce MFA based on a condition, you would use Azure Active Directory Identity Protection.\nAzure AD Identity Protection helps you manage the roll-out of Azure Multi-Factor Authentication (MFA) registration by configuring a Conditional Access policy to require MFA registration no matter what modern authentication app you are signing in to.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "272",
+        "choices": "ABCD1234",
+        "question": "A. Azure Government\nB. GDPR\nC. ISO\nD. NIST\n1. An organization that defines international standards across all industries.\n2. An organization that defines standards used by the United States government.\n3. A European policy that regulates data privacy and data protection.\n4. A dedicated public cloud for federal and state agencies in the United States.\n",
+        "answer": "A4B3C1D2",
+        "explanation": "Box 1: ISO -\nISO is the International Organization for Standardization. Companies can be certified to ISO standards, for example ISO 9001 or 27001 are commonly used in IT companies.\n\nBox 2: NIST -\nThe National Institute of Standards and Technology (NIST) is a physical sciences laboratory, and a non-regulatory agency of the United States Department of\nCommerce.\n\nBox 3: GDPR -\nGDPR is the General Data Protection Regulations. This standard was adopted across Europe in May 2018 and replaces the now deprecated Data Protection\nDirective.\nThe General Data Protection Regulation (EU) (GDPR) is a regulation in EU law on data protection and privacy in the European Union (EU) and the European\nEconomic Area (EEA). It also addresses the transfer of personal data outside the EU and EEA areas. The GDPR aims primarily to give control to individuals over their personal data and to simplify the regulatory environment for international business by unifying the regulation within the EU.\n\nBox 4: Azure Government -\nUS government agencies or their partners interested in cloud services that meet government security and compliance requirements, can be confident that\nMicrosoft Azure Government provides world-class security, protection, and compliance services. Azure Government delivers a dedicated cloud enabling government agencies and their partners to transform mission-critical workloads to the cloud. Azure Government services handle data that is subject to certain government regulations and requirements, such as FedRAMP, NIST 800.171 (DIB), ITAR, IRS 1075, DoD L4, and CJIS. In order to provide you with the highest level of security and compliance, Azure Government uses physically isolated datacenters and networks (located in U.S. only).",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "287",
+        "choices": "ABC123",
+        "question": "A. Data Protection Addendum\nB. Microsoft Privacy Statement\nC. Online Services Terms\n1. Describes which personal data is collected, how the data is used, and what the data is used for.\n2. A legal agreement that details the obligations between Microsoft and a customer regarding the processing and security of customer data and personal data.\n3. Defines the data processing and security terms for online services, including the disclosure of processed data and the transfer, retention, and deletion of data.",
+        "answer": "A2B1C3",
+        "explanation": "A. Data Protection Addendum - 2. A legal agreement that details the obligations between Microsoft and a customer regarding the processing and security of customer data and personal data.\nB. Microsoft Privacy Statement - 1. Describes which personal data is collected, how the data is used, and what the data is used for.\nC. Online Services Terms - 3. Defines the data processing and security terms for online services, including the disclosure of processed data and the transfer, retention, and deletion of data.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "386",
+        "choices": "ABCD123",
+        "question": "A. Disaster recovery\nB. Geo-Distribution\nC. High Availability\nD. Scalability \n1. Provide a continuous user experience in the event of a resource failure.\n2. Deploy apps and data to regional data centers that are located close to users.\n3. Compute capacity can be increased dynamically by adding RAM or CPU to a virtual machine.",
+        "answer": "B2C1D3",
+        "explanation": "High availability\nWhen you’re deploying an application, a service, or any IT resources, it’s important the resources are available when needed. High availability focuses on ensuring maximum availability, regardless of disruptions or events that may occur.\n\nScalability\nAnother major benefit of cloud computing is the scalability of cloud resources. Scalability refers to the ability to adjust resources to meet demand. If you suddenly experience peak traffic and your systems are overwhelmed, the ability to scale means you can add more resources to better handle the increased demand.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "387",
+        "choices": "ABC123",
+        "question": "A. ExpressRoute\nB. Virtual Network peering\nC. VPN gateway\n1. Extends on-premises networks to the Microsoft cloud via a private connection\n2. Combines two or more Azure virtual networks into a single logical virtual network\n3. Provides an encrypted connection from on-premises networks to Azure via a public network",
+        "answer": "A1B2C3",
+        "explanation": "Remember that, since ExpressRoute is a dedicated connection between on-premises and Azure, that does not use the public Internet and the traffic is not encrypted.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "395",
+        "choices": "ABCD123",
+        "question": "A. Azure Blob Storage\nB. Azure Disk Storage\nC. Azure Files\nD. Azure Queue Storage\n1. Used for reliable messaging between applications\n2. Can be accessed as a network share from a Windows device\n3. Can be configured to use the Archive access tier",
+        "answer": "A3C2D1",
+        "explanation": "I think the answer is correct\nAzure Queue Storage is a service for storing large numbers of messages. You access messages from anywhere in the world via authenticated calls using HTTP or HTTPS. A queue message can be up to 64 KB in size. A queue may contain millions of messages, up to the total capacity limit of a storage account. Queues are commonly used to create a backlog of work to process asynchronously",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "426",
+        "choices": "ABC123",
+        "question": "A. Agility\nB. Elasticity\nC. Disaster recovery\n1. The ability to dynamically scale the resources available to a cloud app\n2. The ability to use cloud-based backup services to restore resources in the event of an outage\n3. The ability to quickly deploy and configure cloud-based resources as app requirements change",
+        "answer": "A3C2B1",
+        "explanation": "Agility: Refers to the ability to quickly adapt and respond to changes. In cloud computing, this translates to rapidly deploying and scaling resources based on application needs.\nElasticity : Specifically refers to the ability to dynamically adjust resources (like processing power or storage) up or down as demand fluctuates.\nDisaster recovery: Focuses on recovering resources and data after an outage or disaster. While crucial, it doesn't directly address dynamic scaling or rapid deployment.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "427",
+        "choices": "ABC123",
+        "question": "A. MFA\nB. Software updates an patches\nC. Surveillance camera\n1. Compute\n2. Identity and access\n3. Physical security",
+        "answer": "B1A2C3",
+        "explanation": "Answer is B1A2C3.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    },
+    {
+        "id": "457",
+        "choices": "ABCD12",
+        "question": "A. Azure App Service\nB. Azure Container\nC. Azure Functions\nD. Azure Virtual Machine Scale Sets\n1. Provides software emulation of a physical computer.\n2. Provides operating system virtualization.",
+        "answer": "B1D2",
+        "explanation": "Answer is B1D2.",
+        "counter": 0,
+        "certifcode": "az-900",
+        "questiontype": "draganddrop"
+    }
+]

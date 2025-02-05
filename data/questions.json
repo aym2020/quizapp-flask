@@ -3301,7 +3301,7 @@
     },
     {
         "QuestionID": 331,
-        "Question": "For each of the following statements, select Yes if the statement is true. \nOtherwise, select No.\n- When using an Azure ExpressRoute connection, inbound data traffic from an on-premises network to Azure is always free. (Y/N)\n- Outbound data traffic from Azure to an on-premises network is always free. (N)\n- Data traffic between Azure services within the same Azure region is always free. (Y/N)",
+        "Question": "For each of the following statements, select Yes if the statement is true. \nOtherwise, select No.\n- When using an Azure ExpressRoute connection, inbound data traffic from an on-premises network to Azure is always free. (Y/N)\n- Outbound data traffic from Azure to an on-premises network is always free. (Y/N)\n- Data traffic between Azure services within the same Azure region is always free. (Y/N)",
         "Answer": "YNY",
         "Explanation": "Box 1: Yes -\nWith Azure ExpressRoute, all inbound data transfer is free of charge.\n\nBox 2: No -\nInbound data traffic is free but outbound data traffic is not.\n\nBox 3: Yes -",
         "Counter": 0,
