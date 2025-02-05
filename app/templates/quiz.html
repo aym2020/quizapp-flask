@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - {{ certif }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <h1>{{ certif | upper }}</h1>
+    </header>
+
+    <main class="main-container">
+        <section id="quiz-section">
+            <!-- Question Header -->
+            <div id="question-header">
+                <p id="question-id">Question {{ questions[0].id }}</p>
+                <p id="question-text">{{ questions[0].main_question | replace('\n', '<br>') | safe }}</p>
+            </div>
+
+            {% if questions[0].questiontype == 'hotspot' %}
+            <!-- Hotspot Question Layout -->
+            <div id="hotspot-container">
+                {% for statement in questions[0].parsed_statements %}
+                <div class="hotspot-statement">
+                    <p class="statement-text">{{ statement }}</p>
+                    <div class="yn-buttons">
+                        <button class="yn-btn yes-btn" data-value="Y" data-statement-index="{{ loop.index0 }}" onclick="selectHotspotAnswer(this, 'Y')">Yes</button>
+                        <button class="yn-btn no-btn" data-value="N" data-statement-index="{{ loop.index0 }}" onclick="selectHotspotAnswer(this, 'N')">No</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% elif questions[0].questiontype == 'draganddrop' %}
+            <!-- Drag and Drop Layout -->
+            <div id="drag-drop-container">
+                <!-- Drop Zones Column -->
+                <div id="dropzones">
+                    {% for drop in questions[0].parsed_dropzones %}
+                    <div class="dropzone" data-number="{{ drop.number }}" ondragover="allowDrop(event)" ondrop="drop(event)">
+                        <span class="dropzone-number">{{ drop.number }}.</span>
+                        <span class="dropzone-text">{{ drop.text }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Draggable Choices Column -->
+                <div id="draggables">
+                    {% for choice in questions[0].parsed_choices %}
+                    <div class="draggable" draggable="true" data-letter="{{ choice.letter }}" ondragstart="drag(event)">
+                        <span class="draggable-letter">{{ choice.letter }}.</span>
+                        <span class="draggable-text">{{ choice.text }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% elif questions[0].questiontype == 'yesno' %}
+            <!-- Yes/No Question Layout -->
+            <div id="yesno-container">
+                {% for choice in questions[0].parsed_choices %}
+                <button class="yesno-btn" data-letter="{{ choice.letter }}" onclick="selectAnswer('{{ choice.letter }}')">
+                    <span class="choice-text">{{ choice.text }}</span>
+                </button>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Multiple Choice Layout -->
+            <div id="choices-container">
+                {% for choice in questions[0].parsed_choices %}
+                <button class="choice-btn" data-letter="{{ choice.letter }}" onclick="selectAnswer('{{ choice.letter }}')">
+                    <span class="choice-letter">{{ choice.letter }}</span>
+                    <span class="choice-text">{{ choice.text }}</span>
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Action Buttons Section -->
+        <section id="action-buttons">
+            <div id="buttons-container">
+                <button id="submit-btn" class="quiz-button" onclick="checkAnswer()">Submit Answer</button>
+                <button id="stop-quiz" class="quiz-button" onclick="window.location.href='/'">Stop Quiz</button>
+            </div>
+
+            <div id="result-container" style="display: none;">
+                <p id="result-message"></p>
+                <div id="nav-buttons">
+                    <button id="explanation-btn" class="quiz-button" onclick="showExplanation()">Show Explanation</button>
+                    <button id="next-question-btn" class="quiz-button" onclick="loadNextQuestion()">Next Question</button>
+                    <button id="stop-quiz-result" class="quiz-button" onclick="window.location.href='/'">Stop Quiz</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Explanation Modal -->
+    <div id="explanation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Explanation</h3>
+                <span class="close" onclick="closeExplanation()">&times;</span>
+            </div>
+            <p id="explanation-text"></p>
+        </div>
+    </div>
+
+    <script>
+        let questions = {{ questions | tojson }};
+        let currentIndex = 0;
+        let selectedAnswers = [];
+        let hotspotAnswers = [];
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let initialModalX = 0;
+        let initialModalY = 0;
+        let dragDropAnswer = ""; // global variable to store the answer string
+
+
+        // Drag and drop functionality for modal
+        document.querySelector('.modal-header').addEventListener('mousedown', startDragging);
+        document.addEventListener('mousemove', dragModal);
+        document.addEventListener('mouseup', stopDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            const modalContent = document.querySelector('.modal-content');
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            const rect = modalContent.getBoundingClientRect();
+            initialModalX = rect.left;
+            initialModalY = rect.top;
+        }
+
+        function dragModal(e) {
+            if (isDragging) {
+                const dx = e.clientX - dragStartX;
+                const dy = e.clientY - dragStartY;
+                const modalContent = document.querySelector('.modal-content');
+                modalContent.style.left = `${initialModalX + dx}px`;
+                modalContent.style.top = `${initialModalY + dy}px`;
+            }
+        }
+
+        function stopDragging() {
+            isDragging = false;
+        }
+
+        // Existing quiz functionality
+        function selectAnswer(letter) {
+            const currentQuestion = questions[currentIndex];
+            if (currentQuestion.questiontype === 'yesno') {
+                document.querySelectorAll('#yesno-container button').forEach(btn => btn.classList.remove('selected'));
+                selectedAnswers = [letter];
+                const btn = event.target.closest('button');
+                btn.classList.add('selected');
+            } else {
+                const btn = event.target.closest('.choice-btn');
+                if (!btn) return;
+                if (selectedAnswers.includes(letter)) {
+                    selectedAnswers = selectedAnswers.filter(ans => ans !== letter);
+                    btn.classList.remove('selected');
+                } else {
+                    selectedAnswers.push(letter);
+                    btn.classList.add('selected');
+                }
+            }
+        }
+
+        function selectHotspotAnswer(button, value) {
+            const index = parseInt(button.dataset.statementIndex);
+            const parent = button.parentElement;
+            parent.querySelectorAll('.yn-btn').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            hotspotAnswers[index] = value;
+        }
+
+        function disableChoices() {
+            // Disable all choice buttons
+            document.querySelectorAll('.choice-btn, .yesno-btn, .yn-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+            });
+        }
+
+        function enableChoices() {
+            // Enable all choice buttons
+            document.querySelectorAll('.choice-btn, .yesno-btn, .yn-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('disabled');
+            });
+        }
+
+
+        // Called when a draggable item starts being dragged
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.getAttribute('data-letter'));
+        }
+
+        // Allow dropping by preventing default behavior
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        // Called when a draggable is dropped into a drop zone
+        function drop(ev) {
+            ev.preventDefault();
+            // Only act if the drop target is a dropzone (or a child of it)
+            let dropzone = ev.target;
+            while (!dropzone.classList.contains('dropzone') && dropzone.parentElement) {
+                dropzone = dropzone.parentElement;
+            }
+            if (!dropzone.classList.contains('dropzone')) return;
+            
+            // Get the letter from the dragged item
+            let letter = ev.dataTransfer.getData("text");
+            
+            // Remove any existing draggable inside this dropzone
+            let existing = dropzone.querySelector('.draggable');
+            if (existing) {
+                existing.remove();
+            }
+            
+            // Clone the dragged element to place inside the dropzone
+            let original = document.querySelector(`.draggable[data-letter="${letter}"]`);
+            let clone = original.cloneNode(true);
+            // Make the clone non-draggable once dropped
+            clone.setAttribute('draggable', 'false');
+            // Append the clone to the dropzone
+            dropzone.appendChild(clone);
+            
+            // Update the drag-drop answer mapping
+            updateDragDropAnswer();
+        }
+
+        // Construct the answer string by iterating over drop zones (in DOM order)
+        function updateDragDropAnswer() {
+            let answerString = "";
+            // Assuming the drop zones are in the correct order (1,2,3…)
+            document.querySelectorAll('.dropzone').forEach(zone => {
+                let draggable = zone.querySelector('.draggable');
+                if (draggable) {
+                    answerString += draggable.getAttribute('data-letter');
+                } else {
+                    answerString += ""; // No answer in this zone
+                }
+            });
+            dragDropAnswer = answerString;
+        }
+
+        function checkAnswer() {
+            const currentQuestion = questions[currentIndex];
+            let isCorrect = false;
+
+            if (currentQuestion.questiontype === 'hotspot') {
+                const userAnswer = hotspotAnswers.join('');
+                isCorrect = userAnswer === currentQuestion.answer;
+            } else {
+                const correctAnswers = currentQuestion.answer.split('').sort();
+                isCorrect = selectedAnswers.sort().join('') === correctAnswers.join('');
+            }
+
+            // Disable choices after submission
+            disableChoices();
+
+            // Mark correct and wrong choices for visual feedback
+            if (currentQuestion.questiontype === 'hotspot') {
+                // For each hotspot statement:
+                document.querySelectorAll('.hotspot-statement').forEach((statement, index) => {
+                    const correctValue = currentQuestion.answer.charAt(index);
+                    statement.querySelectorAll('.yn-btn').forEach(button => {
+                        const btnValue = button.getAttribute('data-value');
+                        if (btnValue === correctValue) {
+                            button.classList.add('correct-answer');
+                        }
+                        if (button.classList.contains('selected') && btnValue !== correctValue) {
+                            button.classList.add('wrong-answer');
+                        }
+                    });
+                });
+            } else if (currentQuestion.questiontype === 'draganddrop') {
+                updateDragDropAnswer(); // Ensure we have the latest answer
+                isCorrect = (dragDropAnswer === currentQuestion.answer);
+                
+                // Mark each drop zone’s draggable as correct or wrong
+                let dropzones = document.querySelectorAll('.dropzone');
+                let correctAnswerStr = currentQuestion.answer; // e.g., "A3B2C1"
+                dropzones.forEach((zone, index) => {
+                    let draggable = zone.querySelector('.draggable');
+                    if (draggable) {
+                        let letter = draggable.getAttribute('data-letter');
+                        // Expected letter is taken from the answer string
+                        let expectedLetter = correctAnswerStr.charAt(index);
+                        if(letter === expectedLetter) {
+                            draggable.classList.add('correct-answer');
+                        } else {
+                            draggable.classList.add('wrong-answer');
+                        }
+                    }
+                });
+            } else if (currentQuestion.questiontype === 'multiplechoice' || currentQuestion.questiontype === 'yesno') {
+                // Get the container element (either choices-container or yesno-container)
+                let container = document.getElementById('choices-container');
+                if (!container) {
+                    container = document.getElementById('yesno-container');
+                }
+                const correctAnswers = currentQuestion.answer.split('');
+                container.querySelectorAll('button').forEach(button => {
+                    const letter = button.getAttribute('data-letter');
+                    if (correctAnswers.includes(letter)) {
+                        button.classList.add('correct-answer');
+                    }
+                    if (button.classList.contains('selected') && !correctAnswers.includes(letter)) {
+                        button.classList.add('wrong-answer');
+                    }
+                });
+            }
+
+            // Show result and navigation buttons
+            document.getElementById('buttons-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+            document.getElementById('result-message').textContent = isCorrect ? 'Correct! Well done!' : 'Incorrect. You suck!';
+            document.getElementById('result-message').className = isCorrect ? 'correct' : 'incorrect';
+        }
+
+
+        function showExplanation() {
+            const explanation = questions[currentIndex].explanation || "No explanation available.";
+            document.getElementById('explanation-text').innerHTML = explanation.replace(/\n/g, '<br>');
+            document.getElementById('explanation-modal').style.display = 'flex';
+        }
+
+        function closeExplanation() {
+            document.getElementById('explanation-modal').style.display = 'none';
+        }
+
+        function loadNextQuestion() {
+            // Re-enable choices for the next question
+            enableChoices();
+
+            // Choose a new random question and reset answer arrays/variables
+            currentIndex = Math.floor(Math.random() * questions.length);
+            selectedAnswers = [];
+            hotspotAnswers = [];
+            dragDropAnswer = "";
+
+            // Hide the result container and show the main buttons
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('buttons-container').style.display = 'flex';
+
+            const currentQuestion = questions[currentIndex];
+            document.getElementById('question-id').textContent = `Question ${currentQuestion.id}`;
+            document.getElementById('question-text').innerHTML = currentQuestion.main_question.replace(/\n/g, '<br>');
+
+            // Remove any previous question container (including draganddrop)
+            const quizSection = document.getElementById('quiz-section');
+            const containerSelectors = '#hotspot-container, #yesno-container, #choices-container, #drag-drop-container';
+            const previousContainer = quizSection.querySelector(containerSelectors);
+            if (previousContainer) {
+                previousContainer.remove();
+            }
+
+            // Append new container based on the question type
+            if (currentQuestion.questiontype === 'hotspot') {
+                const hotspotContainer = document.createElement('div');
+                hotspotContainer.id = 'hotspot-container';
+                currentQuestion.parsed_statements.forEach((statement, index) => {
+                    hotspotContainer.innerHTML += `
+                        <div class="hotspot-statement">
+                            <p class="statement-text">${statement}</p>
+                            <div class="yn-buttons">
+                                <button class="yn-btn yes-btn" data-value="Y" data-statement-index="${index}" onclick="selectHotspotAnswer(this, 'Y')">Yes</button>
+                                <button class="yn-btn no-btn" data-value="N" data-statement-index="${index}" onclick="selectHotspotAnswer(this, 'N')">No</button>
+                            </div>
+                        </div>`;
+                });
+                quizSection.appendChild(hotspotContainer);
+            } else if (currentQuestion.questiontype === 'draganddrop') {
+                const dragDropContainer = document.createElement('div');
+                dragDropContainer.id = 'drag-drop-container';
+
+                // Build drop zones column
+                let dropzonesHTML = `<div id="dropzones">`;
+                currentQuestion.parsed_dropzones.forEach(drop => {
+                    dropzonesHTML += `
+                        <div class="dropzone" data-number="${drop.number}" ondragover="allowDrop(event)" ondrop="drop(event)">
+                            <span class="dropzone-number">${drop.number}.</span>
+                            <span class="dropzone-text">${drop.text}</span>
+                        </div>`;
+                });
+                dropzonesHTML += `</div>`;
+
+                // Build draggables column
+                let draggablesHTML = `<div id="draggables">`;
+                currentQuestion.parsed_choices.forEach(choice => {
+                    draggablesHTML += `
+                        <div class="draggable" draggable="true" data-letter="${choice.letter}" ondragstart="drag(event)">
+                            <span class="draggable-letter">${choice.letter}.</span>
+                            <span class="draggable-text">${choice.text}</span>
+                        </div>`;
+                });
+                draggablesHTML += `</div>`;
+
+                dragDropContainer.innerHTML = dropzonesHTML + draggablesHTML;
+                quizSection.appendChild(dragDropContainer);
+            } else if (currentQuestion.questiontype === 'yesno') {
+                const yesnoContainer = document.createElement('div');
+                yesnoContainer.id = 'yesno-container';
+                currentQuestion.parsed_choices.forEach(choice => {
+                    yesnoContainer.innerHTML += `
+                        <button class="yesno-btn" data-letter="${choice.letter}" onclick="selectAnswer('${choice.letter}')">
+                            <span class="choice-text">${choice.text}</span>
+                        </button>`;
+                });
+                quizSection.appendChild(yesnoContainer);
+            } else if (currentQuestion.questiontype === 'multiplechoice') {
+                const choicesContainer = document.createElement('div');
+                choicesContainer.id = 'choices-container';
+                currentQuestion.parsed_choices.forEach(choice => {
+                    choicesContainer.innerHTML += `
+                        <button class="choice-btn" data-letter="${choice.letter}" onclick="selectAnswer('${choice.letter}')">
+                            <span class="choice-letter">${choice.letter}</span>
+                            <span class="choice-text">${choice.text}</span>
+                        </button>`;
+                });
+                quizSection.appendChild(choicesContainer);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
