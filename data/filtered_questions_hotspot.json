@@ -402,7 +402,7 @@
     {
         "id": "242",
         "choices": "YN",
-        "question": "\nFor each of the following statements, select Yes if the statement is true. \nOtherwise, select No.\nA network security group (NSG) will block all network traffic by default. (Y/N)\nApplication security groups can be specified as part of network security group (NSG) rules. (Y/N)\nNetwork security groups (NSGs) always include inbound security rules and outbound security rules. (Y/N)",
+        "question": "\nFor each of the following statements, select Yes if the statement is true. \nOtherwise, select No.\nA network security group (NSG) will block all network traffic by default. (Y/N)\nApplication security groups can be specified as part of network security group (NSG) rules. (Y/N)\nNetwork security groups (NSGs) always include inbound security rules and outbound security rules.(Y/N)",
         "answer": "NYY",
         "explanation": "Box 1: No -\nAzure creates the default rules in each network security group that you create. These rules allow some traffic.\n\nBox 2: Yes -\nA network security group contains zero, or as many rules as desired. These rules can refer to application security groups.\n\nBox 3: Yes -\nAzure creates the Inbound and OutBound default rules in each network security group that you create.",
         "counter": 0,
