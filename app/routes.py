@@ -11,8 +11,9 @@ import os
 import re
 
 # Azure Key Vault details
-KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/"  # Replace with your Key Vault URL
-SECRET_NAME = "CosmosDBConnectionString"  # Replace with your secret name
+KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/" 
+COSMOS_SECRET_NAME = "CosmosDBConnectionString"
+FLASK_SECRET_NAME = "FlaskSecretKey"
 
 # Authenticate to Azure Key Vault
 credential = DefaultAzureCredential()
@@ -20,7 +21,7 @@ secret_client = SecretClient(vault_url=KEY_VAULT_URL, credential=credential)
 
 # Retrieve the Cosmos DB connection string from Key Vault
 try:
-    COSMOS_DB_CONN = secret_client.get_secret(SECRET_NAME).value
+    COSMOS_DB_CONN = secret_client.get_secret(COSMOS_SECRET_NAME).value
     print("Cosmos DB connection string retrieved from Azure Key Vault.")
 except Exception as e:
     raise ValueError(f"Failed to retrieve secret from Azure Key Vault: {e}")
@@ -37,6 +38,7 @@ users_container = db.get_container_client("users")  # Ensure this is defined!
 @app.route("/test")
 def test():
     return "Flask is working!"
+
 
 # ------------------------------------------------------------
 # Home page
@@ -69,6 +71,7 @@ def home():
 
     return render_template("home.html", certifs=results, current_user=current_user)
 
+
 # ------------------------------------------------------------
 # Get questions for a specific certification
 # ------------------------------------------------------------
@@ -79,6 +82,8 @@ def get_questions(certif):
         query=f"SELECT TOP {limit} * FROM c WHERE c.certifcode='{certif}'",
         enable_cross_partition_query=True
     ))
+    return jsonify(questions)
+
 
 # ------------------------------------------------------------
 # Fetch multiple-choice and hotspot questions
@@ -290,7 +295,7 @@ def register():
 # ------------------------------------------------------------
 # Session management
 # ------------------------------------------------------------
-app.secret_key = "supersecretkey"  # Change this in production!
+app.secret_key = secret_client.get_secret(FLASK_SECRET_NAME).value
 
 @app.route("/logout", methods=["GET"])
 def logout():
@@ -331,9 +336,9 @@ def current_user():
         user = users_container.read_item(item=session["user_id"], partition_key=session["user_id"])
         return jsonify({"pseudo": user["pseudo"]})
     return jsonify({"pseudo": None})
+
 # ------------------------------------------------------------
 # Run app
 # ------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
-
