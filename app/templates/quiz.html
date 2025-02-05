@@ -117,7 +117,6 @@
         let initialModalY = 0;
         let dragDropAnswer = ""; // global variable to store the answer string
 
-
         // Drag and drop functionality for modal
         document.querySelector('.modal-header').addEventListener('mousedown', startDragging);
         document.addEventListener('mousemove', dragModal);
@@ -283,7 +282,7 @@
                 updateDragDropAnswer(); // Ensure we have the latest answer
                 isCorrect = (dragDropAnswer === currentQuestion.answer);
                 
-                // Mark each drop zone’s draggable as correct or wrong
+                // Mark each drop zone's draggable as correct or wrong
                 let dropzones = document.querySelectorAll('.dropzone');
                 let correctAnswerStr = currentQuestion.answer; // e.g., "A3B2C1"
                 dropzones.forEach((zone, index) => {
