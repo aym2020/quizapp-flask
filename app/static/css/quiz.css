@@ -15,7 +15,7 @@ body {
 .site-header {
     background-color: #5a67d8;
     color: white;
-    padding: 1.5rem;
+    padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
@@ -38,7 +38,7 @@ body {
 /* Quiz Section */
 #quiz-section {
     background: white;
-    padding: 2rem;
+    padding: 1rem 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
@@ -181,9 +181,9 @@ body {
 }
 
 #action-buttons {
-    margin-top: 2rem;
+    margin-top: 1rem;
     background: white;
-    padding: 2rem;
+    padding: 1rem 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }

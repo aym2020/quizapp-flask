@@ -1,0 +1,7 @@
+flask
+azure-cosmos
+azure-identity
+azure-keyvault-secrets
+requests
+python-dotenv
+flask-bcrypt

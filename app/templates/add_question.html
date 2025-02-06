@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Question</title>
+  <!-- Link to your CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_question.css') }}">
+  <!-- Font Awesome for icons (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Page Container -->
+  <div class="add-question-container">
+
+    <!-- Page Title -->
+    <h1>Add New Question</h1>
+
+    <!-- Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+
+      <!-- Certification Identifier -->
+      <div class="form-group">
+        <label for="certifCode">Certification Identifier:</label>
+        <input type="text" id="certifCode" name="certifCode" placeholder="e.g. az-900" required />
+      </div>
+
+      <!-- Drag & Drop Area -->
+      <div class="form-group">
+        <label>Upload Screenshot:</label>
+        <div id="dropArea" class="drop-area">
+          <p>Drag & Drop Image Here or <span class="browse-text">Click to Browse</span></p>
+          <input type="file" id="imageInput" name="image" accept="image/*" />
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div id="previewContainer" class="preview-container hidden">
+        <p>Selected Image Preview:</p>
+        <img id="previewImage" alt="Preview" />
+      </div>
+
+
+      <div id="loadingIndicator" class="loading hidden">
+        <i class="fas fa-spinner fa-spin"></i> Processing...
+      </div>
+    
+      <!-- Submit Button -->
+      <button type="button" id="submitBtn" class="btn-submit">Send to API</button>
+
+    </form>
+
+  </div>
+
+  <!-- JavaScript: Drag & Drop + Preview + Submit -->
+  <script>
+    // DOM Elements
+    const dropArea = document.getElementById('dropArea');
+    const imageInput = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const submitBtn = document.getElementById('submitBtn');
+    const certifCodeEl = document.getElementById('certifCode');
+    const loadingIndicator = document.createElement("div"); // Create a loading indicator element
+
+    // Create and style loading indicator
+    loadingIndicator.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+    loadingIndicator.classList.add("loading", "hidden");
+    submitBtn.parentNode.insertBefore(loadingIndicator, submitBtn); // Insert it before the button
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => e.preventDefault(), false);
+        dropArea.addEventListener(eventName, (e) => e.stopPropagation(), false);
+    });
+
+    // Highlight drop area when item is dragged over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false);
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+            imageInput.files = files;
+            showImagePreview(files[0]);
+        }
+    });
+
+    // Clicking the drop area triggers file input
+    dropArea.addEventListener('click', () => imageInput.click());
+
+    // Listen for file input changes
+    imageInput.addEventListener('change', () => {
+        if (imageInput.files && imageInput.files[0]) {
+            showImagePreview(imageInput.files[0]);
+        }
+    });
+
+    // Show preview & display selected file name
+    function showImagePreview(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            return;
+        }
+
+        // Update drop area text with file name
+        dropArea.innerHTML = `<p><strong>Selected File:</strong> ${file.name}</p>`;
+
+        // Show preview image
+        previewContainer.classList.remove('hidden');
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.onload = () => {
+            URL.revokeObjectURL(previewImage.src); // Free memory
+        };
+    }
+
+   // Handle form submission with loading indicator
+    submitBtn.addEventListener('click', async () => {
+        const certifCode = certifCodeEl.value.trim();
+        if (!certifCode) {
+            alert('Please enter a certification identifier.');
+            return;
+        }
+        if (!imageInput.files || !imageInput.files[0]) {
+            alert('Please select an image.');
+            return;
+        }
+
+        // Build FormData
+        const formData = new FormData();
+        formData.append('certifcode', certifCode);
+        formData.append('image', imageInput.files[0]);
+
+        // Show loading state
+        submitBtn.disabled = true;
+        loadingIndicator.classList.remove('hidden');
+
+        try {
+            // Send POST request to your API route
+            const response = await fetch('/process_question_image', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Upload failed');
+            }
+
+            // On success, redirect to the confirmation page
+            window.location.href = '/confirm_question';
+        } catch (err) {
+            console.error(err);
+            alert('Failed to upload image: ' + err.message);
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            loadingIndicator.classList.add('hidden');
+        }
+    });
+
+
+  </script>
+
+</body>
+</html>

@@ -48,15 +48,21 @@
 
       
 
-      <!-- Upload Questions Button -->
-      <div class="form-row upload-section">
-        <button class="primary-btn" id="uploadTrigger">Upload Questions</button>
-      </div>
+        <!-- Upload Questions Button -->
+        <div class="form-row upload-section">
+            <button class="primary-btn" id="uploadTrigger">Upload Questions</button>
+        </div>
+        
+        <!-- Add Question Button -->
+        <div class="form-row add-question-section">
+            <button class="primary-btn" id="addQuestionBtn">Add Question</button>
+        </div>
 
-      <!-- Start Quiz Button -->
-      <div class="form-row start-section">
-        <button class="primary-btn" id="startQuiz">Start Quiz</button>
-      </div>
+        <!-- Start Quiz Button -->
+        <div class="form-row start-section">
+            <button class="primary-btn" id="startQuiz">Start Quiz</button>
+        </div>
+
     </div>
   </main>
 
@@ -158,6 +164,17 @@
     const certifCode = certifSelect.value;
     // const limit = questionLimit.value;
     window.location.href = `/quiz/${certifCode}`;
+    });
+
+    // Start Quiz Button
+    startQuizBtn.addEventListener('click', () => {
+        const certifCode = certifSelect.value;
+        window.location.href = `/quiz/${certifCode}`;
+    });
+
+    // Add Question Button Listener
+    document.getElementById('addQuestionBtn').addEventListener('click', () => {
+        window.location.href = "/add_question";
     });
 
     // Drag & Drop Handlers
@@ -349,6 +366,7 @@
         console.error('Logout error:', error);
     }
     }
+
 
   </script>
 </body>
