@@ -585,7 +585,8 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
    - The choices must be written in the question. In the field **choices** only the corresponding letter.
    - Ensure to have choices in the question (e.g. A. blabla B. blabla etc. or Yes, No but choices **must be* present)
    - Ensure your answer is extracted from the image
-   - Ensure the answer you gave is correct. 
+   - Ensure the answer you gave is correct.
+   - Ensure **choices** is only capital letters and/or number (e.g. ABCD or A1B2 etc.)
 
 5. **Output Format**
 - Return **only** the JSON object with no extra commentary or text.
@@ -685,7 +686,15 @@ def submit_question():
         if 'pending_question' not in session:
             return jsonify({"error": "No question to submit"}), 400  
 
-        question = session['pending_question']
+        # Create a copy to avoid modifying the session data directly
+        question = session['pending_question'].copy()
+        
+        # Assuming the question text is in a key named 'text'; adjust if different
+        if 'text' in question:
+            text = question['text']
+            # Add a newline before each A., B., 1., etc., not already after a newline
+            processed_text = re.sub(r'(?<!\n)(?=([A-Z]|\d+)\.)', '\n', text)
+            question['text'] = processed_text
         
         print(f"✅ Inserting question: {json.dumps(question, indent=4)}")  # Debugging
 
