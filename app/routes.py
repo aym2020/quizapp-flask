@@ -481,7 +481,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 {
     "id": "question number (e.g. '187')",
     "question": "Original formatted text",
-    "choices": "Type-specific format",
+    "choices": "Type-specific format" (e.g. A. choice1 B. choice 2),
     "answer": "Validated answers",
     "explanation": "Detailed rationale",
     "certifcode": "{certifcode}",
@@ -491,106 +491,141 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 ***** IMPORTANT GUIDELINES *****
 
 1. **General Rules**
-
    - **Output must be valid JSON** with no extra keys, no missing keys, and no top-level comments.
    - Maintain all original punctuation from the source text.
    - Keep any important markup, special characters, or warnings (e.g., "WARNING", "NOTE").
    - Do not add references to "Answer Area" or "NOTE: Each correct selection is worth one point."
-   - Do not add "HOTSPOT -" prefix in the question or any wording like "Hot Area:".
+   - Do not add "HOTSPOT -" prefix in the question or any wording like "Hot Area."
+   - Do not add "Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements."
    - If a statement is repeated, unify or remove duplicates only if certain they are exact duplicates.
    - "certifcode" must match the user input exactly as `{certifcode}` (will be overridden in the code).
    - **id**: a question number (e.g., "187", "99", etc.). Use the one provided or extracted from the question, if present.
 
-2. **Question Types & Field Requirements**
+### **2. Answer Selection Rules**
+- **Look for Explicit Answer Indicators:** Search for keywords such as **"Correct Answer:"**, green highlights, checkmarks, or bold text indicating the correct selection.
+- **Identify Answers in Selection Boxes or Dropdowns:** If a dropdown is present, extract the final selection from the answer area.
+- **Use Explanations to Validate Answers:** If an explanation states "Box 1: Correct Answer...", extract that as the answer.
+- **Checkboxes and Yes/No Answers:** Extract green-checked options as the correct ones.
+- **Prioritize the Answer Area Over the Question Area:** Some questions repeat choices; focus on the bottom answer section.
 
-   2.1 **Multiple Choice** (`"questiontype": "multiplechoice"`)
-       - **question**: The full text with any lettered choices in the format:
-         A. Option1 B. Option2 ...
-       - **choices**: The single string "ABCDE" (or however many letters), if the question has 5 lettered choices (A-E).
-       - **answer**: Uppercase letters (e.g., "ACD") indicating correct answers in ascending order.
-       - **explanation**: Must justify the selected letters. You can find it after "Correct Answer" part in the image.
+### **3. Explanation Extraction Rules**
+- **First, attempt to extract the explanation from the image text.**
+  - Look for phrases like "Explanation:", "Why this answer is correct:", or "When to use...".
+  - The explanation is typically found below the correct answer.
+  - If references exist, extract the reasoning but **exclude URLs**.
+  
+- **If no explanation is found, generate one** using cloud computing principles:
+  - Ensure it is **detailed, structured, and pedagogically sound**.
+  - Avoid generic statements—focus on technical clarity.
 
-   2.2 **Drag & Drop** (`"questiontype": "draganddrop"`)
-       - **question**: Possibly includes "A. Term1 B. Term2 1. Definition1 2. Definition2".
-       - **choices**: The letter-number sets, e.g., "A. Term1 B. Term2 1. Definition1 2. Definition2"
-       - **answer**: Pairs in uppercase-lowercase or uppercase-number, e.g. "A1B2C4".
-       - **explanation**: Must clarify each pairing. You can find it after "Correct Answer" part in the image.
+- **Final Explanation must:**
+  - Reinforce **why the correct answer is valid**.
+  - Provide an **educational insight** for learners.
+  - Be **technically accurate** and **concise**.
 
-   2.3 **Hotspot** (`"questiontype": "hotspot"`)
-       - This applies **only** if the question has multiple statements each requiring a Yes/No. Format each statement as:
-         - Some statement (Y/N) - Another statement (Y/N)
-       - **choices**: Always "YN"
-       - **answer**: A Y/N sequence matching the number of statements (e.g., "NYY").
-       - **explanation**: Must confirm or deny each statement. You can find it after "Correct Answer" part in the image.
+### **4. Question Types & JSON Structure**
+#### **4.1 Multiple Choice (`"questiontype": "multiplechoice"`)**
+```json
+{
+    "id": "19",
+    "certifcode": "Extracted or inferred certification code (if available, else leave empty)",
+    "questiontype": "multiplechoice",
+    "question": "Extract the full question text, preserving formatting and meaning.",
+    "choices": [
+        { "letter": "A", "text": "Choice A text" },
+        { "letter": "B", "text": "Choice B text" },
+        { "letter": "C", "text": "Choice C text" },
+        { "letter": "D", "text": "Choice D text" }
+    ],
+    "answer": "Correct answer letter (e.g. 'B')",
+    "explanation": "Extracted or inferred explanation if available."
+}
+```
 
-       ***Critical Note on "Hotspot":***
-       If the question consists of one or more **partial sentences** with **fill-in-the-blank** or **drop-down placeholders**, and not multiple distinct statements each requiring a Yes/No (Y/N), it is **NOT** a Hotspot question. Instead, it should be labeled as **multiplechoice**.
-       - How to Handle Fill-in-the-Blank Questions:
+#### **4.2 Yes/No (`"questiontype": "yesno"`)**
+```json
+{
+    "id": "3",
+    "certifcode": "Extracted or inferred certification code",
+    "questiontype": "yesno",
+    "question": "Extract the full question text.",
+    "answer": "Correct answer (e.g. 'Yes')",
+    "explanation": "Extracted or inferred explanation."
+}
+```
 
-        a. **If the missing text is in the middle of the sentence**:
-        - Replace the missing section with `[...]`.
-        - Example:  
-            **Original**: "When implementing a SaaS solution, you are responsible for [ ] scalability."  
-            **Formatted**: `"question": "When implementing a SaaS solution, you are responsible for [...] scalability. A. Using Availability Zones B. Using Load Balancers C. Using a single VM"`
+#### **4.3 Drag & Drop (`"questiontype": "draganddrop"`)**
+```json
+{
+    "id": "42",
+    "certifcode": "Extracted or inferred certification code",
+    "questiontype": "draganddrop",
+    "question": "Extract the full question text.",
+    "choices": [
+        { "letter": "Label from the left column", "text": "Analytics type name" }
+    ],
+    "answer_area": [
+        { "question": "Extracted text from the right-side question", "correct_answer": "Matching analytics type" }
+    ],
+    "explanation": "Extracted or inferred explanation."
+}
+```
 
-        b. **If the missing text is at the beginning of the sentence**:
-        - Assume the first words are omitted.
-        - Example:  
-            **Original**: "[ ] allows you to create and manage virtual machines."  
-            **Formatted**: `"question": "[...] allows you to create and manage virtual machines. A. Using Availability Zones B. Using Load Balancers C. Using a single VM"`
+#### **4.4 Hotspot (`"questiontype": "hotspot"`)**
+```json
+{
+    "id": "49",
+    "certifcode": "Extracted or inferred certification code",
+    "questiontype": "hotspot",
+    "question": "Extract the full question text.",
+    "answer_area": [
+        { "statement": "Extracted statement text", "correct_answer": "Yes/No" }
+    ],
+    "explanation": "Extracted or inferred explanation."
+}
+```
+    ***ULTRA IMPORTANT - Critical Note on "Hotspot"***:
+    - If the question consists of a **single sentence** with a **dropdown or missing word**, it is **NOT** a Hotspot question. It should be labeled as `"multiplechoice"` with `[...]` representing the blank.
+    - Only use `"hotspot"` if there are **multiple distinct statements**, each requiring an independent Yes/No.
+    - If a **dropdown is used to complete a single sentence**, classify it as `"multiplechoice"`, NOT `"hotspot"`.
+    Extract structured information from the given image of a multiple-choice question. Your output should be in JSON format with the following structure:
 
-        c. **If the missing text is at the end of the sentence**:
-        - Keep the sentence complete and append a colon (`:`).
-        - Skip a line, then list the available choices.
-        - Example:
-            ```
-            "question": "Azure provides high availability by:  A. Using Availability Zones B. Using Load Balancers C. Using a single VM"
-            ```
+        {
+            "id": "question number (e.g. '48')",
+            "certifcode": "Extracted or inferred certification code (if available, else leave empty)",
+            "questiontype": "multiplechoice",
+            "question": "Extract the full question text, replacing missing words with '[...]' where necessary.",
+            "choices": [
+                { "letter": "A", "text": "Choice A text" },
+                { "letter": "B", "text": "Choice B text" },
+                { "letter": "C", "text": "Choice C text" },
+                { "letter": "D", "text": "Choice D text" }
+            ],
+            "answer": "Correct answer letter (e.g. 'D')",
+            "explanation": "Extracted or inferred explanation if available. If not explicitly present, generate a concise rationale."
+        }
+         
+### **5. JSON Formatting & Validation**
+- Ensure output matches the JSON structure exactly.
+- Remove extra white spaces, invalid characters, and incorrect formatting.
+- The final JSON must be **valid and properly structured**.
+- If multiple separate **statements**, use `"questiontype": "hotspot"` and append (Y/N).
+- If **a single statement with a blank**, use `"questiontype": "multiplechoice"`.
+- If the question asks for selecting **one correct option**, classify it as multiple choice.
+- If **drop-down menus or blanks are present**, treat it as multiple choice with `[...]` placeholders.
 
-        d. **If the question provides lettered or bullet choices for each blank**:
-        - Treat it as a multiple-choice question.
-        - Example:
-            ```
-            "question": "Azure provides identity and access management with: A. Azure Active Directory B. Azure Security Center C. Azure Key Vault"
-            ```
-            `"choices": "ABC"`
-            `"answer": "A"`
+### **6. Final Extraction Logic**
+1. Extract the full question text while maintaining structure.
+2. Identify the correct answer using:
+   - Marked highlights
+   - Green checkboxes
+   - Answer area validation
+   - Explanations
+3. Generate or extract a valid explanation.
+4. Ensure output is a valid, well-structured JSON file.
+5. **Ensure correct classification**
 
-        e. **Ensure correct classification**:
-        - If multiple separate **statements**, use `"questiontype": "hotspot"` and append (Y/N).
-        - If **a single statement with a blank**, use `"questiontype": "multiplechoice"`.
-        - If the question asks for selecting **one correct option**, classify it as multiple choice.
-        - If **drop-down menus or blanks are present**, treat it as multiple choice with `[...]` placeholders.
-
-        f. **How to Find the Right Answer**
-        - The correct answer is highlighted in **green** in the image.
-        - If multiple answers are possible, ensure all correct choices are included.
-        - Answers should be formatted properly based on the question type (e.g., "ABC" for multiple choice, "A1B2" for drag & drop).
-
-   2.4 **Yes/No** (`"questiontype": "yesno"`)
-       - Single Y/N answer if the question specifically asks a yes/no prompt.
-       - **choices** must be "YN".
-       - **answer** is either "Y" or "N".
-       - **explanation**: Must confirm or deny each statement. You can find it after "Correct Answer" part in the image.
-
-3. **How to Find the Explanation**
-   - The explanation is usually found in the **"Correct Answer"** section of the image.
-   - It may be written below the correct answer or in a reference paragraph at the bottom.
-   - Extract **only** the relevant explanation and exclude unnecessary text such as links or unrelated details.
-
-4. **Validation Checks**
-   - If "select X answers" is indicated, ensure the **answer** has exactly X letters.
-   - For drag & drop, match pairs to the listed lettered and numbered items.
-   - Ensure the **certifcode** exactly matches the user input.
-   - The choices must be written in the question. In the field **choices** only the corresponding letter.
-   - Ensure to have choices in the question (e.g. A. blabla B. blabla etc. or Yes, No but choices **must be* present)
-   - Ensure your answer is extracted from the image
-   - Ensure the answer you gave is correct.
-   - Ensure **choices** is only capital letters and/or number (e.g. ABCD or A1B2 etc.)
-
-5. **Output Format**
-- Return **only** the JSON object with no extra commentary or text.
-- The final JSON must pass strict JSON validation (no trailing commas, no newlines `\n`, no code fences).
+OUTPUT : ***ONLY THE JSON***
 """
 
 @app.route("/add_question", methods=["GET"])
@@ -662,13 +697,6 @@ def process_question_image():
         except json.JSONDecodeError:
             app.logger.error(f"Failed to parse GPT response as JSON even after fixing. Fixed content: {raw_content}")
             return jsonify({"error": "Failed to parse GPT response as JSON"}), 500
-
-        # Add server-side validation
-        required_fields = ['question', 'answer', 'questiontype', 'choices']
-        for field in required_fields:
-            if field not in raw_json:
-                return jsonify({"error": f"Missing {field} in GPT response"}), 500
-
         # Add certification code and generate ID
         raw_json['certifcode'] = certifcode
             

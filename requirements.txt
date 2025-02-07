@@ -1,7 +1,9 @@
-flask
+Flask
 azure-cosmos
-azure-identity
 azure-keyvault-secrets
-requests
-python-dotenv
-flask-bcrypt
+azure-identity
+Flask-Bcrypt
+werkzeug
+openai
+pillow
+pytesseract
