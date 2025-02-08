@@ -633,6 +633,7 @@ def add_question_page():
     return render_template("add_question.html")
 
 # Update the process_question_image function
+# Updated process_question_image route
 @app.route("/process_question_image", methods=["POST"])
 def process_question_image():
     try:
@@ -655,7 +656,7 @@ def process_question_image():
 
         # Prepare GPT payload using OpenAI client
         response = openai_client.chat.completions.create(
-            model="chatgpt-4o-latest",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "user",
@@ -673,33 +674,95 @@ def process_question_image():
             max_tokens=2000
         )
 
-        # Debug: Log the raw response content
+        # Clean and parse JSON response
         raw_content = response.choices[0].message.content
-        app.logger.debug(f"JSON generated before cleaning: {raw_content}")
-
-        # Clean the raw response to remove markdown code fences, if present
         if raw_content.startswith("```"):
-            lines = raw_content.split("\n")
-            if lines[0].startswith("```"):
-                lines = lines[1:]
-            if lines and lines[-1].startswith("```"):
-                lines = lines[:-1]
-            raw_content = "\n".join(lines).strip()
-
-        app.logger.debug(f"JSON generated after cleaning: {raw_content}")
-
+            raw_content = "\n".join(raw_content.split("\n")[1:-1]).strip()
         
-        app.logger.debug(f"Fixed JSON content: {raw_content}")
-
-        # Attempt to parse the fixed JSON content
         try:
             raw_json = json.loads(raw_content)
-        except json.JSONDecodeError:
-            app.logger.error(f"Failed to parse GPT response as JSON even after fixing. Fixed content: {raw_content}")
-            return jsonify({"error": "Failed to parse GPT response as JSON"}), 500
-        # Add certification code and generate ID
-        raw_json['certifcode'] = certifcode
+        except json.JSONDecodeError as e:
+            app.logger.error(f"JSON parse error: {str(e)}")
+            return jsonify({"error": "Invalid JSON from GPT"}), 500
+
+        # Process question type-specific data
+        question_type = raw_json.get("questiontype", "multiplechoice")
+
+        # 1. Handle Drag & Drop questions
+        if question_type == "draganddrop":
+            raw_json["parsed_dropzones"] = [
+                {"number": idx+1, "text": item["question"]}
+                for idx, item in enumerate(raw_json.get("answer_area", []))
+            ]
+            # Process drag source choices
+            raw_json["parsed_choices"] = [
+                {
+                    "letter": choice.get("letter", ""),
+                    "text": choice.get("text", "").strip()
+                }
+                for choice in raw_json.get("choices", [])
+            ]
+
+        # 2. Handle Hotspot questions
+        elif question_type == "hotspot":
+            raw_json["parsed_statements"] = [
+                f"{item['statement']} (Y/N)"  # Add Y/N indicator
+                for item in raw_json.get("answer_area", [])
+            ]
+
+        # 3. Handle Yes/No questions
+        elif question_type == "yesno":
+            # Convert answer to Y/N format
+            answer = raw_json.get("answer", "").strip().lower()
+            raw_json["answer"] = "Y" if answer == "yes" else "N"
+            # Create standardized choices
+            raw_json["parsed_choices"] = [
+                {"letter": "Y", "text": "Yes"},
+                {"letter": "N", "text": "No"}
+            ]
+
+        # 4. Handle Multiple Choice questions (updated)
+        else:
+            parsed = []
+            choices = raw_json.get("choices", [])
             
+            # Handle both string and list formats
+            if isinstance(choices, str):
+                # Split "A. Text B. Text" format
+                parts = re.findall(r'([A-Za-z])[\.\)]\s*(.*?)(?=\s*[A-Za-z][\.\)]|$)', choices)
+                for letter, text in parts:
+                    parsed.append({
+                        "letter": letter.upper(),
+                        "text": text.strip()
+                    })
+            else:
+                for choice in choices:
+                    # Handle both object and string entries
+                    if isinstance(choice, dict):
+                        parsed.append({
+                            "letter": str(choice.get("letter", "")).strip().upper(),
+                            "text": choice.get("text", "").strip()
+                        })
+                    elif isinstance(choice, str):
+                        # Split "A. Text" format from string entries
+                        match = re.match(r'([A-Za-z])[\.\)]\s*(.*)', choice)
+                        if match:
+                            parsed.append({
+                                "letter": match.group(1).upper(),
+                                "text": match.group(2).strip()
+                            })
+            
+            raw_json["parsed_choices"] = parsed
+
+        # Validate required fields
+        required_fields = ["id", "question", "answer", "explanation", "questiontype"]
+        for field in required_fields:
+            if field not in raw_json:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # Add certification code
+        raw_json["certifcode"] = certifcode
+        
         # Store in session for final confirmation
         session['pending_question'] = raw_json
         return jsonify(raw_json)
