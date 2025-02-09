@@ -28,7 +28,7 @@ body {
 /* Main Container */
 .main-container {
     flex: 1;
-    padding: 2rem 1rem;
+    padding: 1rem 1rem;
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
@@ -370,7 +370,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     width: 100px;
     background-color: #cdcdcd
 }
@@ -413,7 +413,7 @@ body {
     border-radius: 30px; /* Rounded */
     border: 2px solid #e2e8f0; /* Light border */
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.1s ease-in-out;
     text-align: center;
     min-width: 140px;
     background: #f8fafc; /* Light gray background */
@@ -531,7 +531,6 @@ body {
 
 #result-container {
     display: none; /* Hidden by default */
-    margin-top: 1rem;
     background: white;
     padding: 1rem 2rem;
     border-radius: 12px;

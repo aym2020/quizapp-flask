@@ -45,7 +45,6 @@
         <div id="draggables">
           {% for choice in questions[0].choices %}
           <div class="draggable" draggable="true" data-letter="{{ choice.letter }}">
-            <span class="draggable-letter">{{ choice.letter }}.</span>
             <span class="draggable-text">{{ choice.text }}</span>
           </div>
           {% endfor %}
@@ -246,8 +245,11 @@
     }
 
     function validateDragDropAnswer(question) {
-      return dragDropAnswer === question.answer;
+        // For drag and drop, build expected answer by concatenating the correct_answer values.
+        const expected = question.answer_area.map(item => item.correct_answer).join('');
+        return dragDropAnswer === expected;
     }
+  
 
     function validateStandardAnswer(question) {
       const correctAnswers = [...question.answer].sort();
@@ -291,14 +293,14 @@
       }
 
     function highlightDragDropAnswers(question) {
-      const correctAnswers = question.answer.split('');
-      document.querySelectorAll('.dropzone').forEach((zone, index) => {
-        const draggable = zone.querySelector('.draggable');
-        if (!draggable) return;
-        const isCorrect = draggable.dataset.letter === correctAnswers[index];
-        draggable.classList.toggle('correct-answer', isCorrect);
-        draggable.classList.toggle('wrong-answer', !isCorrect);
-      });
+        const expected = question.answer_area.map(item => item.correct_answer);
+        document.querySelectorAll('.dropzone').forEach((zone, index) => {
+            const draggable = zone.querySelector('.draggable');
+            if (!draggable) return;
+            const isCorrect = draggable.dataset.letter === expected[index];
+            draggable.classList.toggle('correct-answer', isCorrect);
+            draggable.classList.toggle('wrong-answer', !isCorrect);
+        });
     }
 
     function highlightStandardAnswers(question) {
@@ -426,10 +428,7 @@
         d.className = 'draggable';
         d.setAttribute('draggable', 'true');
         d.dataset.letter = choice.letter;
-        d.innerHTML = `
-          <span class="draggable-letter">${choice.letter}.</span>
-          <span class="draggable-text">${choice.text}</span>
-        `;
+        d.innerHTML = `<span class="draggable-text">${choice.text}</span>`;
         draggablesDiv.appendChild(d);
       });
       container.appendChild(draggablesDiv);

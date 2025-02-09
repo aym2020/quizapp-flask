@@ -178,7 +178,7 @@ def process_drag_and_drop(q, lines):
             parts = line.split('. ', 1)
             choices.append({
                 'letter': parts[0],
-                'text': parts[1] if len(parts) > 1 else ''
+                'text': parts[0]
             })
         elif re.match(r'^[0-9]+\.\s', line):
             parts = line.split('. ', 1)
@@ -459,9 +459,8 @@ def current_user():
 # ------------------------------
 @app.route("/confirm_question", methods=["GET"])
 def confirm_question():
-    # If no pending question in the session, redirect back to the add question page (or home)
     if 'pending_question' not in session:
-        return redirect(url_for('add_question_page'))
+        return redirect(url_for('add_manual_question'))
     return render_template("confirm_question.html", question_data=session['pending_question'])
 
 # GPT Configuration
@@ -754,12 +753,6 @@ def process_question_image():
             
             raw_json["parsed_choices"] = parsed
 
-        # Validate required fields
-        required_fields = ["id", "question", "answer", "explanation", "questiontype"]
-        for field in required_fields:
-            if field not in raw_json:
-                return jsonify({"error": f"Missing required field: {field}"}), 400
-
         # Add certification code
         raw_json["certifcode"] = certifcode
         
@@ -779,7 +772,7 @@ def submit_question():
 
         # Create a copy to avoid modifying the session data directly
         question = session['pending_question'].copy()
-        
+               
         # Assuming the question text is in a key named 'text'; adjust if different
         if 'text' in question:
             text = question['text']
@@ -799,6 +792,27 @@ def submit_question():
         return jsonify({"error": str(e)}), 500  
     
 
+@app.route("/clear-pending-question", methods=["POST"])
+def clear_pending_question():
+    session.pop('pending_question', None)
+    return jsonify({"status": "cleared"})
+
+
+@app.route("/manual_question", methods=["GET"])
+def manual_question():
+    if 'pending_question' not in session:
+        session['pending_question'] = {
+            "id": "",
+            "certifcode": "",
+            "questiontype": "multiplechoice",
+            "question": "",
+            "choices": [],
+            "answer": "",
+            "explanation": ""
+        }
+    return render_template("manual_question.html", 
+                         question_data=session['pending_question'],
+                         question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"])
 
 # ------------------------------------------------------------
 # Run app

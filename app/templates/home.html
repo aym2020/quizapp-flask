@@ -45,16 +45,15 @@
         </select>
       </div>
 
-      
-
         <!-- Upload Questions Button -->
         <div class="form-row upload-section">
             <button class="primary-btn" id="uploadTrigger">Upload Questions</button>
         </div>
         
-        <!-- Add Question Button -->
+        <!-- Add Question Section -->
         <div class="form-row add-question-section">
-            <button class="primary-btn" id="addQuestionBtn">Add Question</button>
+            <button class="primary-btn" id="addQuestionBtn">Add Question (Image)</button>
+            <button class="primary-btn" id="addManualQuestionBtn">Add Manual Question</button>
         </div>
 
         <!-- Start Quiz Button -->
@@ -174,6 +173,11 @@
     // Add Question Button Listener
     document.getElementById('addQuestionBtn').addEventListener('click', () => {
         window.location.href = "/add_question";
+    });
+
+    // Add manual question
+    document.getElementById('addManualQuestionBtn').addEventListener('click', () => {
+        window.location.href = "/manual_question";
     });
 
     // Drag & Drop Handlers

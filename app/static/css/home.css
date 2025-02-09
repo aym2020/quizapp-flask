@@ -302,3 +302,13 @@ body {
   font-size: 0.9rem;
 }
 
+.add-question-section {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.add-question-section .primary-btn {
+  flex: 1;
+  max-width: 250px;
+}
