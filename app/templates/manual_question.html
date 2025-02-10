@@ -9,7 +9,7 @@
 <body>
     <div class="confirm-question-container">
         <h1>Create New Question</h1>
-        
+
         <form id="questionForm">
             <!-- Common Fields -->
             <div class="form-group">
@@ -92,7 +92,7 @@
                         <i class="fas fa-plus"></i> Add Drag Item
                     </button>
                 </div>
-                
+
                 <div class="drop-column">
                     <h3>Drop Targets</h3>
                     <div id="dropTargets">
@@ -164,7 +164,7 @@
         // Improved addChoice function with validation
         function addChoice() {
             const choices = Array.from(document.querySelectorAll('[name="choiceLetter[]"]'));
-            
+
             // Get valid existing letters
             const validLetters = choices
                 .map(input => input.value.toUpperCase())
@@ -184,14 +184,13 @@
             document.getElementById('choicesContainer').appendChild(newChoice);
         }
 
-
         // Initialize with at least one choice
         function updateForm() {
             const type = document.getElementById('questionType').value;
             const container = document.getElementById('typeSpecificFields');
             container.innerHTML = '';
             container.appendChild(document.importNode(templates[type], true));
-    
+
             // Initialize first choice for multiple choice
             if (type === 'multiplechoice') {
                 const firstLetterInput = container.querySelector('[name="choiceLetter[]"]');
@@ -227,7 +226,7 @@
         document.getElementById('createQuestionBtn').addEventListener('click', async () => {
             const formData = new FormData(document.getElementById('questionForm'));
             const questionType = formData.get('questiontype');
-            
+
             const questionData = {
                 id: formData.get('id'),
                 certifcode: formData.get('certifcode'),
@@ -246,7 +245,7 @@
                         }));
                     questionData.answer = formData.get('answer');
                     break;
-                    
+
                 case 'draganddrop':
                     questionData.choices = Array.from(formData.getAll('dragLetter[]'))
                         .map(letter => ({ letter }));
@@ -256,7 +255,7 @@
                             correct_answer: formData.getAll('dropAnswer[]')[index]
                         }));
                     break;
-                    
+
                 case 'hotspot':
                     questionData.answer_area = Array.from(formData.getAll('statement[]'))
                         .map((statement, index) => ({
@@ -264,7 +263,7 @@
                             correct_answer: formData.getAll('correct[]')[index]
                         }));
                     break;
-                    
+
                 case 'yesno':
                     questionData.answer = formData.get('answer');
                     break;

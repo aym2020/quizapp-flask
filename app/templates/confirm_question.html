@@ -9,7 +9,7 @@
 <body>
   <div class="confirm-question-container">
     <h1>Question Details</h1>
-    
+
     <form id="confirmForm">
       <div class="form-group">
         <label for="certifcode">Certification Code:</label>
@@ -40,6 +40,9 @@
               <div class="choice-entry">
                 <input type="text" name="choiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
                 <input type="text" name="choiceText[]" value="{{ choice.text }}" placeholder="Text" required>
+                <button type="button" class="remove-choice" onclick="this.parentElement.remove()">
+                  <i class="fas fa-times"></i>
+                </button>
               </div>
             {% endfor %}
           </div>
@@ -65,6 +68,9 @@
             {% for choice in question_data.choices %}
               <div class="drag-choice-entry">
                 <input type="text" name="dragChoiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
+                <button type="button" class="remove-item" onclick="this.parentElement.remove()">
+                  <i class="fas fa-times"></i>
+                </button>
               </div>
             {% endfor %}
           </div>
@@ -77,6 +83,9 @@
               <div class="answer-area-entry">
                 <input type="text" name="answerAreaQuestion[]" value="{{ answer.question }}" placeholder="Question" required>
                 <input type="text" name="answerAreaCorrect[]" value="{{ answer.correct_answer }}" placeholder="Correct Answer" required>
+                <button type="button" class="remove-target" onclick="this.parentElement.remove()">
+                  <i class="fas fa-times"></i>
+                </button>
               </div>
             {% endfor %}
           </div>
@@ -93,6 +102,9 @@
                   <option value="Yes" {% if answer.correct_answer == 'Yes' %}selected{% endif %}>Yes</option>
                   <option value="No" {% if answer.correct_answer == 'No' %}selected{% endif %}>No</option>
                 </select>
+                <button type="button" class="remove-statement" onclick="this.parentElement.remove()">
+                  <i class="fas fa-times"></i>
+                </button>
               </div>
             {% endfor %}
           </div>
@@ -140,7 +152,7 @@
           .map((letter) => ({
             letter: letter // Only include the letter
           }));
-          
+
         data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
           .map((question, index) => ({
             question: question,

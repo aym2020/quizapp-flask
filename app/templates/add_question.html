@@ -166,6 +166,44 @@
         }
     });
 
+      // Add clipboard paste handler
+      document.addEventListener('paste', async (e) => {
+        // Check if we're pasting into the form area
+        if (!document.activeElement.closest('.add-question-container')) return;
+
+        // Get pasted items
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        
+        // Find image in clipboard
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const blob = item.getAsFile();
+                const file = new File([blob], 'pasted-image.png', {
+                    type: item.type,
+                    lastModified: Date.now()
+                });
+
+                // Create a data transfer object to simulate file input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageInput.files = dataTransfer.files;
+
+                // Show preview
+                showImagePreview(file);
+                
+                // Highlight the drop area
+                dropArea.classList.add('dragover');
+                setTimeout(() => dropArea.classList.remove('dragover'), 200);
+
+                e.preventDefault();
+                break;
+            }
+        }
+    });
+
+    // Add visual indicator for clipboard paste
+    dropArea.innerHTML += '<p class="paste-notice">(You can also paste from clipboard)</p>';
+
 
   </script>
 

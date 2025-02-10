@@ -495,6 +495,8 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
    - Keep any important markup, special characters, or warnings (e.g., "WARNING", "NOTE").
    - Do not add references to "Answer Area" or "NOTE: Each correct selection is worth one point."
    - Do not add "HOTSPOT -" prefix in the question or any wording like "Hot Area."
+   - Do not add : Each correct answer presents a complete solution.
+   - Do not add : To answer, drag the appropriate term from the column on the left to its level on the right. Each term may be used once, more than once, or not at all.
    - Do not add "Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements."
    - If a statement is repeated, unify or remove duplicates only if certain they are exact duplicates.
    - "certifcode" must match the user input exactly as `{certifcode}` (will be overridden in the code).
@@ -767,29 +769,24 @@ def process_question_image():
 @app.route("/submit_question", methods=["POST"])
 def submit_question():
     try:
-        if 'pending_question' not in session:
-            return jsonify({"error": "No question to submit"}), 400  
-
-        # Create a copy to avoid modifying the session data directly
-        question = session['pending_question'].copy()
-               
-        # Assuming the question text is in a key named 'text'; adjust if different
-        if 'text' in question:
-            text = question['text']
-            # Add a newline before each A., B., 1., etc., not already after a newline
-            processed_text = re.sub(r'(?<!\n)(?=([A-Z]|\d+)\.)', '\n', text)
-            question['text'] = processed_text
+        question = request.get_json()
+        if not question:
+            return jsonify({"error": "No question data provided"}), 400
         
-        print(f"✅ Inserting question: {json.dumps(question, indent=4)}")  # Debugging
-
+        # Optionally process the question text
+        if 'question' in question:
+            text = question['question']
+            processed_text = re.sub(r'(?<!\n)(?=([A-Z]|\d+)\.)', '\n', text)
+            question['question'] = processed_text
+        
+        print(f"✅ Inserting question: {json.dumps(question, indent=4)}")
+        
         container.create_item(body=question)
-        session.pop('pending_question', None)
-
-        return jsonify({"message": "Question added successfully!"})  
-
+        return jsonify({"message": "Question added successfully!"})
+    
     except Exception as e:
-        print(f"❌ Error submitting question: {str(e)}")  # Debugging
-        return jsonify({"error": str(e)}), 500  
+        print(f"❌ Error submitting question: {str(e)}")
+        return jsonify({"error": str(e)}), 500 
     
 
 @app.route("/clear-pending-question", methods=["POST"])
@@ -800,16 +797,15 @@ def clear_pending_question():
 
 @app.route("/manual_question", methods=["GET"])
 def manual_question():
-    if 'pending_question' not in session:
-        session['pending_question'] = {
-            "id": "",
-            "certifcode": "",
-            "questiontype": "multiplechoice",
-            "question": "",
-            "choices": [],
-            "answer": "",
-            "explanation": ""
-        }
+    session['pending_question'] = {
+        "id": "",
+        "certifcode": "",
+        "questiontype": "multiplechoice",
+        "question": "",
+        "choices": [],
+        "answer": "",
+        "explanation": ""
+    }
     return render_template("manual_question.html", 
                          question_data=session['pending_question'],
                          question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"])
