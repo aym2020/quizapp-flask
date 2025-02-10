@@ -17,6 +17,8 @@ import pytesseract
 import io
 import base64
 
+# q33 - bug ecriture
+
 # Azure Key Vault details
 KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/" 
 COSMOS_SECRET_NAME = "CosmosDBConnectionString"
