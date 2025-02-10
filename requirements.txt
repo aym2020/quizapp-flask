@@ -7,3 +7,4 @@ werkzeug
 openai
 pillow
 pytesseract
+gunicorn
