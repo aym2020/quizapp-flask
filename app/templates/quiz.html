@@ -45,7 +45,7 @@
         <div id="draggables">
           {% for choice in questions[0].choices %}
           <div class="draggable" draggable="true" data-letter="{{ choice.letter }}">
-            <span class="draggable-text">{{ choice.text }}</span>
+            <span class="draggable-text">{{ choice.letter }}</span>
           </div>
           {% endfor %}
         </div>
@@ -136,7 +136,7 @@
       // Drag and Drop Event Listeners (delegated)
       document.getElementById('quiz-section').addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('draggable')) {
-          e.dataTransfer.setData('text', e.target.dataset.letter);
+          e.dataTransfer.setData('letter', e.target.dataset.letter);
         }
       });
       document.getElementById('quiz-section').addEventListener('dragover', allowDrop);
@@ -193,7 +193,7 @@
       ev.preventDefault();
       const dropzone = ev.target.closest('.dropzone');
       if (!dropzone) return;
-      const letter = ev.dataTransfer.getData('text');
+      const letter = ev.dataTransfer.getData('letter');
       // Clear any existing draggable in the dropzone
       dropzone.querySelectorAll('.draggable').forEach(el => el.remove());
       const original = document.querySelector(`.draggable[data-letter="${letter}"]`);
@@ -428,7 +428,7 @@
         d.className = 'draggable';
         d.setAttribute('draggable', 'true');
         d.dataset.letter = choice.letter;
-        d.innerHTML = `<span class="draggable-text">${choice.text}</span>`;
+        d.innerHTML = `<span class="draggable-text">${choice.letter}</span>`;
         draggablesDiv.appendChild(d);
       });
       container.appendChild(draggablesDiv);
