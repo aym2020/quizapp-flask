@@ -212,25 +212,59 @@
         }).join('');
     }
 
-    // Answer Checking and Validation
     function checkAnswer() {
-      const currentQuestion = questions[currentIndex];
-      let isCorrect = false;
-      switch (currentQuestion.questiontype) {
-        case 'hotspot':
-          isCorrect = validateHotspotAnswer(currentQuestion);
-          break;
-        case 'draganddrop':
-          isCorrect = validateDragDropAnswer(currentQuestion);
-          break;
-        default:
-          isCorrect = validateStandardAnswer(currentQuestion);
-      }
-      showResult(isCorrect);
-      highlightCorrectAnswers(currentQuestion);
-      disableInteractions();
-      document.getElementById('buttons-container').style.display = 'none';
-      document.getElementById('result-container').style.display = 'block';
+        const currentQuestion = questions[currentIndex];
+        let isCorrect = false;
+        let userAnswer = null;
+
+        switch (currentQuestion.questiontype) {
+            case 'hotspot':
+                userAnswer = hotspotAnswers;
+                isCorrect = validateHotspotAnswer(currentQuestion);
+                break;
+            case 'draganddrop':
+                userAnswer = dragDropAnswer;
+                isCorrect = validateDragDropAnswer(currentQuestion);
+                break;
+            case 'yesno':
+                userAnswer = selectedAnswers[0] || null;
+                isCorrect = validateStandardAnswer(currentQuestion);
+                break;
+            default:
+                userAnswer = selectedAnswers.sort().join('');
+                isCorrect = validateStandardAnswer(currentQuestion);
+        }
+
+        showResult(isCorrect);
+        highlightCorrectAnswers(currentQuestion);
+        disableInteractions();
+        document.getElementById('buttons-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+
+        // Submit quiz answer to update quiz history
+        submitQuizAnswer(currentQuestion.id, isCorrect);
+    }
+
+    async function submitQuizAnswer(questionId, isCorrect) {
+        const payload = {
+            certif: "{{ certif }}",  // Certification code
+            answers: [
+                { question_id: questionId, is_correct: isCorrect }
+            ]
+        };
+
+        try {
+            const response = await fetch('/submit_quiz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            console.log(result.message);
+        } catch (error) {
+            console.error('Error submitting quiz results:', error);
+        }
     }
 
     function validateHotspotAnswer(question) {
@@ -497,6 +531,14 @@
     function closeExplanation() {
       document.getElementById('explanation-modal').style.display = 'none';
     }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeQuestion();
+      setupEventListeners();
+  });
+
+
   </script>
 </body>
 </html>

@@ -8,7 +8,8 @@ from flask import session
 from werkzeug.utils import secure_filename
 from openai import OpenAI
 from io import BytesIO
-import json  # <--- Add this line!
+from datetime import datetime
+import json 
 import random
 import os
 import re
@@ -16,6 +17,7 @@ from PIL import Image
 import pytesseract
 import io
 import base64
+import logging
 
 # q33 - bug ecriture
 
@@ -54,21 +56,46 @@ users_container = db.get_container_client("users")  # Ensure this is defined!
 # ------------------------------------------------------------
 # Home page
 # ------------------------------------------------------------
-def fetch_certification_counts():
+def fetch_certification_counts(current_user=None):
     """
-    Fetch certifications and compute the number of questions for each certifcode.
+    Fetch certification question counts.
+    If the user is logged in, also fetch their progress from their quiz_history.
+    If not, return only the total question counts.
     """
+    # Query for total questions per certification
     items = list(container.query_items(
-        query="SELECT c.certifcode, c.id FROM c",
+        query="SELECT c.certifcode FROM c",
         enable_cross_partition_query=True
     ))
+    
+    # Build a dictionary with total counts
     counts_map = {}
     for doc in items:
         code = doc.get("certifcode")
         if code:
             counts_map[code] = counts_map.get(code, 0) + 1
 
-    return [{"certifcode": code, "questionCount": count} for code, count in counts_map.items()]
+    # If user is not logged in, return only the counts
+    if not current_user:
+        return [{"certifcode": code, "questionCount": total} for code, total in counts_map.items()]
+
+    # If user is logged in, merge with their quiz history
+    user_progress = current_user.get("quiz_history", {})
+    certif_results = []
+    for code, total in counts_map.items():
+        # Get progress for this certification; default to 0 if not available
+        stats = user_progress.get(code, {})
+        answered = stats.get("answered", 0)
+        percentage = (answered / total * 100) if total > 0 else 0
+        certif_results.append({
+            "certifcode": code,
+            "questionCount": total,
+            "answered": answered,
+            "percentage": round(percentage, 1)
+        })
+
+    return certif_results
+
 
 
 def fetch_current_user():
@@ -86,13 +113,11 @@ def fetch_current_user():
             session.pop("user_id", None)  # Clear invalid session
     return current_user
 
+
 @app.route("/", methods=["GET"])
 def home():
-    """
-    Home page route that displays certifications with question counts and the current user (if logged in).
-    """
-    certif_results = fetch_certification_counts()
     current_user = fetch_current_user()
+    certif_results = fetch_certification_counts(current_user)
     return render_template("home.html", certifs=certif_results, current_user=current_user)
 
 
@@ -774,13 +799,7 @@ def submit_question():
         question = request.get_json()
         if not question:
             return jsonify({"error": "No question data provided"}), 400
-        
-        # Optionally process the question text
-        if 'question' in question:
-            text = question['question']
-            processed_text = re.sub(r'(?<!\n)(?=([A-Z]|\d+)\.)', '\n', text)
-            question['question'] = processed_text
-        
+                
         print(f"✅ Inserting question: {json.dumps(question, indent=4)}")
         
         container.create_item(body=question)
@@ -811,6 +830,104 @@ def manual_question():
     return render_template("manual_question.html", 
                          question_data=session['pending_question'],
                          question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"])
+
+
+
+
+
+@app.route("/submit_quiz", methods=["POST"])
+def submit_quiz():
+    """
+    Updates the logged-in user's quiz_history based on the submitted answers.
+    Expected JSON payload:
+    {
+        "certif": "az-900",
+        "answers": [
+            {"question_id": "q123", "is_correct": true},
+            {"question_id": "q124", "is_correct": false},
+            ...
+        ]
+    }
+    If the user is not logged in, nothing happens.
+    """
+    # Only update if the user is logged in
+    if "user_id" not in session:
+        return jsonify({"message": "User not logged in, quiz history not updated."}), 200
+
+    # Get the current user record from Cosmos DB
+    try:
+        user = users_container.read_item(item=session["user_id"], partition_key=session["user_id"])
+    except Exception as e:
+        app.logger.error(f"Error fetching user for quiz submission: {str(e)}")
+        return jsonify({"error": "User not found."}), 404
+
+    # Get the payload data
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided."}), 400
+
+    certif = data.get("certif")
+    answers = data.get("answers", [])
+    if not certif or not isinstance(answers, list):
+        return jsonify({"error": "Invalid data. 'certif' and 'answers' are required."}), 400
+
+    now = datetime.utcnow().isoformat() + "Z"
+
+    # Initialize quiz history for this certification if not already present
+    quiz_history = user.get("quiz_history", {})
+    if certif not in quiz_history:
+        # Query Cosmos DB to get the total questions for this certification
+        count_query = "SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif"
+        count_params = [{"name": "@certif", "value": certif}]
+        count_result = list(container.query_items(query=count_query,
+                                                    parameters=count_params,
+                                                    enable_cross_partition_query=True))
+        total_questions = count_result[0] if count_result else 0
+
+        quiz_history[certif] = {
+            "total_questions": total_questions,
+            "answered": 0,
+            "correct": 0,
+            "details": {}
+        }
+
+    # Process each submitted answer
+    details = quiz_history[certif].get("details", {})
+    for ans in answers:
+        qid = ans.get("question_id")
+        is_correct = ans.get("is_correct")
+        if not qid:
+            continue  # Skip if no question_id provided
+
+        if qid in details:
+            # Update the existing record for this question
+            details[qid]["attempts"] += 1
+            details[qid]["correct"] = is_correct
+            details[qid]["last_attempt"] = now
+        else:
+            # Create a new entry for this question
+            details[qid] = {
+                "attempts": 1,
+                "correct": is_correct,
+                "last_attempt": now
+            }
+
+    # Update the summary stats
+    quiz_history[certif]["answered"] = len(details)
+    quiz_history[certif]["correct"] = sum(1 for d in details.values() if d.get("correct"))
+    quiz_history[certif]["details"] = details
+
+    # Save the updated quiz_history back into the user item
+    user["quiz_history"] = quiz_history
+    try:
+        users_container.replace_item(item=user["id"], body=user)
+    except Exception as e:
+        app.logger.error(f"Error updating quiz history: {str(e)}")
+        return jsonify({"error": "Failed to update quiz history."}), 500
+
+    return jsonify({"message": "Quiz history updated successfully."}), 200
+
+
 
 # ------------------------------------------------------------
 # Run app

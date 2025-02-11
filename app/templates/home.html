@@ -37,11 +37,15 @@
       <div class="form-row">
         <label for="certifSelect">Certification:</label>
         <select id="certifSelect">
-          {% for certif in certifs %}
-            <option value="{{ certif.certifcode }}">
-              {{ certif.certifcode }} ({{ certif.questionCount }} questions)
-            </option>
-          {% endfor %}
+            {% for certif in certifs %}
+                <option value="{{ certif.certifcode }}">
+                    {% if current_user %}
+                        {{ certif.certifcode }} - {{ certif.answered }}/{{ certif.questionCount }} ({{ certif.percentage }}%)
+                    {% else %}
+                        {{ certif.certifcode }} - {{ certif.questionCount }} Questions
+                    {% endif %}
+                </option>
+            {% endfor %}
         </select>
       </div>
 
@@ -370,6 +374,7 @@
     }
     }
 
+   
 
   </script>
 </body>
