@@ -68,14 +68,14 @@ def fetch_certification_counts(current_user=None):
         enable_cross_partition_query=True
     ))
     
-    # Build a dictionary with total counts
+    # Build a dictionary with total question counts per certification
     counts_map = {}
     for doc in items:
         code = doc.get("certifcode")
         if code:
             counts_map[code] = counts_map.get(code, 0) + 1
 
-    # If user is not logged in, return only the counts
+    # If user is not logged in, return only the question counts
     if not current_user:
         return [{"certifcode": code, "questionCount": total} for code, total in counts_map.items()]
 
@@ -83,19 +83,25 @@ def fetch_certification_counts(current_user=None):
     user_progress = current_user.get("quiz_history", {})
     certif_results = []
     for code, total in counts_map.items():
-        # Get progress for this certification; default to 0 if not available
         stats = user_progress.get(code, {})
+
+        # Get total answered questions
         answered = stats.get("answered", 0)
-        percentage = (answered / total * 100) if total > 0 else 0
+
+        # Get count of correctly answered questions from details
+        correct_count = sum(1 for q in stats.get("details", {}).values() if q.get("correct", False))
+
+        # Calculate the percentage based on correctly answered questions
+        percentage = (correct_count / total * 100) if total > 0 else 0
+
         certif_results.append({
             "certifcode": code,
             "questionCount": total,
-            "answered": answered,
+            "answered": correct_count,  # Now correctly represents number of well-answered questions
             "percentage": round(percentage, 1)
         })
 
     return certif_results
-
 
 
 def fetch_current_user():
