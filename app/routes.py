@@ -130,23 +130,33 @@ def home():
 # ------------------------------------------------------------
 # Get questions for a specific certification
 # ------------------------------------------------------------
-def fetch_questions(certif, limit=None):
-    """
-    Fetch questions for a given certification.
-    If limit is provided, return up to that many questions.
-    """
-    if limit is not None:
-        query = f"SELECT TOP {limit} * FROM c WHERE c.certifcode=@certif"
-        parameters = [{"name": "@certif", "value": certif}]
-    else:
-        query = "SELECT * FROM c WHERE c.certifcode=@certif"
-        parameters = [{"name": "@certif", "value": certif}]
-
-    return list(container.query_items(
-        query=query,
-        parameters=parameters,
+def fetch_questions(certif, limit=10, current_user=None):
+    # Get all questions for certification
+    questions = list(container.query_items(
+        query="SELECT * FROM c WHERE c.certifcode=@certif",
+        parameters=[{"name": "@certif", "value": certif}],
         enable_cross_partition_query=True
     ))
+    
+    if not current_user:
+        for q in questions:
+            q['weight'] = 100  # Add default weight
+        random.shuffle(questions)
+        return questions[:limit]
+
+    # For logged-in users
+    quiz_history = current_user.get("quiz_history", {}).get(certif, {})
+    details = quiz_history.get("details", {})
+    
+    weighted_pool = []
+    for q in questions:
+        qid = q['id']
+        weight = details.get(qid, {}).get("weight", 100)
+        q['weight'] = weight  # Add weight to question object
+        weighted_pool.extend([q] * weight)
+    
+    random.shuffle(weighted_pool)
+    return weighted_pool[:limit]
 
 @app.route("/questions/<certif>", methods=["GET"])
 def get_questions(certif):
@@ -187,16 +197,19 @@ def process_hotspot_question(q, lines):
 def process_multiple_choice(q, lines):
     main_lines = []
     choices = []
+    in_choices = False
+    
     for line in lines:
         if re.match(r'^[A-Z]\.\s', line):
+            in_choices = True
             parts = line.split('. ', 1)
             choices.append({
                 'letter': parts[0],
                 'text': parts[1] if len(parts) > 1 else ''
             })
-        elif not choices:
+        elif not in_choices:
             main_lines.append(line)
-    
+
     processed_q = q.copy()
     processed_q['main_question'] = '\n'.join(main_lines).strip()
     processed_q['parsed_choices'] = choices
@@ -233,6 +246,23 @@ def process_yesno(q, lines):
     # Similar to multiple choice processing
     return process_multiple_choice(q, lines)
 
+def process_question(q):
+    """Process a question using the appropriate processor based on its type"""
+    lines = q.get('question', '').split('\n')
+    question_type = q.get('questiontype', '').lower()
+    
+    processor = QUESTION_PROCESSORS.get(question_type)
+    if processor:
+        processed_q = processor(q, lines)
+    else:
+        # Fallback for unknown types
+        processed_q = q.copy()
+        processed_q['main_question'] = '\n'.join(lines).strip()
+
+    # Ensure weight exists in processed question
+    processed_q['weight'] = q.get('weight', 100)
+    return processed_q
+
 # Map question types to processing functions
 QUESTION_PROCESSORS = {
     'hotspot': process_hotspot_question,
@@ -243,50 +273,19 @@ QUESTION_PROCESSORS = {
 
 @app.route("/quiz/<certif>", methods=["GET"])
 def quiz(certif):
-    try:
-        # Use parameterized query to avoid injection issues
-        query = "SELECT * FROM c WHERE c.certifcode = @certif"
-        parameters = [dict(name="@certif", value=certif)]
-        questions = list(container.query_items(
-            query=query,
-            parameters=parameters,
-            enable_cross_partition_query=True
-        ))
-
-        if not questions:
-            print("No questions found - redirecting to home")
-            return redirect(url_for('home'))
-
-        processed_questions = []
-        for q in questions:
-            # Split the question text into lines
-            lines = q.get('question', '').split('\n')
-            question_type = q.get('questiontype', '').lower()
-
-            # Get the appropriate processor, if available
-            processor = QUESTION_PROCESSORS.get(question_type)
-            if processor:
-                processed_q = processor(q, lines)
-                # Ensure the question type is maintained in the processed question
-                processed_q['questiontype'] = question_type
-            else:
-                # Fallback: treat entire text as main question if type is unknown
-                processed_q = q.copy()
-                processed_q['main_question'] = q.get('question', '')
-            processed_questions.append(processed_q)
-
-        # Randomize the order of questions
-        random.shuffle(processed_questions)
-
-        if not processed_questions:
-            return redirect(url_for('home'))
-
-        return render_template("quiz.html", questions=processed_questions, certif=certif)
-
-    except Exception as e:
-        print(f"ERROR in quiz route: {str(e)}")
-        return redirect(url_for('home'))
+    current_user = fetch_current_user()
+    raw_questions = fetch_questions(certif, limit=20, current_user=current_user)
     
+    if not raw_questions:
+        return redirect(url_for('home'))
+
+    # Process all questions before rendering
+    processed_questions = [process_question(q) for q in raw_questions]
+
+    return render_template("quiz.html", 
+                         questions=processed_questions,
+                         certif=certif)
+
 # ------------------------------------------------------------
 # Upload questions from JSON file
 # ------------------------------------------------------------
@@ -583,10 +582,14 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
     "certifcode": "Extracted or inferred certification code",
     "questiontype": "yesno",
     "question": "Extract the full question text.",
-    "answer": "Correct answer (e.g. 'Yes')",
+    "answer": "Correct answer (e.g. 'Y', 'N')",
     "explanation": "Extracted or inferred explanation."
 }
 ```
+
+    ***ULTRA IMPORTANT - Critical Note on "Yes/No"***:
+    - If the question only have as choices **"Yes"** and **"No"** it's not a "multiple choice" question but a Yes/No question.
+
 
 #### **4.3 Drag & Drop (`"questiontype": "draganddrop"`)**
 ```json
@@ -843,97 +846,78 @@ def manual_question():
 
 @app.route("/submit_quiz", methods=["POST"])
 def submit_quiz():
-    """
-    Updates the logged-in user's quiz_history based on the submitted answers.
-    Expected JSON payload:
-    {
-        "certif": "az-900",
-        "answers": [
-            {"question_id": "q123", "is_correct": true},
-            {"question_id": "q124", "is_correct": false},
-            ...
-        ]
-    }
-    If the user is not logged in, nothing happens.
-    """
-    # Only update if the user is logged in
+    """Update user's quiz history with question weights and performance"""
     if "user_id" not in session:
-        return jsonify({"message": "User not logged in, quiz history not updated."}), 200
+        return jsonify({"message": "User not logged in"}), 200
 
-    # Get the current user record from Cosmos DB
     try:
-        user = users_container.read_item(item=session["user_id"], partition_key=session["user_id"])
-    except Exception as e:
-        app.logger.error(f"Error fetching user for quiz submission: {str(e)}")
-        return jsonify({"error": "User not found."}), 404
+        # Get user and payload data
+        user = users_container.read_item(session["user_id"], session["user_id"])
+        data = request.get_json()
+        certif = data.get("certif")
+        answers = data.get("answers", [])
 
-    # Get the payload data
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data provided."}), 400
+        if not certif or not isinstance(answers, list):
+            return jsonify({"error": "Invalid data format"}), 400
 
-    certif = data.get("certif")
-    answers = data.get("answers", [])
-    if not certif or not isinstance(answers, list):
-        return jsonify({"error": "Invalid data. 'certif' and 'answers' are required."}), 400
-
-    now = datetime.utcnow().isoformat() + "Z"
-
-    # Initialize quiz history for this certification if not already present
-    quiz_history = user.get("quiz_history", {})
-    if certif not in quiz_history:
-        # Query Cosmos DB to get the total questions for this certification
-        count_query = "SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif"
-        count_params = [{"name": "@certif", "value": certif}]
-        count_result = list(container.query_items(query=count_query,
-                                                    parameters=count_params,
-                                                    enable_cross_partition_query=True))
-        total_questions = count_result[0] if count_result else 0
-
-        quiz_history[certif] = {
-            "total_questions": total_questions,
+        # Initialize quiz history structure
+        quiz_history = user.setdefault("quiz_history", {})
+        certif_history = quiz_history.setdefault(certif, {
+            "total_questions": get_total_questions(certif),
             "answered": 0,
             "correct": 0,
             "details": {}
-        }
+        })
 
-    # Process each submitted answer
-    details = quiz_history[certif].get("details", {})
-    for ans in answers:
-        qid = ans.get("question_id")
-        is_correct = ans.get("is_correct")
-        if not qid:
-            continue  # Skip if no question_id provided
+        # Process each answer
+        for ans in answers:
+            qid = str(ans.get("question_id"))
+            is_correct = ans.get("is_correct", False)
+            
+            # Get existing question data or initialize new entry
+            question_data = certif_history["details"].get(qid, {
+                "attempts": 0,
+                "correct": False,
+                "weight": 100,  # Default starting weight
+                "last_attempt": datetime.utcnow().isoformat() + "Z"
+            })
 
-        if qid in details:
-            # Update the existing record for this question
-            details[qid]["attempts"] += 1
-            details[qid]["correct"] = is_correct
-            details[qid]["last_attempt"] = now
-        else:
-            # Create a new entry for this question
-            details[qid] = {
-                "attempts": 1,
+            # Update weight based on performance
+            current_weight = question_data["weight"]
+            if is_correct:
+                new_weight = max(current_weight - 10, 10)  # Minimum weight 10
+            else:
+                new_weight = min(current_weight + 20, 200)  # Maximum weight 200
+
+            # Update question statistics
+            question_data.update({
+                "attempts": question_data["attempts"] + 1,
                 "correct": is_correct,
-                "last_attempt": now
-            }
+                "weight": new_weight,
+                "last_attempt": datetime.utcnow().isoformat() + "Z"
+            })
 
-    # Update the summary stats
-    quiz_history[certif]["answered"] = len(details)
-    quiz_history[certif]["correct"] = sum(1 for d in details.values() if d.get("correct"))
-    quiz_history[certif]["details"] = details
+            # Store updated data
+            certif_history["details"][qid] = question_data
 
-    # Save the updated quiz_history back into the user item
-    user["quiz_history"] = quiz_history
-    try:
-        users_container.replace_item(item=user["id"], body=user)
+        # Update summary statistics
+        certif_history["answered"] = len(certif_history["details"])
+        certif_history["correct"] = sum(1 for q in certif_history["details"].values() if q["correct"])
+
+        # Save to Cosmos DB
+        users_container.replace_item(user["id"], user)
+        return jsonify({"message": "Quiz history updated with weights"}), 200
+
     except Exception as e:
-        app.logger.error(f"Error updating quiz history: {str(e)}")
-        return jsonify({"error": "Failed to update quiz history."}), 500
+        app.logger.error(f"Quiz submission error: {str(e)}")
+        return jsonify({"error": "Update failed"}), 500
 
-    return jsonify({"message": "Quiz history updated successfully."}), 200
-
-
+def get_total_questions(certifcode):
+    """Get total questions count for a certification"""
+    query = "SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif"
+    params = [{"name": "@certif", "value": certifcode}]
+    result = list(container.query_items(query=query, parameters=params, enable_cross_partition_query=True))
+    return result[0] if result else 0
 
 # ------------------------------------------------------------
 # Run app

@@ -13,11 +13,23 @@
 
   <main class="main-container">
     <section id="quiz-section">
-      <!-- Question Header -->
-      <div id="question-header">
-        <p id="question-id">Question {{ questions[0].id }}</p>
-        <p id="question-text">{{ questions[0].main_question | replace('\n', '<br>') | safe }}</p>
-      </div>
+        <!-- Question Header -->
+        <div id="question-header">
+            <div class="question-header-top">
+                <p id="question-id">Question {{ questions[0].id }}</p>
+                <div class="weight-indicator weight-{% if questions[0].weight < 50 %}easy{% elif questions[0].weight < 150 %}medium{% else %}hard{% endif %}">
+                    <span class="difficulty-icon">🏋️</span>
+                    <span class="difficulty-text">
+                        {% if questions[0].weight < 50 %}Easy
+                        {% elif questions[0].weight < 150 %}Medium
+                        {% else %}Hard
+                        {% endif %}
+                    </span>
+                    <span class="weight-value">(Weight: {{ questions[0].weight }})</span>
+                </div>
+            </div>
+            <pre id="question-text">{{ questions[0].main_question }}</pre>
+        </div>
 
       <!-- Initial Question Rendering -->
       {% if questions[0].questiontype == 'hotspot' %}
@@ -125,7 +137,9 @@
       document.getElementById('stop-quiz').addEventListener('click', () => window.location.href = '/');
       document.getElementById('stop-quiz-result').addEventListener('click', () => window.location.href = '/');
       document.getElementById('explanation-btn').addEventListener('click', showExplanation);
-      document.getElementById('next-question-btn').addEventListener('click', loadNextQuestion);
+      document.getElementById('next-question-btn').addEventListener('click', () => {
+    window.location.reload();
+});
 
       // Modal interactions
       document.querySelector('.close').addEventListener('click', closeExplanation);
@@ -262,10 +276,62 @@
 
             const result = await response.json();
             console.log(result.message);
+
         } catch (error) {
             console.error('Error submitting quiz results:', error);
         }
     }
+
+
+    async function fetchUpdatedQuestion(questionId) {
+        try {
+            // Use the current certif from the template (which is passed as {{ certif }})
+            const response = await fetch(`/get_question/{{ certif }}/${questionId}`);
+            if (!response.ok) {
+            throw new Error(`Failed to fetch updated question for ID ${questionId}`);
+            }
+            const updatedQuestion = await response.json();
+
+            // Update the question in the global questions array if found
+            const index = questions.findIndex(q => q.id === questionId);
+            if (index !== -1) {
+            questions[index] = updatedQuestion;
+            }
+
+            // Update the displayed weight on the UI
+            updateQuestionWeight(updatedQuestion.weight);
+        } catch (error) {
+            console.error('Error fetching updated question:', error);
+        }
+        }
+
+        function updateQuestionWeight(newWeight) {
+        // Get the weight indicator element
+        const weightIndicator = document.querySelector('.weight-indicator');
+        if (!weightIndicator) return;
+
+        // Update the weight value text
+        const weightValueEl = weightIndicator.querySelector('.weight-value');
+        if (weightValueEl) {
+            weightValueEl.textContent = `(Weight: ${newWeight})`;
+        }
+
+        // Remove previous difficulty classes
+        weightIndicator.classList.remove('weight-easy', 'weight-medium', 'weight-hard');
+
+        // Determine the new difficulty and add appropriate class and text
+        const difficultyTextEl = weightIndicator.querySelector('.difficulty-text');
+        if (newWeight < 50) {
+            weightIndicator.classList.add('weight-easy');
+            if (difficultyTextEl) difficultyTextEl.textContent = 'Easy';
+        } else if (newWeight < 150) {
+            weightIndicator.classList.add('weight-medium');
+            if (difficultyTextEl) difficultyTextEl.textContent = 'Medium';
+        } else {
+            weightIndicator.classList.add('weight-hard');
+            if (difficultyTextEl) difficultyTextEl.textContent = 'Hard';
+        }
+        }
 
     function validateHotspotAnswer(question) {
         // Build an array of expected answers based on the correct_answer in answer_area.
