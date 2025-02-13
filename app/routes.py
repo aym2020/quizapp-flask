@@ -144,15 +144,22 @@ def fetch_questions(certif, limit=10, current_user=None):
         random.shuffle(questions)
         return questions[:limit]
 
-    # For logged-in users
+    # For logged-in users - ensure fresh user data
+    try:
+        # Re-fetch user to get latest quiz history
+        current_user = users_container.read_item(current_user['id'], current_user['id'])
+    except Exception as e:
+        logging.error(f"Error refreshing user data: {str(e)}")
+    
     quiz_history = current_user.get("quiz_history", {}).get(certif, {})
     details = quiz_history.get("details", {})
     
+    # Create weighted pool with latest weights
     weighted_pool = []
     for q in questions:
         qid = q['id']
         weight = details.get(qid, {}).get("weight", 100)
-        q['weight'] = weight  # Add weight to question object
+        q['weight'] = weight  # Update question weight
         weighted_pool.extend([q] * weight)
     
     random.shuffle(weighted_pool)
@@ -160,17 +167,46 @@ def fetch_questions(certif, limit=10, current_user=None):
 
 @app.route("/questions/<certif>", methods=["GET"])
 def get_questions(certif):
-    """
-    API endpoint to return questions for a given certification.
-    Optional query parameter 'limit' sets the maximum number of questions to return (default is 10).
-    """
+    """API endpoint to return processed questions for a given certification."""
     try:
         limit = int(request.args.get('limit', 10))
     except ValueError:
         limit = 10
 
-    questions = fetch_questions(certif, limit=limit)
-    return jsonify(questions)
+    # Get current user if logged in
+    current_user = fetch_current_user()
+
+    # Fetch and process questions using current user progress
+    raw_questions = fetch_questions(certif, limit=limit, current_user=current_user)
+    processed_questions = [process_question(q) for q in raw_questions]
+    
+    return jsonify(processed_questions)
+
+@app.route("/get_question/<certif>/<question_id>", methods=["GET"])
+def get_question(certif, question_id):
+    current_user = fetch_current_user()
+    try:
+        # Fetch question with proper error handling
+        question = container.read_item(item=question_id, partition_key=certif)
+        
+        # Merge updated quiz history if available
+        if "updated_quiz_history" in session:
+            current_user["quiz_history"] = session["updated_quiz_history"]
+        
+        # Process with current user's data
+        if current_user:
+            certif_history = current_user.get("quiz_history", {}).get(certif, {})
+            details = certif_history.get("details", {})
+            question_data = details.get(question_id, {})
+            question['weight'] = question_data.get("weight", 100)
+        else:
+            question['weight'] = 100
+            
+        return jsonify(process_question(question))
+        
+    except Exception as e:
+        logging.error(f"Error fetching question {question_id}: {str(e)}")
+        return jsonify({"error": "Question not found"}), 404
 
 
 # -------------------------------
@@ -274,14 +310,13 @@ QUESTION_PROCESSORS = {
 @app.route("/quiz/<certif>", methods=["GET"])
 def quiz(certif):
     current_user = fetch_current_user()
-    raw_questions = fetch_questions(certif, limit=20, current_user=current_user)
+    # Fetch just one question initially (or adjust as needed)
+    raw_questions = fetch_questions(certif, limit=1, current_user=current_user)
     
     if not raw_questions:
         return redirect(url_for('home'))
 
-    # Process all questions before rendering
     processed_questions = [process_question(q) for q in raw_questions]
-
     return render_template("quiz.html", 
                          questions=processed_questions,
                          certif=certif)
@@ -851,7 +886,6 @@ def submit_quiz():
         return jsonify({"message": "User not logged in"}), 200
 
     try:
-        # Get user and payload data
         user = users_container.read_item(session["user_id"], session["user_id"])
         data = request.get_json()
         certif = data.get("certif")
@@ -904,13 +938,23 @@ def submit_quiz():
         certif_history["answered"] = len(certif_history["details"])
         certif_history["correct"] = sum(1 for q in certif_history["details"].values() if q["correct"])
 
-        # Save to Cosmos DB
+        # Save and update session
         users_container.replace_item(user["id"], user)
-        return jsonify({"message": "Quiz history updated with weights"}), 200
+        
+        # Re-read the updated user object and update the session
+        updated_user = users_container.read_item(item=user["id"], partition_key=user["id"])
+
+        session["updated_quiz_history"] = user.get("quiz_history", {})
+
+        return jsonify({
+            "message": "Quiz history updated with weights",
+            "new_weight": new_weight  # Return the updated weight for verification
+        }), 200
 
     except Exception as e:
         app.logger.error(f"Quiz submission error: {str(e)}")
         return jsonify({"error": "Update failed"}), 500
+
 
 def get_total_questions(certifcode):
     """Get total questions count for a certification"""
@@ -918,6 +962,29 @@ def get_total_questions(certifcode):
     params = [{"name": "@certif", "value": certifcode}]
     result = list(container.query_items(query=query, parameters=params, enable_cross_partition_query=True))
     return result[0] if result else 0
+
+# ------------------------------------------------------------
+# Fetch question
+# ------------------------------------------------------------
+
+@app.route("/get_question/<certif>/<question_id>", methods=["GET"])
+def fetch_current_user():
+    """
+    Fetch the current user details from session if logged in.
+    Returns None if not logged in or if the user fetch fails.
+    """
+    current_user = None
+    if "user_id" in session:
+        user_id = session["user_id"]
+        try:
+            current_user = users_container.read_item(item=user_id, partition_key=user_id)
+            # Merge session updates if they exist
+            if "updated_quiz_history" in session:
+                current_user["quiz_history"] = session["updated_quiz_history"]
+        except Exception as e:
+            logging.error(f"Error fetching user: {e}")
+            session.pop("user_id", None)
+    return current_user
 
 # ------------------------------------------------------------
 # Run app
