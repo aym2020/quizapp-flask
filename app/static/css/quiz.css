@@ -18,6 +18,10 @@ body {
     padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure header stays above other content */
+    transition: transform 0.3s ease; /* Add smooth header movement */
 }
 
 .site-header h1 {
@@ -591,4 +595,54 @@ body {
     color: #5a67d8;
     font-weight: 700;
     margin: 0;
+}
+
+/* Animation Fade out */
+#question-container {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+  
+#question-container.fade-out {
+    opacity: 0;
+}
+
+  /* Add these transitions */
+.quiz-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+}
+  
+.quiz-content.fade-out {
+opacity: 0;
+transform: translateY(20px);
+}
+
+#action-buttons {
+transition: opacity 0.3s ease;
+}
+
+/* Loading spinner */
+.loading-overlay {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Keep below header */
+}
+
+.loading-spinner {
+    animation: rotate 1s linear infinite;
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes rotate {
+    100% { transform: rotate(360deg); }
 }

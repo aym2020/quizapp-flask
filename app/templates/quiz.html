@@ -8,93 +8,96 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>New Question</h1>
   </header>
 
   <main class="main-container">
-    <section id="quiz-section">
-        <!-- Question Header -->
-        <div id="question-header">
-            <div class="question-header-top">
-                <p id="question-id">Question {{ questions[0].id }}</p>
-                <div class="weight-indicator weight-{% if questions[0].weight < 50 %}easy{% elif questions[0].weight < 150 %}medium{% else %}hard{% endif %}">
-                    <span class="difficulty-icon">🏋️</span>
-                    <span class="difficulty-text">
-                        {% if questions[0].weight < 50 %}Easy
-                        {% elif questions[0].weight < 150 %}Medium
-                        {% else %}Hard
-                        {% endif %}
-                    </span>
-                    <span class="weight-value">(Weight: {{ questions[0].weight }})</span>
-                </div>
+    <div class="quiz-content">
+      <section id="quiz-section">
+        <div id="question-container">
+          <!-- Question Header -->
+          <div id="question-header">
+              <div class="question-header-top">
+                  <p id="question-id">Question {{ questions[0].id }}</p>
+                  <div class="weight-indicator weight-{% if questions[0].weight < 50 %}easy{% elif questions[0].weight < 150 %}medium{% else %}hard{% endif %}">
+                      <span class="difficulty-icon">🏋️</span>
+                      <span class="difficulty-text">
+                          {% if questions[0].weight < 50 %}Easy
+                          {% elif questions[0].weight < 150 %}Medium
+                          {% else %}Hard
+                          {% endif %}
+                      </span>
+                      <span class="weight-value">(Weight: {{ questions[0].weight }})</span>
+                  </div>
+              </div>
+              <pre id="question-text">{{ questions[0].main_question }}</pre>
+          </div>
+
+        <!-- Initial Question Rendering -->
+        {% if questions[0].questiontype == 'hotspot' %}
+        <div id="hotspot-container">
+          {% for statement in questions[0].answer_area %}
+          <div class="hotspot-statement">
+            <p class="statement-text">{{ statement.statement }} (Y/N)</p>
+            <div class="yn-buttons">
+              <button class="yn-btn yes-btn" data-value="Y" data-statement-index="{{ loop.index0 }}">Yes</button>
+              <button class="yn-btn no-btn" data-value="N" data-statement-index="{{ loop.index0 }}">No</button>
             </div>
-            <pre id="question-text">{{ questions[0].main_question }}</pre>
-        </div>
-
-      <!-- Initial Question Rendering -->
-      {% if questions[0].questiontype == 'hotspot' %}
-      <div id="hotspot-container">
-        {% for statement in questions[0].answer_area %}
-        <div class="hotspot-statement">
-          <p class="statement-text">{{ statement.statement }} (Y/N)</p>
-          <div class="yn-buttons">
-            <button class="yn-btn yes-btn" data-value="Y" data-statement-index="{{ loop.index0 }}">Yes</button>
-            <button class="yn-btn no-btn" data-value="N" data-statement-index="{{ loop.index0 }}">No</button>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% elif questions[0].questiontype == 'draganddrop' %}
-      <div id="drag-drop-container">
-        <div id="dropzones">
-          {% for zone in questions[0].answer_area %}
-          <div class="dropzone" data-number="{{ loop.index }}">
-            <span class="dropzone-number">{{ loop.index }}.</span>
-            <span class="dropzone-text">{{ zone.question }}</span>
           </div>
           {% endfor %}
         </div>
-        <div id="draggables">
+        {% elif questions[0].questiontype == 'draganddrop' %}
+        <div id="drag-drop-container">
+          <div id="dropzones">
+            {% for zone in questions[0].answer_area %}
+            <div class="dropzone" data-number="{{ loop.index }}">
+              <span class="dropzone-number">{{ loop.index }}.</span>
+              <span class="dropzone-text">{{ zone.question }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          <div id="draggables">
+            {% for choice in questions[0].choices %}
+            <div class="draggable" draggable="true" data-letter="{{ choice.letter }}">
+              <span class="draggable-text">{{ choice.letter }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% elif questions[0].questiontype == 'yesno' %}
+        <div id="yesno-container">
+          <button class="yesno-btn" data-letter="Y">Yes</button>
+          <button class="yesno-btn" data-letter="N">No</button>
+        </div>
+        {% else %}
+        <div id="choices-container">
           {% for choice in questions[0].choices %}
-          <div class="draggable" draggable="true" data-letter="{{ choice.letter }}">
-            <span class="draggable-text">{{ choice.letter }}</span>
-          </div>
+          <button class="choice-btn" data-letter="{{ choice.letter }}">
+            <span class="choice-letter">{{ choice.letter }}</span>
+            <span class="choice-text">{{ choice.text }}</span>
+          </button>
           {% endfor %}
         </div>
+        {% endif %}
       </div>
-      {% elif questions[0].questiontype == 'yesno' %}
-      <div id="yesno-container">
-        <button class="yesno-btn" data-letter="Y">Yes</button>
-        <button class="yesno-btn" data-letter="N">No</button>
-      </div>
-      {% else %}
-      <div id="choices-container">
-        {% for choice in questions[0].choices %}
-        <button class="choice-btn" data-letter="{{ choice.letter }}">
-          <span class="choice-letter">{{ choice.letter }}</span>
-          <span class="choice-text">{{ choice.text }}</span>
-        </button>
-        {% endfor %}
-      </div>
-      {% endif %}
-    </section>
+    </section>  
 
-    <!-- Action Buttons Section -->
-    <section id="action-buttons">
-      <div id="buttons-container">
-        <button id="submit-btn" class="quiz-button">Submit Answer</button>
-        <button id="stop-quiz" class="quiz-button">Stop Quiz</button>
-      </div>
-
-      <div id="result-container" style="display: none;">
-        <p id="result-message"></p>
-        <div id="nav-buttons">
-          <button id="explanation-btn" class="quiz-button">Show Explanation</button>
-          <button id="next-question-btn" class="quiz-button">Next Question</button>
-          <button id="stop-quiz-result" class="quiz-button">Stop Quiz</button>
+      <!-- Action Buttons Section -->
+      <section id="action-buttons">
+        <div id="buttons-container">
+          <button id="submit-btn" class="quiz-button">Submit Answer</button>
+          <button id="stop-quiz" class="quiz-button">Stop Quiz</button>
         </div>
-      </div>
-    </section>
+
+        <div id="result-container" style="display: none;">
+          <p id="result-message"></p>
+          <div id="nav-buttons">
+            <button id="explanation-btn" class="quiz-button">Show Explanation</button>
+            <button id="next-question-btn" class="quiz-button">Next Question</button>
+            <button id="stop-quiz-result" class="quiz-button">Stop Quiz</button>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <!-- Explanation Modal -->
@@ -410,23 +413,50 @@
     }
 
     async function loadNextQuestion() {
+      const loader = document.createElement('div');
+      loader.className = 'loading-overlay';
+      loader.innerHTML = '<div class="loading-spinner">⏳</div>';
+      document.querySelector('.main-container').appendChild(loader);
+      loader.style.display = 'flex';
+    
+      const quizContent = document.querySelector('.quiz-content');
+      const actionButtons = document.getElementById('action-buttons');
+    
+      try {
+        quizContent.classList.add('fade-out');
+        actionButtons.style.opacity = '0';
+    
+        await Promise.all([
+          new Promise(resolve => quizContent.addEventListener('transitionend', resolve, { once: true })),
+          new Promise(resolve => setTimeout(resolve, 300))
+        ]);
+    
         resetQuestionState();
-        
-        // Fetch a new question from the backend
-        try {
-            const response = await fetch(`/questions/{{ certif }}?limit=1`);
-            const newQuestions = await response.json();
-            if (newQuestions.length > 0) {
-                // Ensure we use the processed question
-                questions.push(...newQuestions);
-                currentIndex = questions.length - 1;
-                initializeQuestion();
-            } else {
-                alert('No more questions available!');
-            }
-        } catch (error) {
-            console.error('Error fetching next question:', error);
+        actionButtons.style.display = 'none';
+    
+        const response = await fetch(`/questions/{{ certif }}?limit=1`);
+        const newQuestions = await response.json();
+    
+        if (newQuestions.length > 0) {
+          questions.push(...newQuestions);
+          currentIndex = questions.length - 1;
+          initializeQuestion();
+    
+          void quizContent.offsetHeight; // Force reflow
+          actionButtons.style.display = 'block';
+          quizContent.classList.remove('fade-out');
+          setTimeout(() => {
+            actionButtons.style.opacity = '1';
+          }, 150);
         }
+      } catch (error) {
+        console.error('Error fetching next question:', error);
+        quizContent.classList.remove('fade-out');
+        actionButtons.style.display = 'block';
+        actionButtons.style.opacity = '1';
+      } finally {
+        loader.remove(); // Ensure loader is always removed
+      }
     }
 
     function resetQuestionState() {
@@ -444,69 +474,59 @@
     }
 
     function initializeQuestion() {
-        const currentQuestion = questions[currentIndex];
-        
-        // Update question header
-        document.getElementById('question-id').textContent = `Question ${currentQuestion.id}`;
-        document.getElementById('question-text').innerHTML = currentQuestion.main_question.replace(/\n/g, '<br>');
-
-        // Force refresh weight display
-        const weightIndicator = document.querySelector('.weight-indicator');
-        if (weightIndicator) {
-            const weightValueEl = weightIndicator.querySelector('.weight-value');
-            const difficultyTextEl = weightIndicator.querySelector('.difficulty-text');
-            
-            // Completely rebuild the weight indicator
-            weightIndicator.className = `weight-indicator weight-${
-                currentQuestion.weight < 50 ? 'easy' : 
-                currentQuestion.weight < 150 ? 'medium' : 'hard'
-            }`;
-            
-            difficultyTextEl.textContent = 
-                currentQuestion.weight < 50 ? 'Easy' : 
-                currentQuestion.weight < 150 ? 'Medium' : 'Hard';
-                
-            weightValueEl.textContent = `(Weight: ${currentQuestion.weight})`;
-        }
-
-        // Reset answer tracking variables
-        selectedAnswers = [];
-        hotspotAnswers = [];
-        dragDropAnswer = "";
-
-        // Initialize hotspot answers if needed
-        if (currentQuestion.questiontype === 'hotspot') {
-            hotspotAnswers = new Array(currentQuestion.answer_area.length).fill('');
-        }
-        
-        // Clean up previous question elements
-        ['#hotspot-container', '#drag-drop-container', '#yesno-container', '#choices-container'].forEach(selector => {
-            const el = document.querySelector(selector);
-            if (el) el.remove();
-        });
-        
-        // Create new question container based on type
-        let container;
-        switch (currentQuestion.questiontype) {
-            case 'hotspot':
-                container = createHotspotContainer(currentQuestion);
-                break;
-            case 'draganddrop':
-                container = createDragDropContainer(currentQuestion);
-                break;
-            case 'yesno':
-                container = createYesNoContainer();
-                break;
-            default:
-                container = createMultipleChoiceContainer(currentQuestion);
-        }
-        
-        // Insert new question into DOM
-        const quizSection = document.getElementById('quiz-section');
-        quizSection.appendChild(container);
-
-        // Enable interactions for the new question
-        enableInteractions();
+      const currentQuestion = questions[currentIndex];
+      const questionContainer = document.getElementById('question-container');
+    
+      // Clear previous content
+      ['#hotspot-container', '#drag-drop-container', '#yesno-container', '#choices-container'].forEach(selector => {
+        const el = questionContainer.querySelector(selector);
+        if (el) el.remove();
+      });
+    
+      // Update question header and weight
+      document.getElementById('question-id').textContent = `Question ${currentQuestion.id}`;
+      document.getElementById('question-text').innerHTML = currentQuestion.main_question.replace(/\n/g, '<br>');
+    
+      const weightIndicator = document.querySelector('.weight-indicator');
+      if (weightIndicator) {
+        const weightValueEl = weightIndicator.querySelector('.weight-value');
+        const difficultyTextEl = weightIndicator.querySelector('.difficulty-text');
+        weightIndicator.className = `weight-indicator weight-${
+          currentQuestion.weight < 50 ? 'easy' : 
+          currentQuestion.weight < 150 ? 'medium' : 'hard'
+        }`;
+        difficultyTextEl.textContent = 
+          currentQuestion.weight < 50 ? 'Easy' : 
+          currentQuestion.weight < 150 ? 'Medium' : 'Hard';
+        weightValueEl.textContent = `(Weight: ${currentQuestion.weight})`;
+      }
+    
+      // Reset answer tracking variables
+      selectedAnswers = [];
+      hotspotAnswers = [];
+      dragDropAnswer = "";
+    
+      // Create new question container based on type
+      let container;
+      switch (currentQuestion.questiontype) {
+        case 'hotspot':
+          container = createHotspotContainer(currentQuestion);
+          break;
+        case 'draganddrop':
+          container = createDragDropContainer(currentQuestion);
+          break;
+        case 'yesno':
+          container = createYesNoContainer();
+          break;
+        default:
+          container = createMultipleChoiceContainer(currentQuestion);
+      }
+    
+      // Append the new container
+      questionContainer.appendChild(container);
+    
+      // Enable interactions for the new question
+      enableInteractions();
     }
 
     // Functions to Create Question Containers Dynamically
