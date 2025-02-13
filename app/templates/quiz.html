@@ -413,19 +413,15 @@
     }
 
     async function loadNextQuestion() {
-      const loader = document.createElement('div');
-      loader.className = 'loading-overlay';
-      loader.innerHTML = '<div class="loading-spinner">⏳</div>';
-      document.querySelector('.main-container').appendChild(loader);
-      loader.style.display = 'flex';
-    
       const quizContent = document.querySelector('.quiz-content');
       const actionButtons = document.getElementById('action-buttons');
     
       try {
+        // Start fade-out animations
         quizContent.classList.add('fade-out');
         actionButtons.style.opacity = '0';
     
+        // Wait for animations to complete
         await Promise.all([
           new Promise(resolve => quizContent.addEventListener('transitionend', resolve, { once: true })),
           new Promise(resolve => setTimeout(resolve, 300))
@@ -434,6 +430,7 @@
         resetQuestionState();
         actionButtons.style.display = 'none';
     
+        // Fetch new question
         const response = await fetch(`/questions/{{ certif }}?limit=1`);
         const newQuestions = await response.json();
     
@@ -442,7 +439,10 @@
           currentIndex = questions.length - 1;
           initializeQuestion();
     
-          void quizContent.offsetHeight; // Force reflow
+          // Force reflow before showing new content
+          void quizContent.offsetHeight;
+    
+          // Fade in new content
           actionButtons.style.display = 'block';
           quizContent.classList.remove('fade-out');
           setTimeout(() => {
@@ -451,11 +451,10 @@
         }
       } catch (error) {
         console.error('Error fetching next question:', error);
+        // Ensure elements are visible even on error
         quizContent.classList.remove('fade-out');
         actionButtons.style.display = 'block';
         actionButtons.style.opacity = '1';
-      } finally {
-        loader.remove(); // Ensure loader is always removed
       }
     }
 
