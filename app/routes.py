@@ -563,6 +563,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
    - Do not add references to "Answer Area" or "NOTE: Each correct selection is worth one point."
    - Do not add "HOTSPOT -" prefix in the question or any wording like "Hot Area."
    - Do not add : Each correct answer presents a complete solution.
+   - Do not add : Select the answer that correctly completes the sentence. 
    - Do not add : To answer, drag the appropriate term from the column on the left to its level on the right. Each term may be used once, more than once, or not at all.
    - Do not add "Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements."
    - If a statement is repeated, unify or remove duplicates only if certain they are exact duplicates.
@@ -634,7 +635,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
     "questiontype": "draganddrop",
     "question": "Extract the full question text.",
     "choices": [
-        { "letter": "Label from the left column", "text": "Analytics type name" }
+        { "letter": "Analytics type name (e.g. Cognitive, Data Analyst, Fact tables, etc.)" }
     ],
     "answer_area": [
         { "question": "Extracted text from the right-side question", "correct_answer": "Matching analytics type" }
