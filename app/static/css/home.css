@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
+:root {
+  --light-blue: rgb(73, 192, 248);
+  --shadow-blue: rgb(24, 153, 214);
+  --text-color: rgb(19, 31, 36)
+  --border-radius: 15px;
+}
+
 /* General Styles */
 body {
   font-family: 'Ubuntu', sans-serif;
@@ -136,16 +143,110 @@ body {
 .primary-btn:hover {
   background-color: #434190;
 }
+/* ---------------------------------------------- */
+/* Start Quiz Button */                             
+/* ---------------------------------------------- */
 
-/* Start Quiz Button */
-#startQuiz {
-  background-color: #48bb78;
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.5rem;
+.start-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
+
+#startQuiz {
+  background-color: #2ee14d;
+  color: var(--text-color)
+  padding: 15px 30px;
+  border-radius: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 0px 4px 0px 0px #27aa3d;
+  font-family: 'Ubuntu', sans-serif;
+  letter-spacing: 0.5px;
+  margin-top: 30px;
+  width: auto;
+  min-width: 120px;
+  max-width: 200px; 
+  box-sizing: border-box;
+  position: relative;
+}
+
+#startQuiz:hover {
+  background-color: #36e953f7;
+}
+
+#startQuiz:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+#startQuiz:disabled {
+  background-color: rgb(55, 70, 79);
+  color: rgb(82, 101, 109);
+  border-color: rgb(55, 70, 79);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.9;
+  transform: none;
+}
+
+#startQuiz:disabled .button-text {
+  visibility: hidden;
+}
+
+#startQuiz:disabled .loading-dots {
+  display: inline-block;
+}
+
+.loading-dots {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+}
+
+#startQuiz:disabled:hover {
+  background-color: rgb(55, 70, 79);
+  transform: none;
+}
+
+#startQuiz:disabled::after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+  position: absolute;
+  left: 0;
+}
+
+.loading-dots::after {
+  content: '...';
+  animation: dotPulse 0.8s infinite;
+  display: inline-block;
+  width: 1em;
+  margin-left: -0.15em;
+  letter-spacing: 0.15em;
+}
+
+.button-text {
+  display: inline-block;
+  min-width: 4.5em; 
+}
+
+@keyframes dotPulse {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* ---------------------------------------------- */
 /* Upload Panel (Modal) */
+/* ---------------------------------------------- */
+
 .upload-panel {
   display: none;
   position: fixed;

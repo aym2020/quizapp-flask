@@ -62,7 +62,10 @@
 
         <!-- Start Quiz Button -->
         <div class="form-row start-section">
-            <button class="primary-btn" id="startQuiz">Start Quiz</button>
+            <button class="primary-btn" id="startQuiz">
+                <span class="button-text">Start</span>
+                <span class="loading-dots"></span>
+            </button>
         </div>
 
     </div>
@@ -141,7 +144,6 @@
   <script>
     // Elements
     const certifSelect = document.getElementById('certifSelect');
-    const questionLimit = document.getElementById('questionLimit');
     const startQuizBtn = document.getElementById('startQuiz');
     const uploadTrigger = document.getElementById('uploadTrigger');
     const uploadPanel = document.getElementById('uploadPanel');
@@ -163,15 +165,15 @@
 
     // Start Quiz Button
     startQuizBtn.addEventListener('click', () => {
-    const certifCode = certifSelect.value;
-    // const limit = questionLimit.value;
-    window.location.href = `/quiz/${certifCode}`;
-    });
-
-    // Start Quiz Button
-    startQuizBtn.addEventListener('click', () => {
         const certifCode = certifSelect.value;
-        window.location.href = `/quiz/${certifCode}`;
+        startQuizBtn.disabled = true;
+        
+        // Keep original text in hidden span
+        startQuizBtn.querySelector('.button-text').textContent = "...";
+        
+        setTimeout(() => {
+            window.location.href = `/quiz/${certifCode}`;
+        }, 500);
     });
 
     // Add Question Button Listener
