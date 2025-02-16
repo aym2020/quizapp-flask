@@ -12,17 +12,19 @@
 :root {
   --light-blue: rgb(70, 178, 228);
   --shadow-blue: rgb(24, 153, 214);
-  --dark-blue: rgb(23, 26, 44);
+  --dark-blue: #171a2c;
   --text-color: rgb(19, 31, 36);
   --border-color: rgb(55, 70, 79);
   --border-radius: 16px;
   --hover-color: #24283c;
-  --main-rose: rgb(255 153 169);
+  --main-rose: #ff99a9;
   --main-rose-90: rgba(255 153 169 / 90%);
-  --border-rose: rgba(255 153 169 / 58%);
+  --border-rose: #ff99a994;
   --button-rose-bg: #ff99a9;
   --button-rose-shadow: #b55d6b;
   --button-rose-hover: #ffb0bc;
+  --item-panel-grey: #222539;
+  --main-font: "Averia Sans Libre", serif;
 }
 
 body, html {
@@ -30,7 +32,7 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: "Averia Sans Libre", serif;
+  font-family: var(--main-font);
 }
 
 button, .primary-btn {
@@ -65,7 +67,7 @@ button, .primary-btn {
 
 .logo-top-box {
   height: 30px;
-  padding: 32px 0 30px 16px;
+  padding: 32px 16px 30px 0px;
   box-sizing: content-box;
 }
 
@@ -385,6 +387,18 @@ button, .primary-btn {
   left: 0;
 }
 
+.right-part-grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.right-part-grid-item svg {
+  width: 90%;
+  height: 90%;
+}
+
 /* ---------------------------------------------- */
 /* Specific Button Variations */
 /* ---------------------------------------------- */
@@ -517,3 +531,129 @@ button, .primary-btn {
 }
 
 
+
+/* ---------------------------------------------- */
+/* Modal Styles */
+/* ---------------------------------------------- */
+.modal-overlay {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  display: none; /* Hidden by default */
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Show overlay when modal is active */
+.modal-overlay.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Full-Screen Modal Container */
+.modal {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  background: white;  /* Background of modal container */
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background: var(--item-panel-grey);
+}
+
+/* Close button in top left corner */
+.close-button {
+  left: 30px;
+  right: auto;
+  cursor: pointer;
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  z-index: 10;
+  color: rgb(82 101 109);
+}
+
+.modal-form-signup {
+  margin-top: 0;
+  width: 375px;
+  position: relative;
+  text-align: center;
+}
+
+.modal-signup-title {
+  font-size: 26px;
+  margin: 10px 0 15px;
+  text-align: center;
+  color: white;
+}
+
+.form-content {
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 16px;
+  position: relative;
+  text-align: start;
+  width: 100%;
+  gap: 8px;
+}
+
+.form-field {
+  background: rgb(32, 47, 54);
+  border: 2px solid rgb(55, 70, 79);
+  border-radius: 12px;
+  display: flex;
+  overflow: hidden;
+  margin-top: 8px;
+  width: 100%;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+}
+
+.form-field-content {
+  background: none;
+  border: none;
+  box-sizing: border-box;
+  font-family: var(--main-font);
+  font-size: 1.25rem;
+  color: rgb(241, 247, 251);
+  letter-spacing: 0;
+  line-height: 1.75rem;
+  min-width: 0;
+  outline: none;
+  padding: 8px 14px;
+  text-transform: none;
+  width: 100%;
+  cursor: text;
+  caret-color: rgb(73, 192, 248);
+}
+
+.form-field-content::placeholder {
+  color: rgb(241, 247, 251);
+  font-family: var(--main-font);
+}
+
+.form-field:focus-within {
+  border-color: #49c0f8;
+  margin-right: ;
+}
+
+.see-pwd-signup {
+  align-self: center;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: filter .2s;
+  cursor: pointer;
+  display: inline-flex;
+  position: relative;
+  touch-action: manipulation;
+  transform: translateZ(0);
+}

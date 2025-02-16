@@ -998,6 +998,20 @@ def fetch_current_user():
             session.pop("user_id", None)
     return current_user
 
+
+
+
+# ------------------------------------------------------------
+# NEW ROUTES
+# ------------------------------------------------------------
+@app.route('/signup-modal')
+def signup_modal():
+    return render_template('signup_modal.html') 
+
+
+
+
+
 # ------------------------------------------------------------
 # Run app
 # ------------------------------------------------------------
