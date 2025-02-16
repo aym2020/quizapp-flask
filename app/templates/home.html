@@ -7,378 +7,110 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </head>
-    <body>
-    <!-- Header with Auth -->
-    <header class="site-header">
-        <div class="header-container">
-        <div class="brand">
-            <i class="fas fa-graduation-cap"></i>
-        </div>
-        <nav class="auth-links">
-            {% if current_user %}
-            <div class="user-menu">
-                <span class="username"><i class="fas fa-user"></i> {{ current_user.pseudo }}</span>
-                <a href="#" class="auth-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
-            </div>
-            {% else %}
-            <a href="#" class="auth-link" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
-            <a href="#" class="auth-link" id="registerBtn"><i class="fas fa-user-plus"></i> Register</a>
-            {% endif %}
-        </nav>
-        </div>
-    </header>
+    <script defer src="{{ url_for('static', filename='js/home.js') }}"></script>
+</head>
 
-  <!-- Main Container -->
-  <main class="main-container">
-    <!-- Narrow area for user choices -->
-    <div class="home-content">
-      <h2>Select Your Certification</h2>
-      <div class="form-row">
-        <label for="certifSelect">Certification:</label>
-        <select id="certifSelect">
-            {% for certif in certifs %}
-                <option value="{{ certif.certifcode }}">
-                    {% if current_user %}
-                        {{ certif.certifcode }} - {{ certif.answered }}/{{ certif.questionCount }} ({{ certif.percentage }}%)
-                    {% else %}
-                        {{ certif.certifcode }} - {{ certif.questionCount }} Questions
-                    {% endif %}
-                </option>
-            {% endfor %}
-        </select>
-      </div>
-
-        <!-- Upload Questions Button -->
-        <div class="form-row upload-section">
-            <button class="primary-btn" id="uploadTrigger">Upload Questions</button>
-        </div>
-        
-        <!-- Add Question Section -->
-        <div class="form-row add-question-section">
-            <button class="primary-btn" id="addQuestionBtn">Add Question (Image)</button>
-            <button class="primary-btn" id="addManualQuestionBtn">Add Manual Question</button>
-        </div>
-
-        <!-- Start Quiz Button -->
-        <div class="form-row start-section">
-            <button class="primary-btn" id="startQuiz">
-                <span class="button-text">Start</span>
-                <span class="loading-dots"></span>
-            </button>
-        </div>
-
+<body>
+<!-- Header with Auth -->
+<header class="site-header">
+    <div class="header-container">
+    <div class="brand">
+        <i class="fas fa-graduation-cap"></i>
     </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <p>&copy; 2025 Quiz App. All rights reserved.</p>
-  </footer>
-
-    <!-- Upload Panel (Slide-In or Modal) -->
-    <div id="uploadPanel" class="upload-panel">
-        <div class="upload-panel-content">
-            <span class="close-btn" id="closePanel">&times;</span>
-            <h2 style="text-align: center;">Upload Questions</h2>
-            <p style="text-align: center;">Select or drag & drop a JSON file with your questions.</p>
-
-            <!-- New Certif Code Input Field -->
-            <div class="form-row">
-                <label for="certifCodeInput">Certification Code:</label>
-                <input type="text" id="certifCodeInput" placeholder="Enter certifcode (e.g., az-900)" required>
-            </div>
-
-            <!-- Drag & Drop Area -->
-            <div id="dropArea" class="drop-area">
-                <p>Drag & Drop JSON File Here or <span class="browse">browse</span></p>
-                <input type="file" id="fileInput" accept=".json"/>
-            </div>
-
-            <button class="primary-btn" id="uploadButton">Upload</button>
-            <p id="uploadStatus" class="upload-status" style="display:none;">Uploading...</p>
+    <nav class="auth-links">
+        {% if current_user %}
+        <div class="user-menu">
+            <span class="username"><i class="fas fa-user"></i> {{ current_user.pseudo }}</span>
+            <a href="#" class="auth-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </div>
+        {% else %}
+        <a href="#" class="auth-link" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="#" class="auth-link" id="registerBtn"><i class="fas fa-user-plus"></i> Register</a>
+        {% endif %}
+    </nav>
+    </div>
+</header>
+
+<!-- Main Container -->
+<main class="main-container">
+<!-- Narrow area for user choices -->
+<div class="home-content">
+    <h2>Select Your Certification</h2>
+    <div class="form-row">
+    <label for="certifSelect">Certification:</label>
+    <select id="certifSelect">
+        {% for certif in certifs %}
+            <option value="{{ certif.certifcode }}">
+                {% if current_user %}
+                    {{ certif.certifcode }} - {{ certif.answered }}/{{ certif.questionCount }} ({{ certif.percentage }}%)
+                {% else %}
+                    {{ certif.certifcode }} - {{ certif.questionCount }} Questions
+                {% endif %}
+            </option>
+        {% endfor %}
+    </select>
+    </div>
+    <!-- Add Question Section -->
+    <div class="form-row add-question-section">
+        <button class="primary-btn" id="addQuestionBtn">Add Question (Image)</button>
+        <button class="primary-btn" id="addManualQuestionBtn">Add Manual Question</button>
     </div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Login</h2>
-        <form id="loginForm">
-            <div class="form-group">
-            <label for="loginUsername">Username:</label>
-            <input type="text" id="loginUsername" required>
-            </div>
-            <div class="form-group">
-            <label for="loginPassword">Password:</label>
-            <input type="password" id="loginPassword" required>
-            </div>
-            <button type="submit" class="primary-btn">Sign In</button>
-            <div id="loginMessage" class="status-message"></div>
-        </form>
-        </div>
+    <!-- Start Quiz Button -->
+    <div class="form-row start-section">
+        <button class="primary-btn" id="startQuiz">
+            <span class="button-text">Start</span>
+            <span class="loading-dots"></span>
+        </button>
     </div>
 
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Register</h2>
-        <form id="registerForm">
-            <div class="form-group">
-            <label for="registerUsername">Username:</label>
-            <input type="text" id="registerUsername" required>
-            </div>
-            <div class="form-group">
-            <label for="registerPassword">Password:</label>
-            <input type="password" id="registerPassword" required>
-            </div>
-            <button type="submit" class="primary-btn">Create Account</button>
-            <div id="registerMessage" class="status-message"></div>
-        </form>
+</div>
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+<p>&copy; 2025 Quiz App. All rights reserved.</p>
+</footer>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <div class="form-group">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" required>
         </div>
+        <div class="form-group">
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="primary-btn">Sign In</button>
+        <div id="loginMessage" class="status-message"></div>
+    </form>
     </div>
+</div>
 
-
-  <script>
-    // Elements
-    const certifSelect = document.getElementById('certifSelect');
-    const startQuizBtn = document.getElementById('startQuiz');
-    const uploadTrigger = document.getElementById('uploadTrigger');
-    const uploadPanel = document.getElementById('uploadPanel');
-    const closePanelBtn = document.getElementById('closePanel');
-    const dropArea = document.getElementById('dropArea');
-    const fileInput = document.getElementById('fileInput');
-    const uploadButton = document.getElementById('uploadButton');
-    const uploadStatus = document.getElementById('uploadStatus');
-
-    // Show Upload Panel
-    uploadTrigger.addEventListener('click', () => {
-    uploadPanel.style.display = 'block';
-    });
-
-    // Hide Upload Panel
-    closePanelBtn.addEventListener('click', () => {
-    uploadPanel.style.display = 'none';
-    });
-
-    // Start Quiz Button
-    startQuizBtn.addEventListener('click', () => {
-        const certifCode = certifSelect.value;
-        startQuizBtn.disabled = true;
-        
-        // Keep original text in hidden span
-        startQuizBtn.querySelector('.button-text').textContent = "...";
-        
-        setTimeout(() => {
-            window.location.href = `/quiz/${certifCode}`;
-        }, 500);
-    });
-
-    // Add Question Button Listener
-    document.getElementById('addQuestionBtn').addEventListener('click', () => {
-        window.location.href = "/add_question";
-    });
-
-    // Add manual question
-    document.getElementById('addManualQuestionBtn').addEventListener('click', () => {
-        window.location.href = "/manual_question";
-    });
-
-    // Drag & Drop Handlers
-    dropArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropArea.classList.add('dragover');
-    });
-
-    dropArea.addEventListener('dragleave', () => {
-    dropArea.classList.remove('dragover');
-    });
-
-    dropArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropArea.classList.remove('dragover');
-    if (e.dataTransfer.files.length) {
-        fileInput.files = e.dataTransfer.files;
-        
-        // Manually trigger file input change event
-        const event = new Event('change');
-        fileInput.dispatchEvent(event);
-    }
-    });
-
-    // Clicking the area opens file dialog
-    dropArea.addEventListener('click', () => {
-    fileInput.click();
-    });
-
-    // Show selected file name in drop area
-    fileInput.addEventListener('change', () => {
-    if (fileInput.files.length > 0) {
-        dropArea.innerHTML = `<p>Selected File: ${fileInput.files[0].name}</p>`;
-    }
-    });
-
-    // Upload Logic
-    uploadButton.addEventListener('click', async () => {
-        const certifCode = document.getElementById('certifCodeInput').value.trim();
-        if (!certifCode) {
-            alert('Please enter a certification code.');
-            return;
-        }
-
-        if (!fileInput.files[0]) {
-            alert('Please select a file.');
-            return;
-        }
-
-        uploadButton.disabled = true;
-        uploadStatus.style.display = 'block';
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = async function() {
-            try {
-                const jsonData = JSON.parse(reader.result);
-
-                console.log("Uploading to:", `/?certifcode=${certifCode}`);
-                console.log("JSON Data:", jsonData);
-
-                const response = await fetch(`/?certifcode=${certifCode}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(jsonData)
-                });
-
-                const textResponse = await response.text();
-                console.log("Raw Response:", textResponse);
-
-                try {
-                    const result = JSON.parse(textResponse);
-                    alert(result.message || result.error);
-                } catch (parseError) {
-                    alert("Unexpected response: " + textResponse);
-                }
-
-                window.location.reload();
-            } catch (error) {
-                alert('Error uploading file: ' + error);
-                uploadButton.disabled = false;
-                uploadStatus.style.display = 'none';
-            }
-        };
-
-        reader.readAsText(file);
-    });
-
-    // Auth Modals
-    const loginModal = document.getElementById('loginModal');
-    const registerModal = document.getElementById('registerModal');
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const closeModals = document.querySelectorAll('.close-modal');
-
-    // Show/hide modals
-    loginBtn?.addEventListener('click', () => showModal(loginModal));
-    registerBtn?.addEventListener('click', () => showModal(registerModal));
-    logoutBtn?.addEventListener('click', handleLogout);
-
-    closeModals.forEach(btn => {
-    btn.addEventListener('click', () => {
-        loginModal.style.display = 'none';
-        registerModal.style.display = 'none';
-    });
-    });
-
-    window.addEventListener('click', (e) => {
-    if (e.target === loginModal) loginModal.style.display = 'none';
-    if (e.target === registerModal) registerModal.style.display = 'none';
-    });
-
-    function showModal(modal) {
-    modal.style.display = 'block';
-    }
-
-    // Login Form
-    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    try {
-        const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pseudo: username, password })
-        });
-        
-        const result = await response.json();
-        const messageEl = document.getElementById('loginMessage');
-        
-        if (response.ok) {
-        messageEl.textContent = 'Login successful!';
-        messageEl.className = 'status-message success';
-        messageEl.style.display = 'block';
-        setTimeout(() => window.location.reload(), 1500);
-        } else {
-        messageEl.textContent = result.error;
-        messageEl.className = 'status-message error';
-        messageEl.style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-    }
-    });
-
-    // Register Form
-    document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const username = document.getElementById('registerUsername').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    try {
-        const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pseudo: username, password })
-        });
-        
-        const result = await response.json();
-        const messageEl = document.getElementById('registerMessage');
-        
-        if (response.ok) {
-        messageEl.textContent = 'Registration successful! Please login.';
-        messageEl.className = 'status-message success';
-        messageEl.style.display = 'block';
-        setTimeout(() => {
-            registerModal.style.display = 'none';
-            loginModal.style.display = 'block';
-        }, 1500);
-        } else {
-        messageEl.textContent = result.error;
-        messageEl.className = 'status-message error';
-        messageEl.style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Registration error:', error);
-    }
-    });
-
-    async function handleLogout() {
-    try {
-        await fetch('/logout');
-        window.location.reload();
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
-    }
-
-   
-
-  </script>
+<!-- Register Modal -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <div class="form-group">
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" required>
+        </div>
+        <div class="form-group">
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" required>
+        </div>
+        <button type="submit" class="primary-btn">Create Account</button>
+        <div id="registerMessage" class="status-message"></div>
+    </form>
+    </div>
+</div>
 </body>
 </html>
 

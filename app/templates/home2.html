@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quiz App - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home2.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <script defer src="{{ url_for('static', filename='js/home2.js') }}"></script> -->
+
+
+</head>
+<body>
+  <div class="container">
+    <!-- Left Sidebar Navigation -->
+    <div class="left-panel">
+      <div class="left-nav-menu">
+        <div class="logo-top-box">
+          <div class="logo-box">
+            <img class="img-logo" src="https://d35aaqx5ub95lt.cloudfront.net/vendor/70a4be81077a8037698067f583816ff9.svg">
+          </div>
+        </div>
+        <div class="nav-menu">
+          <div class="choice-menu-box selected">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-dumbbell fa-lg" style="color:rgb(255, 140, 0);"></i>
+            </div>
+            <span class="choice-menu-text selected">TRAINING</span>
+          </div>
+          <div class="choice-menu-box">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-medal fa-xl" style="color:#d3c422;"></i>
+            </div>
+            <span class="choice-menu-text">LEADERBOARD</span>
+          </div>
+          <div class="choice-menu-box">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-ghost fa-xl" style="color:rgb(255, 255, 255);"></i>
+            </div>
+            <span class="choice-menu-text">PROFILE</span>
+          </div>
+          <div class="choice-menu-box">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-cloud fa-xl" style="color:rgb(32, 199, 255);"></i>
+            </div>
+            <span class="choice-menu-text">UPLOADS</span>
+          </div>
+          <div class="choice-menu-box">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-gear fa-xl" style="color:rgb(199, 199, 199);"></i>
+            </div>
+            <span class="choice-menu-text">SETTINGS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <div class="both-panel">
+        <!-- Left Panel: Scrollable sub-navigation (or other content) -->
+        <div class="panel left">
+          <div class="top-part-left"> 
+            <div class="top-row-part-left"></div>
+            <div class="panel-top-left">
+              <span class="text-top-left">CONTINUE YOUR JOURNEY</span>
+            </div>
+          </div>
+          <div class="main-grid-certif">
+            <div class="grid-item-certif">
+              <div class="left-part-grid-item">
+                <button class="button-certif-detail">
+                  <span class="grid-text-detail-certif-button" id="certif1">CERTIF 1 - SEE DETAILS</span>
+                </button>
+                <span class="grid-certif-name">DP-900</span>
+                <div class="grid-progress-bar">
+                  <div class="progress-fill"></div>
+                  <span class="progress-text">0/286</span>
+                  <i class="fas fa-trophy cup-icon fa-xl"></i>
+                </div>
+                <div class="grid-left-button-continue">
+                  <button class="button primary-btn full-width-button" id="continue">
+                    <span class="button-text" >CONTINUE</span>
+                    <span class="loading-dots"></span>
+                </button>
+                </div>
+              </div>
+            </div>
+            <div class="grid-item-certif">
+              <div class="mid-part-grid-item">
+                <span class="grid-text-certif" id="certif2">CERTIF 2</span>
+              </div>
+            </div>
+            <div class="grid-item-certif">
+              <div class="mid-part-grid-item">
+                <span class="grid-text-certif" id="certif3">CERTIF 3</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Right Panel: Grid of blocks -->
+        <div class="panel right">
+          <div class="icon-bar">
+            <div class="icon-rounded-case" id="first-icon-bar" role="button">
+              <div class="icon-div">
+                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                <span class="bar-number" id="streak-number">100</span>
+              </div>
+            </div>
+            <div class="icon-rounded-case" id="second-icon-bar" role="button">
+              <div class="icon-div">
+                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                <span class="bar-number" id="streak-number">10</span>
+              </div>
+            </div>
+            <div class="icon-rounded-case" id="third-icon-bar" role="button">
+              <div class="icon-div">
+                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                <span class="bar-number" id="streak-number">100</span>
+              </div>
+            </div>
+            <div class="icon-rounded-case" id="fourth-icon-bar" role="button">
+              <div class="icon-div">
+                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                <span class="bar-number" id="streak-number">100</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid">
+            <div class="grid-item">
+              <p class="text-create-profile">Create a profile to save your progress!</p>
+              <button class="button primary-btn full-width-button" id="createProfile">
+                  <span class="button-text">CREATE A PROFILE</span>
+                  <span class="loading-dots"></span>
+              </button>
+              <button class="button primary-btn full-width-button" id="signIn">
+                  <span class="button-text">SIGN IN</span>
+                  <span class="loading-dots"></span>
+              </button>
+            </div>
+            <!-- Add more blocks as needed -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

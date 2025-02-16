@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
 from azure.cosmos import CosmosClient
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
@@ -124,7 +124,18 @@ def fetch_current_user():
 def home():
     current_user = fetch_current_user()
     certif_results = fetch_certification_counts(current_user)
-    return render_template("home.html", certifs=certif_results, current_user=current_user)
+    
+    # Create response object
+    response = make_response(
+        render_template("home2.html", certifs=certif_results, current_user=current_user)
+    )
+    
+    # Add cache control headers
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    
+    return response
 
 
 # ------------------------------------------------------------

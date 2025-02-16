@@ -3,7 +3,8 @@
 :root {
   --light-blue: rgb(73, 192, 248);
   --shadow-blue: rgb(24, 153, 214);
-  --text-color: rgb(19, 31, 36)
+  --dark-blue: rgb(20 19 36);
+  --text-color: rgb(19, 31, 36);
   --border-radius: 15px;
 }
 
@@ -12,7 +13,7 @@ body {
   font-family: 'Ubuntu', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f9;
+  background-color: var(--dark-blue);
   color: #333;
 }
 
@@ -156,7 +157,7 @@ body {
 
 #startQuiz {
   background-color: #2ee14d;
-  color: var(--text-color)
+  color: var(--text-color);
   padding: 15px 30px;
   border-radius: 16px;
   font-weight: 700;
@@ -241,83 +242,6 @@ body {
   0%, 20% { content: '.'; }
   40% { content: '..'; }
   60%, 100% { content: '...'; }
-}
-
-/* ---------------------------------------------- */
-/* Upload Panel (Modal) */
-/* ---------------------------------------------- */
-
-.upload-panel {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.upload-panel-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 2rem;
-  border-radius: 8px;
-  max-width: 600px;
-  position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #666;
-}
-
-.close-btn:hover {
-  color: #ff0000;
-}
-
-/* Drag & Drop Area */
-.drop-area {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 8rem;
-  text-align: center;
-  cursor: pointer;
-  color: #666;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  margin-bottom: 1.5rem;
-  background-color: #f9f9f9;
-}
-
-.drop-area.dragover {
-  border-color: #5a67d8;
-  background-color: #f3f3ff;
-}
-
-.drop-area p {
-  margin: 0;
-}
-
-.drop-area .browse {
-  color: #5a67d8;
-  text-decoration: underline;
-}
-
-.drop-area input[type='file'] {
-  display: none;
-}
-
-/* Upload Status */
-.upload-status {
-  text-align: center;
-  margin-top: 1rem;
-  color: #666;
 }
 
 /* Modal Styles */
