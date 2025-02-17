@@ -463,19 +463,31 @@ def create_new_user(pseudo, password):
 # Register new user
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.json
-    pseudo = data.get("pseudo")
-    password = data.get("password")
+    try:
+        data = request.json
+        
+        if not data:
+                app.logger.error("No JSON data received")
+                return jsonify({"error": "No data provided"}), 400
+            
+        pseudo = data.get("pseudo")
+        password = data.get("password")
+        
+        app.logger.info(f"Registration attempt for: {pseudo}")
 
-    if not pseudo or not password:
-        return jsonify({"error": "Pseudo and password are required"}), 400
+        if not pseudo or not password:
+            return jsonify({"error": "Pseudo and password are required"}), 400
 
-    # Check if user already exists using a parameterized query
-    if query_user_by_pseudo(pseudo):
-        return jsonify({"error": "User already exists"}), 400
+        # Check if user already exists using a parameterized query
+        if query_user_by_pseudo(pseudo):
+            return jsonify({"error": "User already exists"}), 400
 
-    create_new_user(pseudo, password)
-    return jsonify({"message": "User registered successfully!"})
+        create_new_user(pseudo, password)
+        return jsonify({"message": "User registered successfully!"})
+
+    except Exception as e:
+        app.logger.error(f"Registration error: {str(e)}", exc_info=True)
+        return jsonify({"error": "Server error"}), 500
 
 # ------------------------------------------------------------
 # Session management
@@ -998,17 +1010,9 @@ def fetch_current_user():
             session.pop("user_id", None)
     return current_user
 
-
-
-
 # ------------------------------------------------------------
 # NEW ROUTES
 # ------------------------------------------------------------
-@app.route('/signup-modal')
-def signup_modal():
-    return render_template('signup_modal.html') 
-
-
 
 
 
