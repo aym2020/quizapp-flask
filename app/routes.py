@@ -19,7 +19,13 @@ import io
 import base64
 import logging
 
-# q33 - bug ecriture
+"""
+TO DO:
+- UUID en plus des ID examtopics
+
+"""
+
+MAIN_HOME_PAGE = "home2.html"
 
 # Azure Key Vault details
 KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/" 
@@ -127,7 +133,7 @@ def home():
     
     # Create response object
     response = make_response(
-        render_template("home.html", certifs=certif_results, current_user=current_user)
+        render_template(MAIN_HOME_PAGE, certifs=certif_results, current_user=current_user)
     )
     
     # Add cache control headers
@@ -135,7 +141,19 @@ def home():
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     
-    return response
+    return render_template(
+        MAIN_HOME_PAGE,  # home.html
+        certifs=certif_results,
+        current_user=current_user,
+        default_page="training"
+    )
+
+@app.route('/page/<page_name>')
+def load_page(page_name):
+    valid_pages = {'training', 'leaderboard', 'profile', 'uploads', 'settings'}
+    if page_name not in valid_pages:
+        return "Page not found", 404
+    return render_template(f'pages/{page_name}.html', current_user=fetch_current_user())
 
 
 # ------------------------------------------------------------
@@ -727,7 +745,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 OUTPUT : ***ONLY THE JSON***
 """
 
-@app.route("/add_question", methods=["GET"])
+@app.route("/add_question2", methods=["GET"])
 def add_question_page():
     return render_template("add_question.html")
 

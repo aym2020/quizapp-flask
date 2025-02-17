@@ -32,6 +32,12 @@
   --pink-text: #ff99a9;
   --pink-border: rgba(255, 153, 168, 0.58);
 
+  --grey-main: rgb(69, 69, 69);
+  --grey-shadow: #2d2b2b;
+  --grey-hover: #646262;
+  --grey-text: #2d2b2b;
+  --grey-border: rgba(69, 69, 69, 0.58);
+
   --white-text: #ecf0f1;
 
   --grey-bg: rgb(32, 47, 54); 
@@ -53,6 +59,14 @@
   --scheme-shadow: var(--blue-shadow);
   --scheme-hover: var(--blue-hover);
   --scheme-text: var(--blue-text);
+}
+
+.color-scheme-grey {
+  --scheme-main: var(--grey-main);
+  --scheme-border: var(--grey-border);
+  --scheme-shadow: var(--grey-shadow);
+  --scheme-hover: var(--grey-hover);
+  --scheme-text: var(--grey-text);
 }
 
 .scheme-button {
@@ -148,6 +162,7 @@ button, .primary-btn {
 .choice-menu-box.selected {
   background-color: rgb(32, 47, 54); /* or keep as-is if desired */
   border-color: var(--pink-border);
+  color: var(--pink-text);
 }
 
 .choice-menu-box:hover:not(.selected) {
@@ -164,19 +179,8 @@ button, .primary-btn {
   height: 24px; /* Fixed height */
 }
 
-.choice-menu-text.selected {
-  display: initial;
-  color: var(--pink-text);
-  font-size: 15px;
-  font-weight: 1000;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  transition: none;
-}
-
 .choice-menu-text {
   display: initial;
-  color: var(--white-text);
   font-size: 15px;
   font-weight: 1000;
   letter-spacing: .8px;
@@ -192,6 +196,7 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 /* Main content area */
 /* ---------------------------------------------- */
+
 .main-content {
   display: flex;
   flex: 1;
@@ -213,6 +218,7 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 /* Left panel: resizable (flexible) */
 /* ---------------------------------------------- */
+
 .panel.left {
   flex: 1;
   overflow-y: auto;
@@ -300,6 +306,14 @@ button, .primary-btn {
   display: block;
 }
 
+#choice-menu-logout:hover {
+  background-color: transparent;
+}
+
+#choice-menu-logout {
+  margin-top: 20px;
+}
+
 /* ---------------------------------------------- */
 /* PROGRESS BAR */
 /* ---------------------------------------------- */
@@ -358,6 +372,7 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 /* Right panel: fixed width of 380px */
 /* ---------------------------------------------- */
+
 .panel.right {
   flex: 0 0 380px;
   padding: 20px;
@@ -382,6 +397,7 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 /* Base Button Styles */
 /* ---------------------------------------------- */
+
 .button {
   color: var(--dark-button-text-color);
   background-color: var(--button-bg);
@@ -744,4 +760,9 @@ input:-webkit-autofill::first-line {
 #signInSubmit:disabled {
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+.fade-out {
+  transition: opacity 0.0s ease;
+  opacity: 0;
 }

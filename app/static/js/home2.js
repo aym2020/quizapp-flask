@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeModalBtn = document.getElementById("closeModal");
     const togglePwdBtn = document.querySelector(".see-pwd-signup");
     const passwordInput = document.getElementById("registerPassword");
-    
+   
     function openModal() {
       history.pushState(null, "", "?isLoggingIn=true");
       modalOverlay.classList.add("show");
@@ -233,7 +233,14 @@ document.getElementById('modal-form-signin')?.addEventListener('submit', async (
       messageEl.style.display = 'block';
 
       setTimeout(() => {
-        window.location.reload(); // Refresh to update UI
+        const container = document.querySelector('.container');
+        if (container) {
+          container.classList.add('fade-out');
+        }
+        setTimeout(() => {
+          closeSignInModal();
+          window.location.reload();
+        }, 500);
       }, 1500);
     } else {
       messageEl.textContent = result.error || 'Sign in failed';
@@ -255,3 +262,140 @@ document.getElementById('modal-form-signin')?.addEventListener('submit', async (
 if (window.location.search.includes("isSigningIn=true")) {
   openSignInModal();
 }
+
+
+// ----------------------------------------------------------------
+// Handle LOGOUT
+// ----------------------------------------------------------------
+const logoutBtn = document.getElementById('logoutBtn');
+
+logoutBtn?.addEventListener('click', handleLogout);
+
+
+async function handleLogout() {
+  try {
+
+      logoutBtn.disabled = true;
+      const loader = logoutBtn.querySelector('.loader')
+
+      if (loader) {
+        loader.style.display = 'inline-block';
+      }
+      
+      await fetch('/logout');
+
+      setTimeout(() => {
+        const container = document.querySelector('.container');
+        if(container) {
+          container.classList.add('fade-out');
+        }
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }, 1500);
+      
+  } catch (error) {
+      console.error('Logout error:', error);
+  }
+}
+
+
+// ----------------------------------------------------------------
+// Prevent User a logged-in user from opening the login modal
+// ----------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", async function () {
+  // Check if the user is logged in
+  const response = await fetch("/current_user");
+  const userData = await response.json();
+  const isLoggedIn = userData.pseudo !== null;
+
+  // If logged in, prevent access to login/register modals
+  if (isLoggedIn) {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("isSigningIn") || urlParams.has("isLoggingIn")) {
+          history.replaceState(null, "", "/"); // Remove query parameters
+      }
+  }
+});
+
+async function openSignInModal() {
+  const response = await fetch("/current_user");
+  const userData = await response.json();
+  if (userData.pseudo) {
+      history.replaceState(null, "", "/"); // Remove query param if user is logged in
+      return; // Stop execution
+  }
+
+  history.pushState(null, "", "?isSigningIn=true");
+  signInModalOverlay.classList.add("show");
+  
+  setupPasswordToggle('signinPassword', 'signinPwdToggle');
+  
+  const messageEl = document.getElementById('signInMessage');
+  if (messageEl) {
+      messageEl.style.display = 'none';
+      messageEl.textContent = '';
+      messageEl.className = 'status-message';
+  }
+  document.body.style.overflow = "hidden";
+}
+
+
+// ----------------------------------------------------------------
+// Menu navigation
+// ----------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+  const menuItems = document.querySelectorAll(".choice-menu-box");
+  const contentArea = document.getElementById("dynamic-content");
+
+  let currentPage = "training";
+
+  async function loadContent(page) {
+
+    if (!page) {
+      page = "training";
+    }
+
+    if (currentPage === page) return; // Prevent redundant reloads
+    currentPage = page; // Update current page tracker
+
+    try {
+      const response = await fetch(`/page/${page}`);
+      const html = await response.text();
+      document.getElementById("dynamic-content").innerHTML = html;
+    } catch (error) {
+        console.error("Error loading page:", error);
+        document.getElementById("dynamic-content").innerHTML = "<p>Failed to load content.</p>";
+    }
+  }
+
+  function reinitializeEventListeners() {
+    console.log("Reinitializing event listeners...");
+
+    // Example: Add event listener for buttons in dynamic content
+    const continueBtn = document.getElementById("continue");
+    if (continueBtn) {
+        continueBtn.addEventListener("click", function () {
+            alert("Continuing Training...");
+        });
+    }
+  }
+
+  // Handle menu click event
+  menuItems.forEach(item => {
+      item.addEventListener("click", function () {
+          // Remove 'selected' class from all, then add to clicked one
+          menuItems.forEach(i => i.classList.remove("selected"));
+          this.classList.add("selected");
+
+          const page = this.getAttribute("data-page");
+          loadContent(page);
+      });
+  });
+
+  // Load default page (Training) on first load
+  loadContent("training");
+});
+
