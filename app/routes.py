@@ -127,7 +127,7 @@ def home():
     
     # Create response object
     response = make_response(
-        render_template("home2.html", certifs=certif_results, current_user=current_user)
+        render_template("home.html", certifs=certif_results, current_user=current_user)
     )
     
     # Add cache control headers

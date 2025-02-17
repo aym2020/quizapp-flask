@@ -73,7 +73,6 @@
 
 .scheme-form .form-field:focus-within {
   border-color: var(--scheme-main);
-  box-shadow: 0 0 0 2px var(--scheme-light);
 }
 
 .scheme-form .see-pwd-signup i {
@@ -696,7 +695,25 @@ button, .primary-btn {
   justify-content: center;
 }
 
+/* Fix autofill background color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  background-color: var(--grey-bg) !important; /* Match input background */
+  color: var(--white-text) !important; /* Match text color */
+  -webkit-box-shadow: 0 0 0px 1000px rgb(32, 47, 54) inset !important;
+  transition: background-color 5000s ease-in-out 0s; /* Prevents sudden color change */
+}
+
+/* Override autofill text color */
+input:-webkit-autofill::first-line {
+  color: var(--white-text) !important; /* Match your default text color */
+}
+
+/* ---------------------------------------------- */
 /* STATUS MESSAGE */
+/* ---------------------------------------------- */
 .status-message {
   display: block !important; 
   opacity: 1;
