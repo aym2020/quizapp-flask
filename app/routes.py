@@ -592,6 +592,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
    - If a statement is repeated, unify or remove duplicates only if certain they are exact duplicates.
    - "certifcode" must match the user input exactly as `{certifcode}` (will be overridden in the code).
    - **id**: a question number (e.g., "187", "99", etc.). Use the one provided or extracted from the question, if present.
+   - **Low Temperature**
 
 ### **2. Answer Selection Rules**
 - **Look for Explicit Answer Indicators:** Search for keywords such as **"Correct Answer:"**, green highlights, checkmarks, or bold text indicating the correct selection.
@@ -616,7 +617,23 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
   - Be **technically accurate** and **concise**.
 
 ### **4. Question Types & JSON Structure**
-#### **4.1 Multiple Choice (`"questiontype": "multiplechoice"`)**
+
+#### **4.1 Yes/No (`"questiontype": "yesno"`)**
+```json
+{
+    "id": "3",
+    "certifcode": "Extracted or inferred certification code",
+    "questiontype": "yesno",
+    "question": "Extract the full question text.",
+    "answer": "Correct answer (e.g. 'Y', 'N')",
+    "explanation": "Extracted or inferred explanation."
+}
+```
+    ***ULTRA IMPORTANT - Critical Note on "Yes/No"***:
+    - If the question contains only 2 choices **"Yes"** and **"No"** choices, it is not a multiple-choice question, but a Yes/No question.
+    - Answer must be "Y" or "N".
+
+#### **4.2 Multiple Choice (`"questiontype": "multiplechoice"`)**
 ```json
 {
     "id": "19",
@@ -633,22 +650,8 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
     "explanation": "Extracted or inferred explanation if available."
 }
 ```
-
-#### **4.2 Yes/No (`"questiontype": "yesno"`)**
-```json
-{
-    "id": "3",
-    "certifcode": "Extracted or inferred certification code",
-    "questiontype": "yesno",
-    "question": "Extract the full question text.",
-    "answer": "Correct answer (e.g. 'Y', 'N')",
-    "explanation": "Extracted or inferred explanation."
-}
-```
-
-    ***ULTRA IMPORTANT - Critical Note on "Yes/No"***:
-    - If the question only have as choices **"Yes"** and **"No"** it's not a "multiple choice" question but a Yes/No question.
-
+***ULTRA IMPORTANT - Critical Note on "multiplechoice"***:
+    - If the question contains only 2 choices **"Yes"** and **"No"** choices, it is not a multiple-choice question, but a Yes/No question.
 
 #### **4.3 Drag & Drop (`"questiontype": "draganddrop"`)**
 ```json
@@ -810,7 +813,7 @@ def process_question_image():
         elif question_type == "yesno":
             # Convert answer to Y/N format
             answer = raw_json.get("answer", "").strip().lower()
-            raw_json["answer"] = "Y" if answer == "yes" else "N"
+            raw_json["answer"] = "Y" if answer.startswith("y") else "N"
             # Create standardized choices
             raw_json["parsed_choices"] = [
                 {"letter": "Y", "text": "Yes"},
