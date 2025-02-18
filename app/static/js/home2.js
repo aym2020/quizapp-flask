@@ -249,40 +249,51 @@ document.addEventListener("DOMContentLoaded", function () {
   const menuItems = document.querySelectorAll(".choice-menu-box");
   const contentArea = document.getElementById("dynamic-content");
 
-  let currentPage = new URLSearchParams(window.location.search).get("page") || "training";
+  // Get initial page from server-rendered state
+  let currentPage = document.body.getAttribute('data-default-page') || "training";
 
-  async function loadContent(page) {
-    if (!page) page = "training";
-    if (currentPage === page) return;
-
-    currentPage = page;
+  async function loadContent(page, isInitialLoad = false) {
+    if (!page || currentPage === page) return;
 
     try {
       const response = await fetch(`/page/${page}`);
       const html = await response.text();
       contentArea.innerHTML = html;
 
-      // Update URL dynamically
-      history.pushState({ page: page }, "", `?page=${page}`);
+      // Update menu selection
+      menuItems.forEach(item => {
+        item.classList.toggle("selected", item.dataset.page === page);
+      });
 
+      // Update history state
+      if (isInitialLoad) {
+        history.replaceState({ page }, "", `?page=${page}`);
+      } else {
+        history.pushState({ page }, "", `?page=${page}`);
+      }
+
+      currentPage = page;
     } catch (error) {
       console.error("Error loading page:", error);
-      contentArea.innerHTML = "<p>Failed to load content.</p>";
+      contentArea.innerHTML = `<p>Failed to load ${page} content</p>`;
     }
   }
 
-  menuItems.forEach(item => {
-      item.addEventListener("click", function () {
-          menuItems.forEach(i => i.classList.remove("selected"));
-          this.classList.add("selected");
+  // Initial load from server-side data
+  const initialPage = document.body.getAttribute('data-default-page') || "training";
+  loadContent(initialPage, true);
 
-          const page = this.getAttribute("data-page");
-          loadContent(page);
-      });
+  // Menu click handler
+  menuItems.forEach(item => {
+    item.addEventListener("click", () => loadContent(item.dataset.page));
   });
 
-  // Auto-load page from URL on refresh
-  loadContent(currentPage);
+  // Handle browser navigation
+  window.addEventListener("popstate", (event) => {
+    if (event.state?.page) {
+      loadContent(event.state.page, true);
+    }
+  });
 });
 
 // ----------------------------------------------------------------

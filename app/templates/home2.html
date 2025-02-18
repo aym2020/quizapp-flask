@@ -11,7 +11,7 @@
 
 
 </head>
-<body>
+<body data-default-page="{{ default_page }}">
   <div class="container">
     <!-- Left Sidebar Navigation -->
     <div class="left-panel">
@@ -83,31 +83,31 @@
           </div>
         </div>
         <div class="nav-menu">
-          <div class="choice-menu-box selected" data-page="training">
+          <div class="choice-menu-box {% if default_page == 'training' %}selected{% endif %}" data-page="training">
             <div class="choice-menu-icon">
-              <i class="fa-solid fa-dumbbell fa-lg" style="color:rgb(255, 140, 0);"></i>
+                <i class="fa-solid fa-dumbbell fa-lg" style="color:rgb(255, 140, 0);"></i>
             </div>
-            <span class="choice-menu-text selected">TRAINING</span>
+            <span class="choice-menu-text">TRAINING</span>
           </div>
-          <div class="choice-menu-box" data-page="leaderboard">
+          <div class="choice-menu-box {% if default_page == 'leaderboard' %}selected{% endif %}" data-page="leaderboard">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-medal fa-xl" style="color:#d3c422;"></i>
             </div>
             <span class="choice-menu-text">LEADERBOARD</span>
           </div>
-          <div class="choice-menu-box" data-page="profile">
+          <div class="choice-menu-box {% if default_page == 'profile' %}selected{% endif %}" data-page="profile">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-ghost fa-xl" style="color:rgb(255, 255, 255);"></i>
             </div>
             <span class="choice-menu-text">PROFILE</span>
           </div>
-          <div class="choice-menu-box" data-page="uploads">
+          <div class="choice-menu-box {% if default_page == 'uploads' %}selected{% endif %}" data-page="uploads">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-cloud fa-xl" style="color:rgb(32, 199, 255);"></i>
             </div>
             <span class="choice-menu-text">UPLOADS</span>
           </div>
-          <div class="choice-menu-box" data-page="settings">
+          <div class="choice-menu-box {% if default_page == 'settings' %}selected{% endif %}" data-page="settings">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-gear fa-xl" style="color:rgb(199, 199, 199);"></i>
             </div>
@@ -129,7 +129,7 @@
     <div class="main-content">
       <div id="dynamic-content">
           <!-- Content will be loaded dynamically here -->
-          {% include 'pages/training.html' %} 
+          {% include 'pages/' ~ default_page ~ '.html' %}
       </div>
     </div>
   </div>

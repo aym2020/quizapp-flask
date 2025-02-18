@@ -240,7 +240,7 @@ button, .primary-btn {
 }
 
 .panel-top-left {
-  color: var(--dark-blue-text-negatif);
+  color: var(--white-text);
   background-size: 100% 100%;
   border-radius: 13px;
   row-gap: 6px;

@@ -131,22 +131,22 @@ def home():
     current_user = fetch_current_user()
     certif_results = fetch_certification_counts(current_user)
     
-    # Create response object
-    response = make_response(
-        render_template(MAIN_HOME_PAGE, certifs=certif_results, current_user=current_user)
+    requested_page = request.args.get('page', 'training')
+    if requested_page not in {'training', 'leaderboard', 'profile', 'uploads', 'settings'}:
+        requested_page = 'training'
+
+    return render_template(
+        MAIN_HOME_PAGE,
+        certifs=certif_results,
+        current_user=current_user,
+        default_page=requested_page
     )
     
-    # Add cache control headers
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     
-    return render_template(
-        MAIN_HOME_PAGE,  # home.html
-        certifs=certif_results,
-        current_user=current_user,
-        default_page="training"
-    )
+    return response
 
 @app.route('/page/<page_name>')
 def load_page(page_name):
