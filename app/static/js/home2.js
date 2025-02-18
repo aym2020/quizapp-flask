@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 function openRegisterModal() {
-  const registerModalOverlay = document.getElementById("modalOverlay");
+  const registerModalOverlay = document.getElementById("registerModalOverlay");
 
   history.pushState(null, "", "?isLoggingIn=true");
   registerModalOverlay.classList.add("show");
@@ -18,19 +18,207 @@ function openRegisterModal() {
 }
 
 function openSignInModal() {
+  // Get the modal element
   const signInModalOverlay = document.getElementById("signInModalOverlay");
 
+  // Update the URL and show the modal
   history.pushState(null, "", "?isSigningIn=true");
   signInModalOverlay.classList.add("show");
+
+  // Initialize password toggle for the sign-in form
   setupPasswordToggle('signinPassword', 'signinPwdToggle');
-  
+
+  // Hide any previous messages
   const messageEl = document.getElementById('signInMessage');
   if (messageEl) {
     messageEl.style.display = 'none';
+    messageEl.textContent = '';
     messageEl.className = 'status-message';
   }
+
   document.body.style.overflow = "hidden";
 }
+
+// ----------------------------------------------------------------
+// Handle sign-in form submission
+// ----------------------------------------------------------------
+
+document.getElementById('modal-form-signin')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const submitBtn = document.getElementById('signInSubmit');
+  submitBtn.disabled = true;
+  submitBtn.querySelector('.loader').style.display = 'inline-block';
+
+  const username = document.getElementById('signinUsername').value;
+  const password = document.getElementById('signinPassword').value;
+  const messageEl = document.getElementById('signInMessage');
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pseudo: username, password })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      messageEl.textContent = 'Sign in successful!';
+      messageEl.className = 'status-message success';
+      messageEl.style.display = 'block';
+    
+      // Immediately hide modal
+      document.getElementById("signInModalOverlay").classList.remove("show");
+      document.body.style.overflow = "";
+    
+      // Remove query parameter to prevent modal reopening
+      history.replaceState(null, "", window.location.pathname);
+    
+      setTimeout(() => {
+        window.location.reload(); // Reload after showing message
+      }, 1500);
+    } else {
+      messageEl.textContent = result.error || 'Sign in failed';
+      messageEl.className = 'status-message error';
+      messageEl.style.display = 'block';
+    }
+  } catch (error) {
+    console.error('Sign in error:', error);
+    messageEl.textContent = 'Connection error. Please try again.';
+    messageEl.className = 'status-message error';
+    messageEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.querySelector('.loader').style.display = 'none';
+  }
+});
+
+// Auto-open signin modal if URL has ?isSigningIn=true
+if (window.location.search.includes("isSigningIn=true")) {
+  openSignInModal();
+}
+
+// ----------------------------------------------------------------
+// Sign In Modal Close
+// ----------------------------------------------------------------
+function closeSignInModal() {
+  history.pushState(null, "", "/");
+
+  const signInModalOverlay = document.getElementById("signInModalOverlay");
+  signInModalOverlay.classList.remove("show"); 
+
+  const messageEl = document.getElementById('signInMessage');
+  if (messageEl) {
+    messageEl.style.display = 'none';
+    messageEl.textContent = '';
+  }
+  
+  const form = document.getElementById('modal-form-signin');
+  if (form) form.reset();
+  document.body.style.overflow = "";
+}
+
+// ----------------------------------------------------------------
+// Register Form
+// ----------------------------------------------------------------
+
+document.getElementById('modal-form-signup')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const submitBtn = document.getElementById('register');
+  submitBtn.disabled = true;
+  submitBtn.querySelector('.loader').style.display = 'inline-block';
+
+  const username = document.getElementById('registerUsername').value;
+  const password = document.getElementById('registerPassword').value;
+  const registerModalOverlay = document.getElementById('registerModalOverlay');
+  const messageEl = document.getElementById('registerMessage')
+
+  try {
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pseudo: username, password})
+    })
+
+    const result = await response.json();
+  
+    if (response.ok) {
+      messageEl.textContent = 'Registration successful! Please login.';
+      messageEl.className = 'status-message success';
+      messageEl.style.display = 'block';
+
+      const form = document.getElementById('modal-form-signup');
+      if(form) form.reset();
+
+      setTimeout(() => {
+        registerModalOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+        
+        // Force-clear message after animation
+        setTimeout(() => {
+          messageEl.style.display = 'none';
+          messageEl.textContent = '';
+        }, 1500);
+      }, 1500);
+    } else {
+    messageEl.textContent = result.error || 'Registration failed';
+    messageEl.className = 'status-message error';
+    messageEl.style.display = 'block';
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    messageEl.textContent = 'Connection error. Please try again.';
+    messageEl.className = 'status-message error';
+    messageEl.style.display = 'block';
+  
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.querySelector('.loader').style.display = 'none';
+  }
+});
+
+// ----------------------------------------------------------------
+// Register Modal Close
+// ----------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  const closeRegisterModalBtn = document.getElementById("closeRegisterModal");
+  const registerModalOverlay = document.getElementById("registerModalOverlay");
+
+  function closeRegisterModal() {
+    history.pushState(null, "", "/");
+    registerModalOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+
+    const messageEl = document.getElementById('registerMessage');
+    if (messageEl) {
+      messageEl.style.display = 'none';
+      messageEl.textContent = '';
+    }
+
+    const form = document.getElementById('modal-form-signup');
+    if (form) form.reset();
+  }
+
+  if (closeRegisterModalBtn) {
+    closeRegisterModalBtn.addEventListener("click", closeRegisterModal);
+  }
+
+  if (window.location.search.includes("isLoggingIn=true")) {
+    openRegisterModal();
+  }
+
+  window.addEventListener("popstate", function (event) {
+    if (event.state && event.state.page) {
+      loadContent(event.state.page);
+    } else {
+      closeRegisterModal();
+    }
+  });
+});
 
 // ----------------------------------------------------------------
 // Password Toggle Function (Generic)
@@ -52,71 +240,6 @@ function setupPasswordToggle(passwordInputId, toggleButtonId) {
   } else {
     console.error("Toggle button or password input not found!");
   }
-}
-
-// ----------------------------------------------------------------
-// Register Modal Close
-// ----------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", function () {
-    const closeRegisterModalBtn = document.getElementById("closeRegisterModal");
-    const registerModalOverlay = document.getElementById("modalOverlay");
-
-    function closeRegisterModal() {
-      history.pushState(null, "", "/");
-      registerModalOverlay.classList.remove("show");
-
-      const messageEl = document.getElementById('registerMessage');
-      if(messageEl) {
-        messageEl.style.display = 'none';
-        messageEl.textContent = '';
-      }
-
-      const form = document.getElementById('modal-form-signup');
-      if (form) form.reset();
-      
-      document.body.style.overflow = "";
-    }
-
-    if (closeRegisterModalBtn) {
-      closeRegisterModalBtn.addEventListener("click", closeRegisterModal);
-    }
-
-    if (window.location.search.includes("isLoggingIn=true")) {
-      openRegisterModal();
-    }
-
-    window.addEventListener("popstate", function(event) {
-      if (event.state && event.state.page) {
-        loadContent(event.state.page);
-      } else {
-        closeRegisterModal();
-      }
-    });
-});
-
-// ----------------------------------------------------------------
-// Sign In Modal Close
-// ----------------------------------------------------------------
-const closeSignInModalBtn = document.getElementById("closeSignInModal");
-const signInModalOverlay = document.getElementById("signInModalOverlay");
-
-function closeSignInModal() {
-  history.pushState(null, "", "/");
-  signInModalOverlay.classList.remove("show");
-  
-  const messageEl = document.getElementById('signInMessage');
-  if(messageEl) {
-    messageEl.style.display = 'none';
-    messageEl.textContent = '';
-  }
-  
-  const form = document.getElementById('modal-form-signin');
-  if (form) form.reset();
-  document.body.style.overflow = "";
-}
-
-if (closeSignInModalBtn) {
-  closeSignInModalBtn.addEventListener("click", closeSignInModal);
 }
 
 // ----------------------------------------------------------------
@@ -196,3 +319,43 @@ document.addEventListener("click", function(e) {
     openSignInModal();
   }
 });
+
+// ----------------------------------------------------------------
+// Logout
+// ----------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", handleLogout);
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target.closest("#logoutBtn")) {
+    e.preventDefault();
+    handleLogout();
+  }
+});
+
+async function handleLogout() {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.disabled = true;
+    const loader = logoutBtn.querySelector('.loader');
+    if (loader) {
+      loader.style.display = 'inline-block';
+    }
+  }
+
+  try {
+    await fetch('/logout');
+
+    // Wait 1500ms to show the loader and then reload
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
