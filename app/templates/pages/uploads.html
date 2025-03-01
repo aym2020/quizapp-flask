@@ -1,92 +1,97 @@
-<div class="page-content">
-    <div class="both-panel">
-        <div class="panel left">
-            <div class="top-part-left"> 
-            <div class="top-row-part-left"></div>
-            <div class="panel-top-left">
-                <span class="text-top-left">ADD A NEW QUESTION</span>
-            </div>
-            </div>
-            <div class="main-grid-certif">
-            <div class="grid-item-certif">
-                <form id="uploadForm" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="certifCode">Certification Identifier:</label>
-                        <input type="text" id="certifCode" name="certifCode" placeholder="e.g. az-900" required />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uploads.css') }}">
+</head>
+<body data-default-page="uploads">
+    <div class="page-content">
+        <div class="both-panel">
+            <div class="panel left">
+                <div class="top-part-left"> 
+                    <div class="top-row-part-left"></div>
+                    <div class="panel-top-left">
+                        <span class="text-top-left">ADD A NEW QUESTION</span>
                     </div>
-                    <!-- Drag & Drop Area -->
-                    <div class="form-group">
-                        <label>Upload Screenshot:</label>
-                        <div id="dropArea" class="drop-area">
-                        <p>Drag & Drop Image Here or <span class="browse-text">Click to Browse</span></p>
-                        <input type="file" id="imageInput" name="image" accept="image/*" />
-                        </div>
+                </div>
+                <div class="main-grid-certif">
+                    <div class="grid-item-certif" id="uploads_grid-item-certif">
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="certifCode">Certification Identifier:</label>
+                                <input type="text" id="certifCode" name="certifCode" placeholder="e.g. az-900" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Upload Screenshot:</label>
+                                <div id="dropArea" class="drop-area">
+                                    <p>Drag & Drop Image Here or <span class="browse-text">Click to Browse</span></p>
+                                    <input type="file" id="imageInput" name="image" accept="image/*" />
+                                </div>
+                            </div>
+                            <div id="previewContainer" class="preview-container hidden">
+                                <p>Selected Image Preview:</p>
+                                <img id="previewImage" alt="Preview" />
+                            </div>
+                            <button type="submit" class="button primary-btn scheme-button color-scheme-pink">
+                                <span class="button-text">UPLOAD QUESTION</span>
+                            </button>
+                        </form>
                     </div>
-                    <div id="previewContainer" class="preview-container hidden">
-                        <p>Selected Image Preview:</p>
-                        <img id="previewImage" alt="Preview" />
-                      </div>
-                </form>
+                </div>
+            </div>
 
-            </div>
-            <div class="grid-item-certif">
-                <div class="left-part-grid-item">
-                <span class="grid-text-certif" id="certif2">CERTIF 2</span>
+            <!-- Right Panel: Grid of blocks -->
+            <div class="panel right">
+                {% if current_user %}
+                <div class="icon-bar">
+                <div class="icon-rounded-case" id="first-icon-bar" role="button">
+                    <div class="icon-div">
+                    <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                    <span class="bar-number" id="streak-number">100</span>
+                    </div>
                 </div>
-            </div>
-            <div class="grid-item-certif">
-                <div class="left-part-grid-item">
-                <span class="grid-text-certif" id="certif3">CERTIF 3</span>
+                <div class="icon-rounded-case" id="second-icon-bar" role="button">
+                    <div class="icon-div">
+                    <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                    <span class="bar-number" id="streak-number">10</span>
+                    </div>
                 </div>
-            </div>
-            </div>
-        </div>
-
-        <!-- Right Panel: Grid of blocks -->
-        <div class="panel right">
-            {% if current_user %}
-            <div class="icon-bar">
-            <div class="icon-rounded-case" id="first-icon-bar" role="button">
-                <div class="icon-div">
-                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
-                <span class="bar-number" id="streak-number">100</span>
+                <div class="icon-rounded-case" id="third-icon-bar" role="button">
+                    <div class="icon-div">
+                    <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                    <span class="bar-number" id="streak-number">100</span>
+                    </div>
                 </div>
-            </div>
-            <div class="icon-rounded-case" id="second-icon-bar" role="button">
-                <div class="icon-div">
-                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
-                <span class="bar-number" id="streak-number">10</span>
+                <div class="icon-rounded-case" id="fourth-icon-bar" role="button">
+                    <div class="icon-div">
+                    <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
+                    <span class="bar-number" id="streak-number">100</span>
+                    </div>
                 </div>
-            </div>
-            <div class="icon-rounded-case" id="third-icon-bar" role="button">
-                <div class="icon-div">
-                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
-                <span class="bar-number" id="streak-number">100</span>
                 </div>
-            </div>
-            <div class="icon-rounded-case" id="fourth-icon-bar" role="button">
-                <div class="icon-div">
-                <i class="icon-element fa-solid fa-fire fa-xl" style="color: #ff6600;"></i> 
-                <span class="bar-number" id="streak-number">100</span>
+                {% endif %}
+                
+                <div class="grid">
+                <div class="grid-item">
+                    <p class="text-create-profile">Create a profile to save your progress!</p>
+                    <button class="button primary-btn full-width-button scheme-button color-scheme-pink" id="createProfile">
+                        <span class="button-text">CREATE A PROFILE</span>
+                        <span class="loading-dots"></span>
+                    </button>
+                    <button class="button primary-btn full-width-button scheme-button color-scheme-blue" id="signIn">
+                        <span class="button-text">SIGN IN</span>
+                        <span class="loading-dots"></span>
+                    </button>
                 </div>
-            </div>
-            </div>
-            {% endif %}
-            
-            <div class="grid">
-            <div class="grid-item">
-                <p class="text-create-profile">Create a profile to save your progress!</p>
-                <button class="button primary-btn full-width-button scheme-button color-scheme-pink" id="createProfile">
-                    <span class="button-text">CREATE A PROFILE</span>
-                    <span class="loading-dots"></span>
-                </button>
-                <button class="button primary-btn full-width-button scheme-button color-scheme-blue" id="signIn">
-                    <span class="button-text">SIGN IN</span>
-                    <span class="loading-dots"></span>
-                </button>
-            </div>
-            <!-- Add more blocks as needed -->
+                <!-- Add more blocks as needed -->
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- JavaScript -->
+    <script type="module" src="{{ url_for('static', filename='js/uploads.js') }}"></script>
+</body>
+</html>

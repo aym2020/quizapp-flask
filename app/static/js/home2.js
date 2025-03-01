@@ -1,3 +1,5 @@
+import { initUploads, destroyUploads } from './uploads.js';
+
 // ----------------------------------------------------------------
 // Modal Functions
 // ----------------------------------------------------------------
@@ -255,29 +257,46 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadContent(page, isInitialLoad = false) {
     if (!page || currentPage === page) return;
 
-    try {
-      const response = await fetch(`/page/${page}`);
-      const html = await response.text();
-      contentArea.innerHTML = html;
-
-      // Update menu selection
-      menuItems.forEach(item => {
-        item.classList.toggle("selected", item.dataset.page === page);
-      });
-
-      // Update history state
-      if (isInitialLoad) {
-        history.replaceState({ page }, "", `?page=${page}`);
-      } else {
-        history.pushState({ page }, "", `?page=${page}`);
-      }
-
-      currentPage = page;
-    } catch (error) {
-      console.error("Error loading page:", error);
-      contentArea.innerHTML = `<p>Failed to load ${page} content</p>`;
+    // Clean up previous page
+    if (currentPage === "uploads") {
+        destroyUploads(); // Call the cleanup function for uploads
     }
-  }
+
+    try {
+        const response = await fetch(`/page/${page}`);
+        const html = await response.text();
+        contentArea.innerHTML = html; // This replaces previous content
+
+        // Re-initialize modules after HTML injection
+        setTimeout(() => {
+            if (page === "uploads") {
+                initUploads();
+            }
+        }, 50);
+
+        // Update menu selection
+        menuItems.forEach(item => {
+            item.classList.toggle("selected", item.dataset.page === page);
+        });
+
+        // Update history state
+        if (isInitialLoad) {
+            history.replaceState({ page }, "", `?page=${page}`);
+        } else {
+            history.pushState({ page }, "", `?page=${page}`);
+        }
+
+        currentPage = page;
+
+        // Initialize new page
+        if (page === "uploads") {
+            initUploads(); // Call the initialization function for uploads
+        }
+    } catch (error) {
+        console.error("Error loading page:", error);
+        contentArea.innerHTML = `<p>Failed to load ${page} content</p>`;
+    }
+  } 
 
   // Initial load from server-side data
   const initialPage = document.body.getAttribute('data-default-page') || "training";
