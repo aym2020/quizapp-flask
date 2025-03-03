@@ -7,192 +7,196 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="confirm-question-container">
-    <h1>Question Details</h1>
+  <div class="confirm-wrapper">
+    <div class="confirm-question-container">
+      <h1>Question Details</h1>
 
-    <form id="confirmForm">
-      <div class="form-group">
-        <label for="certifcode">Certification Code:</label>
-        <input type="text" id="certifcode" name="certifcode" value="{{ question_data.certifcode }}" required>
-      </div>
-
-      <div class="form-group">
-        <label for="questionId">ID:</label>
-        <input type="text" id="questionId" name="id" value="{{ question_data.id }}" required>
-      </div>
-
-      <div class="form-group">
-        <label for="questionType">Question Type:</label>
-        <input type="text" id="questionType" name="questiontype" value="{{ question_data.questiontype }}" readonly required>
-      </div>
-
-      <div class="form-group">
-        <label for="questionText">Question:</label>
-        <textarea id="questionText" name="question" required>{{ question_data.question }}</textarea>
-      </div>
-
-      <!-- Dynamic Sections -->
-      {% if question_data.questiontype in ['multiplechoice'] %}
-        <div class="form-group">
-          <label>Choices:</label>
-          <div id="choicesContainer">
-            {% for choice in question_data.choices %}
-              <div class="choice-entry">
-                <input type="text" name="choiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
-                <input type="text" name="choiceText[]" value="{{ choice.text }}" placeholder="Text" required>
-                <button type="button" class="remove-choice" onclick="this.parentElement.remove()">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            {% endfor %}
+      <form id="confirmForm">
+        <div class="row-inline">
+          <div class="form-group">
+            <label for="certifcode">Certification Code:</label>
+            <input type="text" id="certifcode" name="certifcode" value="{{ question_data.certifcode }}" required>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="answer">Correct Answer (Letter):</label>
-          <input type="text" id="answer" name="answer" value="{{ question_data.answer }}" required>
-        </div>
 
-      {% elif question_data.questiontype == 'yesno' %}
-        <div class="form-group">
-          <label for="answer">Correct Answer:</label>
-          <select id="answer" name="answer" required>
-            <option value="Y" {% if question_data.answer == 'Y' %}selected{% endif %}>Y</option>
-            <option value="N" {% if question_data.answer == 'N' %}selected{% endif %}>N</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label for="questionId">ID:</label>
+            <input type="text" id="questionId" name="id" value="{{ question_data.id }}" required>
+          </div>
 
-      {% elif question_data.questiontype == 'draganddrop' %}
-        <div class="form-group">
-          <label>Drag Items:</label>
-          <div id="dragChoicesContainer">
-            {% for choice in question_data.choices %}
-              <div class="drag-choice-entry">
-                <input type="text" name="dragChoiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
-                <button type="button" class="remove-item" onclick="this.parentElement.remove()">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            {% endfor %}
+          <div class="form-group">
+            <label for="questionType">Question Type:</label>
+            <input type="text" id="questionType" name="questiontype" value="{{ question_data.questiontype }}" readonly required>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Drop Zones:</label>
-          <div id="answerAreaContainer">
-            {% for answer in question_data.answer_area %}
-              <div class="answer-area-entry">
-                <input type="text" name="answerAreaQuestion[]" value="{{ answer.question }}" placeholder="Question" required>
-                <input type="text" name="answerAreaCorrect[]" value="{{ answer.correct_answer }}" placeholder="Correct Answer" required>
-                <button type="button" class="remove-target" onclick="this.parentElement.remove()">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            {% endfor %}
-          </div>
+          <label for="questionText">Question:</label>
+          <textarea id="questionText" name="question" required>{{ question_data.question }}</textarea>
         </div>
 
-      {% elif question_data.questiontype == 'hotspot' %}
+        <!-- Dynamic Sections -->
+        {% if question_data.questiontype in ['multiplechoice'] %}
+          <div class="form-group">
+            <label>Choices:</label>
+            <div id="choicesContainer">
+              {% for choice in question_data.choices %}
+                <div class="choice-entry">
+                  <input type="text" name="choiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
+                  <input type="text" name="choiceText[]" value="{{ choice.text }}" placeholder="Text" required>
+                  <button type="button" class="remove-choice" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="answer">Correct Answer (Letter):</label>
+            <input type="text" id="answer" name="answer" value="{{ question_data.answer }}" required>
+          </div>
+
+        {% elif question_data.questiontype == 'yesno' %}
+          <div class="form-group">
+            <label for="answer">Correct Answer:</label>
+            <select id="answer" name="answer" required>
+              <option value="Y" {% if question_data.answer == 'Y' %}selected{% endif %}>Y</option>
+              <option value="N" {% if question_data.answer == 'N' %}selected{% endif %}>N</option>
+            </select>
+          </div>
+
+        {% elif question_data.questiontype == 'draganddrop' %}
+          <div class="form-group">
+            <label>Drag Items:</label>
+            <div id="dragChoicesContainer">
+              {% for choice in question_data.choices %}
+                <div class="drag-choice-entry">
+                  <input type="text" name="dragChoiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
+                  <button type="button" class="remove-item" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Drop Zones:</label>
+            <div id="answerAreaContainer">
+              {% for answer in question_data.answer_area %}
+                <div class="answer-area-entry">
+                  <input type="text" name="answerAreaQuestion[]" value="{{ answer.question }}" placeholder="Question" required>
+                  <input type="text" name="answerAreaCorrect[]" value="{{ answer.correct_answer }}" placeholder="Correct Answer" required>
+                  <button type="button" class="remove-target" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+        {% elif question_data.questiontype == 'hotspot' %}
+          <div class="form-group">
+            <label>Hotspot Statements:</label>
+            <div id="hotspotAnswerAreaContainer">
+              {% for answer in question_data.answer_area %}
+                <div class="hotspot-answer-entry">
+                  <input type="text" name="hotspotStatement[]" value="{{ answer.statement }}" placeholder="Statement" required>
+                  <select name="hotspotCorrect[]" required>
+                    <option value="Yes" {% if answer.correct_answer == 'Yes' %}selected{% endif %}>Yes</option>
+                    <option value="No" {% if answer.correct_answer == 'No' %}selected{% endif %}>No</option>
+                  </select>
+                  <button type="button" class="remove-statement" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
         <div class="form-group">
-          <label>Hotspot Statements:</label>
-          <div id="hotspotAnswerAreaContainer">
-            {% for answer in question_data.answer_area %}
-              <div class="hotspot-answer-entry">
-                <input type="text" name="hotspotStatement[]" value="{{ answer.statement }}" placeholder="Statement" required>
-                <select name="hotspotCorrect[]" required>
-                  <option value="Yes" {% if answer.correct_answer == 'Yes' %}selected{% endif %}>Yes</option>
-                  <option value="No" {% if answer.correct_answer == 'No' %}selected{% endif %}>No</option>
-                </select>
-                <button type="button" class="remove-statement" onclick="this.parentElement.remove()">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            {% endfor %}
-          </div>
+          <label for="explanation">Explanation:</label>
+          <textarea id="explanation" name="explanation" required>{{ question_data.explanation }}</textarea>
         </div>
-      {% endif %}
 
-      <div class="form-group">
-        <label for="explanation">Explanation:</label>
-        <textarea id="explanation" name="explanation" required>{{ question_data.explanation }}</textarea>
-      </div>
-
-      <button type="button" id="createQuestionBtn" class="btn-submit">Create Question</button>
-    </form>
+        <button type="button" id="createQuestionBtn" class="btn-submit">Create Question</button>
+      </form>
+    </div>
   </div>
 
-  <script>
-    document.getElementById('createQuestionBtn').addEventListener('click', async () => {
-      const form = document.getElementById('confirmForm');
-      const formData = new FormData(form);
-      const questionType = formData.get('questiontype');
+    <script>
+      document.getElementById('createQuestionBtn').addEventListener('click', async () => {
+        const form = document.getElementById('confirmForm');
+        const formData = new FormData(form);
+        const questionType = formData.get('questiontype');
 
-      // Build base data object
-      const data = {
-        id: formData.get('id'),
-        certifcode: formData.get('certifcode'),
-        questiontype: questionType,
-        question: formData.get('question'),
-        explanation: formData.get('explanation'),
-      };
+        // Build base data object
+        const data = {
+          id: formData.get('id'),
+          certifcode: formData.get('certifcode'),
+          questiontype: questionType,
+          question: formData.get('question'),
+          explanation: formData.get('explanation'),
+        };
 
-      // Handle different question types
-      if (questionType === 'multiplechoice') {
-        data.choices = Array.from(formData.getAll('choiceLetter[]'))
-          .map((letter, index) => ({
-            letter: letter,
-            text: formData.getAll('choiceText[]')[index]
-          }));
-        data.answer = formData.get('answer');
+        // Handle different question types
+        if (questionType === 'multiplechoice') {
+          data.choices = Array.from(formData.getAll('choiceLetter[]'))
+            .map((letter, index) => ({
+              letter: letter,
+              text: formData.getAll('choiceText[]')[index]
+            }));
+          data.answer = formData.get('answer');
 
-      } else if (questionType === 'yesno') {
-        data.answer = formData.get('answer');
+        } else if (questionType === 'yesno') {
+          data.answer = formData.get('answer');
 
-      } else if (questionType === 'draganddrop') {
-        data.choices = Array.from(formData.getAll('dragChoiceLetter[]'))
-          .map((letter) => ({
-            letter: letter // Only include the letter
-          }));
+        } else if (questionType === 'draganddrop') {
+          data.choices = Array.from(formData.getAll('dragChoiceLetter[]'))
+            .map((letter) => ({
+              letter: letter // Only include the letter
+            }));
 
-        data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
-          .map((question, index) => ({
-            question: question,
-            correct_answer: formData.getAll('answerAreaCorrect[]')[index]
-          }));
+          data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
+            .map((question, index) => ({
+              question: question,
+              correct_answer: formData.getAll('answerAreaCorrect[]')[index]
+            }));
 
-      } else if (questionType === 'hotspot') {
-        data.answer_area = Array.from(formData.getAll('hotspotStatement[]'))
-          .map((statement, index) => ({
-            statement: statement,
-            correct_answer: formData.getAll('hotspotCorrect[]')[index]
-          }));
-      }
-
-      try {
-        const response = await fetch('/submit_question', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const resultText = await response.text();
+        } else if (questionType === 'hotspot') {
+          data.answer_area = Array.from(formData.getAll('hotspotStatement[]'))
+            .map((statement, index) => ({
+              statement: statement,
+              correct_answer: formData.getAll('hotspotCorrect[]')[index]
+            }));
+        }
 
         try {
-          const result = JSON.parse(resultText);
-          if (response.ok) {
-            alert(result.message || "Question created successfully!");
-            window.location.href = '/';
-          } else {
-            alert("Error: " + (result.error || "Failed to create question."));
+          const response = await fetch('/submit_question', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          const resultText = await response.text();
+
+          try {
+            const result = JSON.parse(resultText);
+            if (response.ok) {
+              alert(result.message || "Question created successfully!");
+              window.location.href = '/';
+            } else {
+              alert("Error: " + (result.error || "Failed to create question."));
+            }
+          } catch (jsonError) {
+            console.error("Non-JSON response:", resultText);
+            alert("Unexpected server response");
           }
-        } catch (jsonError) {
-          console.error("Non-JSON response:", resultText);
-          alert("Unexpected server response");
+        } catch (err) {
+          console.error(err);
+          alert("Error: " + err.message);
         }
-      } catch (err) {
-        console.error(err);
-        alert("Error: " + err.message);
-      }
-    });
+      });
   </script>
 </body>
 </html>

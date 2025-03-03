@@ -1035,7 +1035,16 @@ def fetch_current_user():
 # NEW ROUTES
 # ------------------------------------------------------------
 
+@app.route("/get_certif", methods=["GET"])
+def fetch_certif():
+    items = list(container.query_items(
+        query="SELECT DISTINCT c.certifcode FROM c",
+        enable_cross_partition_query=True
+    ))
 
+    unique_certifcodes = list(set(item["certifcode"] for item in items if "certifcode" in item))
+
+    return jsonify(unique_certifcodes)
 
 # ------------------------------------------------------------
 # Run app

@@ -21,7 +21,9 @@
                         <form id="uploadForm" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="certifCode">Certification Identifier:</label>
-                                <input type="text" id="certifCode" name="certifCode" placeholder="e.g. az-900" required />
+                                <select id="certifCode" name="certifCode" required>
+                                    <option value="">Select a Certification</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label>Upload Screenshot:</label>
@@ -31,11 +33,12 @@
                                 </div>
                             </div>
                             <div id="previewContainer" class="preview-container hidden">
-                                <p>Selected Image Preview:</p>
+                                <label>Selected Image Preview:</label>
                                 <img id="previewImage" alt="Preview" />
                             </div>
-                            <button type="submit" class="button primary-btn scheme-button color-scheme-pink">
+                            <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="uploadBtn">
                                 <span class="button-text">UPLOAD QUESTION</span>
+                                <div class="loader" style="display: none;"></div>
                             </button>
                         </form>
                     </div>

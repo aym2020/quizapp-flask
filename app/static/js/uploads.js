@@ -9,6 +9,54 @@ const UPLOAD_SELECTORS = {
 };
 
 let eventListeners = [];
+let selectedFile = null;
+
+async function populateCertifDropdown() {
+    const certifDropdown = document.getElementById("certifCode");
+    const storageKey = "certifCodes"; // Key for session storage
+
+    // Check if certif codes are already in sessionStorage
+    let cachedCertifCodes = sessionStorage.getItem(storageKey);
+
+    if (cachedCertifCodes) {
+        // Parse and use cached data
+        console.log("Using cached certification codes");
+        populateDropdown(JSON.parse(cachedCertifCodes), certifDropdown);
+        return;
+    }
+
+    try {
+        console.log("Fetching certification codes...");
+        // Fetch the certification data from your API
+        const response = await fetch("/get_certif");
+        if (!response.ok) throw new Error("Failed to fetch certifications");
+
+        // Convert response to JSON and sort alphabetically
+        let certifCodes = await response.json();
+        certifCodes.sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+
+        // Store in session storage for future use
+        sessionStorage.setItem(storageKey, JSON.stringify(certifCodes));
+
+        // Populate the dropdown
+        populateDropdown(certifCodes, certifDropdown);
+
+    } catch (error) {
+        console.error("Error loading certifications:", error);
+    }
+}
+
+// Helper function to populate dropdown
+function populateDropdown(certifCodes, certifDropdown) {
+    certifDropdown.innerHTML = '<option value="" disabled selected>Select a Certification</option>';
+    
+    certifCodes.forEach(certifCode => {
+        const option = document.createElement("option");
+        option.value = certifCode;
+        option.textContent = certifCode.toUpperCase(); // Display in uppercase
+        certifDropdown.appendChild(option);
+    });
+}
 
 // Initialize upload functionality
 function initUploads() {
@@ -22,6 +70,9 @@ function initUploads() {
         uploadForm: document.getElementById('uploadForm'),
         certifCode: document.getElementById('certifCode')
     };
+
+    // Populate dropdown
+    populateCertifDropdown();
 
     // Reset previous state
     destroyUploads();
@@ -45,6 +96,9 @@ function initUploads() {
             return;
         }
 
+        // Save the file to the global variable
+        selectedFile = file;
+
         updateFileDisplay(file);
         showImagePreview(file);
     };
@@ -67,29 +121,42 @@ function initUploads() {
     // Form Submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const certifCode = UPLOAD_SELECTORS.certifCode.value.trim();
-        const file = UPLOAD_SELECTORS.imageInput.files[0];
-
+        const file = selectedFile;
+        const uploadBtn = document.getElementById("uploadBtn");
+        const loader = uploadBtn.querySelector(".loader");
+    
         if (!certifCode || !file) {
             alert('Please fill out all fields.');
             return;
         }
-
+    
         const formData = new FormData();
         formData.append('certifcode', certifCode);
         formData.append('image', file);
-
+    
         try {
+            // Disable button & show loader
+            uploadBtn.disabled = true;
+            loader.style.display = "inline-block";
+    
             const response = await fetch('/process_question_image', {
                 method: 'POST',
                 body: formData
             });
-
+    
             if (!response.ok) throw new Error('Upload failed');
+    
+            // Redirect after successful upload
             window.location.href = '/confirm_question';
         } catch (error) {
             console.error('Upload Error:', error);
             alert('Failed to upload image.');
+        } finally {
+            // Re-enable button & hide loader
+            uploadBtn.disabled = false;
+            loader.style.display = "none";
         }
     };
 
@@ -138,3 +205,4 @@ if (document.body.dataset.defaultPage === 'uploads') {
 
 // Export for cleanup
 export { initUploads, destroyUploads };
+
