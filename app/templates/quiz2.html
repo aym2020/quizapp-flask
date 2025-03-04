@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+</head>
+<body>
+  <header class="site-header"></header>
+
+  <main class="main-container">
+    <div class="quiz-content">
+      <section id="quiz-section">
+        <div id="question-container">
+          <!-- Question Header -->
+          <div id="question-header">
+              <div class="question-header-top">
+                  <p id="question-id">Loading question...</p>
+                  <div class="weight-indicator">
+                      <span class="difficulty-icon">🏋️</span>
+                      <span class="difficulty-text">-</span>
+                      <span class="weight-value">(Weight: -)</span>
+                  </div>
+              </div>
+              <pre id="question-text"></pre>
+          </div>
+          <!-- Question content will be inserted here by JS -->
+        </div>
+      </section>
+
+      <!-- Action Buttons Section -->
+      <section id="action-buttons">
+        <div id="buttons-container">
+          <button id="submit-btn" class="quiz-button">Submit Answer</button>
+          <button id="stop-quiz" class="quiz-button">Stop Quiz</button>
+        </div>
+
+        <div id="result-container" style="display: none;">
+          <p id="result-message"></p>
+          <div id="nav-buttons">
+            <button id="explanation-btn" class="quiz-button">Show Explanation</button>
+            <button id="next-question-btn" class="quiz-button">Next Question</button>
+            <button id="stop-quiz-result" class="quiz-button">Stop Quiz</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Explanation Modal -->
+  <div id="explanation-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h3>Explanation</h3>
+        <span class="close">&times;</span>
+        </div>
+        <p id="explanation-text"></p>
+    </div>
+  </div>
+
+  <script type="module" src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+</body>
+</html>

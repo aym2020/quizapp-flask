@@ -1,39 +1,115 @@
+/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
+
+/* Reset and Box-Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Root Variables */
+:root {
+  --main-font: "Averia Sans Libre", serif;
+  --border-radius: 16px;
+  
+  --blue-main: #46b2e4;
+  --blue-shadow: rgb(24, 153, 214);
+  --blue-hover: rgb(44, 205, 250);
+  --blue-text: rgb(70, 178, 228);
+  --blue-border: rgba(70, 178, 228, 0.58);
+  
+  --dark-blue-bg: #171a2c;
+  --dark-blue-panel: #222539;
+  --dark-button-text-color: rgb(19, 31, 36);
+  --dark-hover-color: #24283c;
+  
+  --pink-main: #ff99a9;
+  --pink-shadow: #b55d6b;
+  --pink-hover: #ffb0bc;
+  --pink-text: #ff99a9;
+  --pink-border: #ff99a9;
+  
+  --grey-main: rgb(69, 69, 69);
+  --grey-shadow: #2d2b2b;
+  --grey-hover: #646262;
+  --grey-text: #2d2b2b;
+  --grey-border: rgba(69, 69, 69, 0.58);
+  
+  --white-text: #ecf0f1;
+  
+  --grey-bg: rgb(32, 47, 54);
+  --grey-border: rgb(55, 70, 79);
+  
+  --box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Color Schemes */
+.color-scheme-pink {
+    --scheme-main: var(--pink-main);
+    --scheme-border: var(--pink-border);
+    --scheme-shadow: var(--pink-shadow);
+    --scheme-hover: var(--pink-hover);
+    --scheme-text: var(--pink-text);
+}
+
+.color-scheme-blue {
+--scheme-main: var(--blue-main);
+--scheme-border: var(--blue-border);
+--scheme-shadow: var(--blue-shadow);
+--scheme-hover: var(--blue-hover);
+--scheme-text: var(--blue-text);
+}
+
+.color-scheme-grey {
+--scheme-main: var(--grey-main);
+--scheme-border: var(--grey-border);
+--scheme-shadow: var(--grey-shadow);
+--scheme-hover: var(--grey-hover);
+--scheme-text: var(--grey-text);
+}
+
+.scheme-button {
+--button-bg: var(--scheme-main);
+--button-shadow: var(--scheme-shadow);
+--button-hover: var(--scheme-hover);
+background-color: var(--scheme-main);
+box-shadow: 0px 4px 0px 0px var(--scheme-shadow);
+}
+
+.scheme-button:hover:not([disabled]) {
+background-color: var(--scheme-hover);
+}
+
+.scheme-form {
+caret-color: var(--scheme-main);
+}
+
+.scheme-form .form-field:focus-within {
+border-color: var(--scheme-main);
+}
+
+.scheme-form .see-pwd-signup i {
+color: var(--scheme-main);
+}
 
 
 /* Base Styles */
 body {
-    font-family: 'Ubuntu', sans-serif;
-    background-color: #f5f6fa;
+    font-family: var(--main-font);
+    background-color: var(--dark-blue-bg);
     margin: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Header */
-.site-header {
-    background-color: #5a67d8;
-    color: white;
-    padding: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000; /* Ensure header stays above other content */
-    transition: transform 0.3s ease; /* Add smooth header movement */
-}
-
-.site-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-}
-
 /* Main Container */
 .main-container {
     flex: 1;
     padding: 1rem 1rem;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
@@ -41,16 +117,16 @@ body {
 
 /* Quiz Section */
 #quiz-section {
-    background: white;
+    background: var(--dark-blue-bg);
     padding: 1rem 2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 #question-text {
-    font-size: 10pt; /* Slightly smaller */
+    font-family: var(--main-font);
+    font-size: 12pt; /* Slightly smaller */
     font-weight: 400; /* Regular weight */
-    color: #2d3748;
+    color: var(--white-text);
     margin: 1rem 0 1rem 0;
     line-height: 1.6;
     white-space: pre-line; /* Ensures \n is handled properly */
@@ -591,8 +667,8 @@ body {
 }
 
 #question-id {
-    font-size: 1.1rem;
-    color: #5a67d8;
+    font-size: 25px;
+    color: var(--white-text);
     font-weight: 700;
     margin: 0;
 }

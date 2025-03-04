@@ -26,6 +26,7 @@ TO DO:
 """
 
 MAIN_HOME_PAGE = "home2.html"
+MAIN_QUIZ_PAGE = "quiz2.html"
 
 # Azure Key Vault details
 KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/" 
@@ -338,6 +339,7 @@ QUESTION_PROCESSORS = {
 
 @app.route("/quiz/<certif>", methods=["GET"])
 def quiz(certif):
+    print(f"Rendering template: {MAIN_QUIZ_PAGE}")
     current_user = fetch_current_user()
     # Fetch just one question initially (or adjust as needed)
     raw_questions = fetch_questions(certif, limit=1, current_user=current_user)
@@ -346,7 +348,7 @@ def quiz(certif):
         return redirect(url_for('home'))
 
     processed_questions = [process_question(q) for q in raw_questions]
-    return render_template("quiz.html", 
+    return render_template(MAIN_QUIZ_PAGE, 
                          questions=processed_questions,
                          certif=certif)
 
