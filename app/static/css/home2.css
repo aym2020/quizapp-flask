@@ -198,7 +198,6 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 
 .main-content {
-  display: flex;
   flex: 1;
   min-height: 0;
   margin-left: auto;
@@ -364,7 +363,7 @@ button, .primary-btn {
 
 .grid-left-button-continue {
   display: flex;
-  padding-top: 70px;
+  padding-top: 40px;
 }
 
 #continue {
