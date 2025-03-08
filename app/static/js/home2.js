@@ -1,4 +1,12 @@
-import { initUploads, destroyUploads } from './uploads.js';
+export function initModals() {
+  document.getElementById('createProfile')?.addEventListener('click', () => {
+      document.getElementById('registerModalOverlay').style.display = 'flex';
+  });
+  
+  document.getElementById('signIn')?.addEventListener('click', () => {
+      document.getElementById('signInModalOverlay').style.display = 'flex';
+  });
+}
 
 // ----------------------------------------------------------------
 // Modal Functions

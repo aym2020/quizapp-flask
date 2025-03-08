@@ -148,6 +148,10 @@ button, .primary-btn {
   width: 128px;
 }
 
+#cloudyLogo {
+  width: 200px;
+}
+
 .choice-menu-box {
   background-color: transparent;
   border: 2px solid transparent;

@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Confirm and Edit Question</title>
+{% extends "base.html" %}
+{% block styles %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm_question.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="page-content">
   <div class="confirm-wrapper">
+    <div class="panel-top-left">
+      <span class="text-top-left">ADD A NEW QUESTION</span>
+    </div>
     <div class="confirm-question-container">
       <h1>Question Details</h1>
 
@@ -123,80 +126,80 @@
       </form>
     </div>
   </div>
+</div>
 
-    <script>
-      document.getElementById('createQuestionBtn').addEventListener('click', async () => {
-        const form = document.getElementById('confirmForm');
-        const formData = new FormData(form);
-        const questionType = formData.get('questiontype');
+<script>
+  document.getElementById('createQuestionBtn').addEventListener('click', async () => {
+    const form = document.getElementById('confirmForm');
+    const formData = new FormData(form);
+    const questionType = formData.get('questiontype');
 
-        // Build base data object
-        const data = {
-          id: formData.get('id'),
-          certifcode: formData.get('certifcode'),
-          questiontype: questionType,
-          question: formData.get('question'),
-          explanation: formData.get('explanation'),
-        };
+    // Build base data object
+    const data = {
+      id: formData.get('id'),
+      certifcode: formData.get('certifcode'),
+      questiontype: questionType,
+      question: formData.get('question'),
+      explanation: formData.get('explanation'),
+    };
 
-        // Handle different question types
-        if (questionType === 'multiplechoice') {
-          data.choices = Array.from(formData.getAll('choiceLetter[]'))
-            .map((letter, index) => ({
-              letter: letter,
-              text: formData.getAll('choiceText[]')[index]
-            }));
-          data.answer = formData.get('answer');
+    // Handle different question types
+    if (questionType === 'multiplechoice') {
+      data.choices = Array.from(formData.getAll('choiceLetter[]'))
+        .map((letter, index) => ({
+          letter: letter,
+          text: formData.getAll('choiceText[]')[index]
+        }));
+      data.answer = formData.get('answer');
 
-        } else if (questionType === 'yesno') {
-          data.answer = formData.get('answer');
+    } else if (questionType === 'yesno') {
+      data.answer = formData.get('answer');
 
-        } else if (questionType === 'draganddrop') {
-          data.choices = Array.from(formData.getAll('dragChoiceLetter[]'))
-            .map((letter) => ({
-              letter: letter // Only include the letter
-            }));
+    } else if (questionType === 'draganddrop') {
+      data.choices = Array.from(formData.getAll('dragChoiceLetter[]'))
+        .map((letter) => ({
+          letter: letter // Only include the letter
+        }));
 
-          data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
-            .map((question, index) => ({
-              question: question,
-              correct_answer: formData.getAll('answerAreaCorrect[]')[index]
-            }));
+      data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
+        .map((question, index) => ({
+          question: question,
+          correct_answer: formData.getAll('answerAreaCorrect[]')[index]
+        }));
 
-        } else if (questionType === 'hotspot') {
-          data.answer_area = Array.from(formData.getAll('hotspotStatement[]'))
-            .map((statement, index) => ({
-              statement: statement,
-              correct_answer: formData.getAll('hotspotCorrect[]')[index]
-            }));
-        }
+    } else if (questionType === 'hotspot') {
+      data.answer_area = Array.from(formData.getAll('hotspotStatement[]'))
+        .map((statement, index) => ({
+          statement: statement,
+          correct_answer: formData.getAll('hotspotCorrect[]')[index]
+        }));
+    }
 
-        try {
-          const response = await fetch('/submit_question', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-
-          const resultText = await response.text();
-
-          try {
-            const result = JSON.parse(resultText);
-            if (response.ok) {
-              alert(result.message || "Question created successfully!");
-              window.location.href = '/';
-            } else {
-              alert("Error: " + (result.error || "Failed to create question."));
-            }
-          } catch (jsonError) {
-            console.error("Non-JSON response:", resultText);
-            alert("Unexpected server response");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("Error: " + err.message);
-        }
+    try {
+      const response = await fetch('/submit_question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
-  </script>
-</body>
-</html>
+
+      const resultText = await response.text();
+
+      try {
+        const result = JSON.parse(resultText);
+        if (response.ok) {
+          alert(result.message || "Question created successfully!");
+          window.location.href = '/';
+        } else {
+          alert("Error: " + (result.error || "Failed to create question."));
+        }
+      } catch (jsonError) {
+        console.error("Non-JSON response:", resultText);
+        alert("Unexpected server response");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error: " + err.message);
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uploads.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="both-panel">
+        <div class="panel left">
+            <div class="top-part-left"> 
+                <div class="top-row-part-left"></div>
+                <div class="panel-top-left">
+                    <span class="text-top-left">ADD A NEW QUESTION</span>
+                </div>
+            </div>
+            <div class="main-grid-certif">
+                <div class="grid-item-certif" id="uploads_grid-item-certif">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="certifCode">Certification Identifier:</label>
+                            <select id="certifCode" name="certifCode" required>
+                                <option value="">Select a Certification</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Screenshot:</label>
+                            <div id="dropArea" class="drop-area">
+                                <p>Drag & Drop Image Here or <span class="browse-text">Click to Browse</span></p>
+                                <input type="file" id="imageInput" name="image" accept="image/*" />
+                            </div>
+                        </div>
+                        <div id="previewContainer" class="preview-container hidden">
+                            <label>Selected Image Preview:</label>
+                            <img id="previewImage" alt="Preview" />
+                        </div>
+                        <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="uploadBtn">
+                            <span class="button-text">UPLOAD QUESTION</span>
+                            <div class="loader" style="display: none;"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Grid of blocks -->
+        <div class="panel right">
+            <div class="grid">
+                <div class="grid-item color-scheme-blue">
+                    <p class="text-create-profile">Upload a new question manually!</p>
+                    <button class="button primary-btn full-width-button scheme-button" id="signIn">
+                        <span class="button-text">USE THE FORM</span>
+                        <span class="loading-dots"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initUploads } from "{{ url_for('static', filename='js/uploads.js') }}";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        initUploads();
+    });
+</script>
+{% endblock %}

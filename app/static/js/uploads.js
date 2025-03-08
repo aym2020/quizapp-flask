@@ -1,11 +1,11 @@
 // uploads.js
 const UPLOAD_SELECTORS = {
-    dropArea: document.getElementById('dropArea'),
-    imageInput: document.getElementById('imageInput'),
-    previewContainer: document.getElementById('previewContainer'),
-    previewImage: document.getElementById('previewImage'),
-    uploadForm: document.getElementById('uploadForm'),
-    certifCode: document.getElementById('certifCode')
+    dropArea: null,
+    imageInput: null,
+    previewContainer: null,
+    previewImage: null,
+    uploadForm: null,
+    certifCode: null
 };
 
 let eventListeners = [];

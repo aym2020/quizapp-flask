@@ -25,8 +25,8 @@ TO DO:
 
 """
 
-MAIN_HOME_PAGE = "home2.html"
-MAIN_QUIZ_PAGE = "quiz2.html"
+MAIN_HOME_PAGE = "home.html"
+MAIN_QUIZ_PAGE = "quiz.html"
 
 # Azure Key Vault details
 KEY_VAULT_URL = "https://quizapp-keyvault.vault.azure.net/" 
@@ -127,21 +127,21 @@ def fetch_current_user():
     return current_user
 
 
-@app.route("/", methods=["GET"])
-def home():
+@app.route("/")
+def root_redirect():
+    return redirect("/home")
+
+@app.route("/home")
+def home():  # Changed function name from 'leaderboard' to 'home'
     current_user = fetch_current_user()
     certif_results = fetch_certification_counts(current_user)
     
-    requested_page = request.args.get('page', 'training')
-    if requested_page not in {'training', 'leaderboard', 'profile', 'uploads', 'settings'}:
-        requested_page = 'training'
-
-    return render_template(
+    response = make_response(render_template(
         MAIN_HOME_PAGE,
         certifs=certif_results,
         current_user=current_user,
-        default_page=requested_page
-    )
+        current_page='home'  # Changed from 'leaderboard' to 'home'
+    ))
     
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
@@ -149,13 +149,19 @@ def home():
     
     return response
 
-@app.route('/page/<page_name>')
-def load_page(page_name):
-    valid_pages = {'training', 'leaderboard', 'profile', 'uploads', 'settings'}
-    if page_name not in valid_pages:
-        return "Page not found", 404
-    return render_template(f'pages/{page_name}.html', current_user=fetch_current_user())
 
+# ------------------------------------------------------------
+# Uploads page
+# ------------------------------------------------------------
+
+@app.route("/uploads")
+def uploads():
+    current_user = fetch_current_user()
+    return render_template(
+        "uploads.html",
+        current_user=current_user,
+        current_page='uploads'  # This matches the navigation check
+    )
 
 # ------------------------------------------------------------
 # Get questions for a specific certification
@@ -239,9 +245,9 @@ def get_question(certif, question_id):
         return jsonify({"error": "Question not found"}), 404
 
 
-# -------------------------------
+# ------------------------------------------------------------
 # Processing the Quiz
-# -------------------------------
+# ------------------------------------------------------------
 def process_hotspot_question(q, lines):
     main_lines = []
     statements = []
@@ -564,9 +570,9 @@ def current_user():
     return jsonify({"pseudo": None})
 
 
-# ------------------------------
+# ------------------------------------------------------------
 # Adding a Question
-# ------------------------------
+# ------------------------------------------------------------
 @app.route("/confirm_question", methods=["GET"])
 def confirm_question():
     if 'pending_question' not in session:
