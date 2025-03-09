@@ -13,50 +13,26 @@ let selectedFile = null;
 
 async function populateCertifDropdown() {
     const certifDropdown = document.getElementById("certifCode");
-    const storageKey = "certifCodes"; // Key for session storage
-
-    // Check if certif codes are already in sessionStorage
-    let cachedCertifCodes = sessionStorage.getItem(storageKey);
-
-    if (cachedCertifCodes) {
-        // Parse and use cached data
-        console.log("Using cached certification codes");
-        populateDropdown(JSON.parse(cachedCertifCodes), certifDropdown);
-        return;
-    }
-
+    
     try {
-        console.log("Fetching certification codes...");
-        // Fetch the certification data from your API
         const response = await fetch("/get_certif");
-        if (!response.ok) throw new Error("Failed to fetch certifications");
-
-        // Convert response to JSON and sort alphabetically
-        let certifCodes = await response.json();
-        certifCodes.sort((a, b) => a.localeCompare(b)); // Sort alphabetically
-
-        // Store in session storage for future use
-        sessionStorage.setItem(storageKey, JSON.stringify(certifCodes));
-
-        // Populate the dropdown
-        populateDropdown(certifCodes, certifDropdown);
-
+        const certifs = await response.json();
+        
+        // Clear and repopulate with valid options
+        certifDropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
+        
+        certifs.forEach(certif => {
+            const option = document.createElement("option");
+            option.value = certif;
+            option.textContent = certif;  
+            certifDropdown.appendChild(option);
+        });
     } catch (error) {
         console.error("Error loading certifications:", error);
+        alert('Failed to load certifications');
     }
 }
 
-// Helper function to populate dropdown
-function populateDropdown(certifCodes, certifDropdown) {
-    certifDropdown.innerHTML = '<option value="" disabled selected>Select a Certification</option>';
-    
-    certifCodes.forEach(certifCode => {
-        const option = document.createElement("option");
-        option.value = certifCode;
-        option.textContent = certifCode.toUpperCase(); // Display in uppercase
-        certifDropdown.appendChild(option);
-    });
-}
 
 // Initialize upload functionality
 function initUploads() {
@@ -119,7 +95,7 @@ function initUploads() {
     };
 
     // Form Submission
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
         
         const certifCode = UPLOAD_SELECTORS.certifCode.value.trim();

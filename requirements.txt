@@ -8,3 +8,4 @@ openai
 pillow
 pytesseract
 gunicorn
+uuid

@@ -18,6 +18,7 @@ import pytesseract
 import io
 import base64
 import logging
+import uuid
 
 """
 TO DO:
@@ -57,8 +58,9 @@ cosmos_client = CosmosClient.from_connection_string(COSMOS_DB_CONN)
 
 # Get the database and container
 db = cosmos_client.get_database_client("quizdb")
-container = db.get_container_client("questions")
-users_container = db.get_container_client("users")  # Ensure this is defined!
+questions_container = db.get_container_client("questions")
+users_container = db.get_container_client("users")
+certif_container = db.get_container_client("certifications")
 
 # ------------------------------------------------------------
 # Home page
@@ -70,7 +72,7 @@ def fetch_certification_counts(current_user=None):
     If not, return only the total question counts.
     """
     # Query for total questions per certification
-    items = list(container.query_items(
+    items = list(questions_container.query_items(
         query="SELECT c.certifcode FROM c",
         enable_cross_partition_query=True
     ))
@@ -168,7 +170,7 @@ def uploads():
 # ------------------------------------------------------------
 def fetch_questions(certif, limit=10, current_user=None):
     # Get all questions for certification
-    questions = list(container.query_items(
+    questions = list(questions_container.query_items(
         query="SELECT * FROM c WHERE c.certifcode=@certif",
         parameters=[{"name": "@certif", "value": certif}],
         enable_cross_partition_query=True
@@ -223,7 +225,7 @@ def get_question(certif, question_id):
     current_user = fetch_current_user()
     try:
         # Fetch question with proper error handling
-        question = container.read_item(item=question_id, partition_key=certif)
+        question = questions_container.read_item(item=question_id, partition_key=certif)
         
         # Merge updated quiz history if available
         if "updated_quiz_history" in session:
@@ -414,14 +416,14 @@ def validate_payload(request):
 # Database Operations
 def delete_existing_questions(certif_code):
     try:
-        existing_questions = list(container.query_items(
-            query="SELECT c.id FROM c WHERE c.certifcode = @certif",
-            parameters=[{"name": "@certif", "value": certif_code}],
-            enable_cross_partition_query=True
-        ))
-
-        for question in existing_questions:
-            container.delete_item(
+        questions = list(questions_container.query_items(
+        query="SELECT * FROM c WHERE c.certifcode = @certif",
+        parameters=[{"name": "@certif", "value": certif_code}],
+        enable_cross_partition_query=True
+    ))
+    
+        for question in questions:
+            questions_container.delete_item(
                 item=question['id'],
                 partition_key=certif_code
             )
@@ -434,7 +436,7 @@ def insert_new_questions(certif_code, questions):
     inserted = 0
     try:
         for question in questions:
-            container.create_item(body=question)
+            questions_container.create_item(body=question)
             inserted += 1
         return inserted
     except cosmos_exceptions.CosmosResourceExistsError:
@@ -576,8 +578,13 @@ def current_user():
 @app.route("/confirm_question", methods=["GET"])
 def confirm_question():
     if 'pending_question' not in session:
-        return redirect(url_for('add_manual_question'))
-    return render_template("confirm_question.html", question_data=session['pending_question'])
+        return redirect(url_for('uploads'))  # Redirect to uploads if no pending question
+    
+    return render_template(
+        "confirm_question.html",
+        question_data=session['pending_question'],
+        current_page='confirm_question'  # Add this line
+    )
 
 # GPT Configuration
 GPT_ENDPOINT = "https://api.openai.com/v1/chat/completions"
@@ -594,7 +601,7 @@ PROMPT_TEMPLATE = """
 Analyze exam question images and output **valid JSON** that conforms strictly to this structure:
 
 {
-    "id": "question number (e.g. '187')",
+    "exam_topic_id": "question number (e.g. '187')",
     "question": "Original formatted text",
     "choices": "Type-specific format" (e.g. A. choice1 B. choice 2),
     "answer": "Validated answers",
@@ -617,7 +624,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
    - Do not add "Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements."
    - If a statement is repeated, unify or remove duplicates only if certain they are exact duplicates.
    - "certifcode" must match the user input exactly as `{certifcode}` (will be overridden in the code).
-   - **id**: a question number (e.g., "187", "99", etc.). Use the one provided or extracted from the question, if present.
+   - **exam_topic_id**: a question number (e.g., "187", "99", etc.). Use the one provided or extracted from the question, if present.
    - **Low Temperature**
 
 ### **2. Answer Selection Rules**
@@ -647,7 +654,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 #### **4.1 Yes/No (`"questiontype": "yesno"`)**
 ```json
 {
-    "id": "3",
+    "exam_topic_id": "3",
     "certifcode": "Extracted or inferred certification code",
     "questiontype": "yesno",
     "question": "Extract the full question text.",
@@ -662,7 +669,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 #### **4.2 Multiple Choice (`"questiontype": "multiplechoice"`)**
 ```json
 {
-    "id": "19",
+    "exam_topic_id": "19",
     "certifcode": "Extracted or inferred certification code (if available, else leave empty)",
     "questiontype": "multiplechoice",
     "question": "Extract the full question text, preserving formatting and meaning.",
@@ -682,7 +689,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 #### **4.3 Drag & Drop (`"questiontype": "draganddrop"`)**
 ```json
 {
-    "id": "42",
+    "exam_topic_id": "42",
     "certifcode": "Extracted or inferred certification code",
     "questiontype": "draganddrop",
     "question": "Extract the full question text.",
@@ -699,7 +706,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 #### **4.4 Hotspot (`"questiontype": "hotspot"`)**
 ```json
 {
-    "id": "49",
+    "exam_topic_id": "49",
     "certifcode": "Extracted or inferred certification code",
     "questiontype": "hotspot",
     "question": "Extract the full question text.",
@@ -716,7 +723,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
     Extract structured information from the given image of a multiple-choice question. Your output should be in JSON format with the following structure:
 
         {
-            "id": "question number (e.g. '48')",
+            "exam_topic_id": "question number (e.g. '48')",
             "certifcode": "Extracted or inferred certification code (if available, else leave empty)",
             "questiontype": "multiplechoice",
             "question": "Extract the full question text, replacing missing words with '[...]' where necessary.",
@@ -753,7 +760,7 @@ Analyze exam question images and output **valid JSON** that conforms strictly to
 OUTPUT : ***ONLY THE JSON***
 """
 
-@app.route("/add_question2", methods=["GET"])
+@app.route("/add_question", methods=["GET"])
 def add_question_page():
     return render_template("add_question.html")
 
@@ -763,7 +770,7 @@ def add_question_page():
 def process_question_image():
     try:
         # Get certification code
-        certifcode = request.form['certifcode'].lower()
+        certifcode = request.form['certifcode']
         if not re.match(r"^[a-z0-9-]+$", certifcode):
             return jsonify({"error": "Invalid certification code format"}), 400
 
@@ -883,6 +890,7 @@ def process_question_image():
         raw_json["certifcode"] = certifcode
         
         # Store in session for final confirmation
+        raw_json["exam_topic_id"] = raw_json.get("exam_topic_id", "unknown")
         session['pending_question'] = raw_json
         return jsonify(raw_json)
 
@@ -890,21 +898,36 @@ def process_question_image():
         app.logger.error(f"Error processing image: {str(e)}")
         return jsonify({"error": f"Processing failed: {str(e)}"}), 500
 
+
 @app.route("/submit_question", methods=["POST"])
 def submit_question():
-    try:
-        question = request.get_json()
-        if not question:
-            return jsonify({"error": "No question data provided"}), 400
-                
-        print(f"✅ Inserting question: {json.dumps(question, indent=4)}")
-        
-        container.create_item(body=question)
-        return jsonify({"message": "Question added successfully!"})
-    
-    except Exception as e:
-        print(f"❌ Error submitting question: {str(e)}")
-        return jsonify({"error": str(e)}), 500 
+    question_data = request.get_json()
+    if not question_data:
+        return jsonify({"error": "No question data provided"}), 400
+
+    # Validate required fields
+    certifcode = question_data.get("certifcode")
+    exam_topic_id = question_data.get("exam_topic_id")  # Changed from 'id'
+    if not certifcode:
+        return jsonify({"error": "Missing certification code"}), 400
+    if not exam_topic_id:
+        return jsonify({"error": "Missing exam_topic_id"}), 400
+
+
+    # Generate UUID and preserve exam_topic_id
+    final_question = {
+        "id": str(uuid.uuid4()),
+        "exam_topic_id": exam_topic_id,
+        "certifcode": certifcode,
+        "questiontype": question_data.get("questiontype"),
+        "question": question_data.get("question"),
+        "choices": question_data.get("choices", []),
+        "answer": question_data.get("answer"),
+        "explanation": question_data.get("explanation")
+    }
+
+    questions_container.create_item(body=final_question)
+    return jsonify({"message": "Question added successfully!", "id": final_question["id"]})
     
 
 @app.route("/clear-pending-question", methods=["POST"])
@@ -915,6 +938,12 @@ def clear_pending_question():
 
 @app.route("/manual_question", methods=["GET"])
 def manual_question():
+    # Get certification codes from Cosmos DB
+    certif_codes = list(certif_container.query_items(
+        query="SELECT DISTINCT c.certifcode FROM c",
+        enable_cross_partition_query=True
+    ))
+    
     session['pending_question'] = {
         "id": "",
         "certifcode": "",
@@ -924,12 +953,14 @@ def manual_question():
         "answer": "",
         "explanation": ""
     }
-    return render_template("manual_question.html", 
-                         question_data=session['pending_question'],
-                         question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"])
-
-
-
+    
+    return render_template(
+        "manual_question.html", 
+        question_data=session['pending_question'],
+        question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"],
+        certif_codes=[c['certifcode'] for c in certif_codes if 'certifcode' in c],
+        current_page='uploads'
+    )
 
 
 @app.route("/submit_quiz", methods=["POST"])
@@ -1013,46 +1044,48 @@ def get_total_questions(certifcode):
     """Get total questions count for a certification"""
     query = "SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif"
     params = [{"name": "@certif", "value": certifcode}]
-    result = list(container.query_items(query=query, parameters=params, enable_cross_partition_query=True))
+    result = list(questions_container.query_items(query=query, parameters=params, enable_cross_partition_query=True))
     return result[0] if result else 0
 
 # ------------------------------------------------------------
 # Fetch question
 # ------------------------------------------------------------
 
-@app.route("/get_question/<certif>/<question_id>", methods=["GET"])
-def fetch_current_user():
-    """
-    Fetch the current user details from session if logged in.
-    Returns None if not logged in or if the user fetch fails.
-    """
-    current_user = None
-    if "user_id" in session:
-        user_id = session["user_id"]
-        try:
-            current_user = users_container.read_item(item=user_id, partition_key=user_id)
-            # Merge session updates if they exist
-            if "updated_quiz_history" in session:
-                current_user["quiz_history"] = session["updated_quiz_history"]
-        except Exception as e:
-            logging.error(f"Error fetching user: {e}")
-            session.pop("user_id", None)
-    return current_user
+# Get by exam_topic_id (display ID)
+@app.route("/get_question_by_exam_id/<certif>/<exam_topic_id>", methods=["GET"])
+def get_question_by_exam_id(certif, exam_topic_id):
+    try:
+        items = list(questions_container.query_items(
+            query="SELECT * FROM c WHERE c.certifcode = @certif AND c.exam_topic_id = @exam_id",
+            parameters=[
+                {"name": "@certif", "value": certif},
+                {"name": "@exam_id", "value": exam_topic_id}
+            ],
+            enable_cross_partition_query=True
+        ))
+        
+        if not items:
+            return jsonify({"error": "Question not found"}), 404
+            
+        return jsonify(process_question(items[0]))
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ------------------------------------------------------------
-# NEW ROUTES
+# FETCH CERTIF CODES
 # ------------------------------------------------------------
 
 @app.route("/get_certif", methods=["GET"])
 def fetch_certif():
-    items = list(container.query_items(
-        query="SELECT DISTINCT c.certifcode FROM c",
+    # Query certifications container directly
+    items = list(certif_container.query_items(
+        query="SELECT c.certifcode FROM c",
         enable_cross_partition_query=True
     ))
+    certifs = list(set([item["certifcode"] for item in items if "certifcode" in item]))
+    return jsonify(sorted(certifs))
 
-    unique_certifcodes = list(set(item["certifcode"] for item in items if "certifcode" in item))
-
-    return jsonify(unique_certifcodes)
 
 # ------------------------------------------------------------
 # Run app

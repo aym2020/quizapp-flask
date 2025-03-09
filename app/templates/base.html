@@ -37,7 +37,7 @@
             </div>
             <span class="choice-menu-text">PROFILE</span>
           </a>
-          <a href="/uploads" class="choice-menu-box {% if current_page == 'uploads' %}selected{% endif %}">
+          <a href="/uploads" class="choice-menu-box {% if current_page in ['uploads', 'confirm_question'] %}selected{% endif %}" data-page="uploads">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-cloud fa-xl" style="color:rgb(32, 199, 255);"></i>
             </div>

@@ -1,53 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
-
-:root {
-  --main-font: 'Averia Sans Libre', serif;
-  --border-radius: 16px;
-  --blue-main: #46b2e4;
-  --blue-shadow: rgb(24, 153, 214);
-  --blue-hover: rgb(44, 205, 250);
-  --blue-text: rgb(70, 178, 228);
-  --blue-border: rgba(70, 178, 228, 0.58);
-
-  --dark-blue-bg: #171a2c;
-  --dark-blue-panel: #222539;
-  --dark-button-text-color: rgb(19, 31, 36);
-  --dark-hover-color: #24283c;
-
-  --pink-main: #ff99a9;
-  --pink-shadow: #b55d6b;
-  --pink-hover: #ffb0bc;
-  --pink-text: #ff99a9;
-  --pink-border: #ff99a9;
-
-  --grey-main: rgb(69, 69, 69);
-  --grey-shadow: #2d2b2b;
-  --grey-hover: #646262;
-  --grey-text: #2d2b2b;
-  --grey-border: rgba(69, 69, 69, 0.58);
-
-  --white-text: #ecf0f1;
-  --grey-bg: rgb(32, 47, 54);
-  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-body, html {
-  background-color: var(--dark-blue-bg);
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: var(--main-font);
+.choice-menu-box[data-page="uploads"].selected {
+  background-color: rgb(32, 47, 54);
+  border-color: var(--pink-border);
+  color: var(--pink-text);
 }
 
 .confirm-wrapper {
-  min-height: 100vh; /* Ensure the container takes full height */
+  padding: 0 24px 24px;
   padding-bottom: 3rem;
 }
 
 /* Enhanced container */
 .confirm-question-container {
-  padding: 2rem;
+  padding: 1.5rem;
   background: var(--dark-blue-panel);
   border-radius: var(--border-radius);
   color: var(--white-text);
@@ -173,48 +137,57 @@ button.remove-statement:hover {
 }
 
 /* ---------------------------------------------- */
-/* Button Styling to Match Upload Button */
+/* Loading Animation */
 /* ---------------------------------------------- */
 
-.btn-submit {
-  background-color: var(--pink-main);
-  color: var(--dark-button-text-color);
-  padding: 15px 30px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  font-family: var(--main-font);
-  box-shadow: 0px 4px 0px 0px var(--pink-shadow);
-  transition: all 0.1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  border: none;
-  position: relative;
-}
-
-.btn-submit:hover {
-  background-color: var(--pink-hover);
-  transform: translateY(2px);
-  box-shadow: 0px 2px 0px 0px var(--pink-shadow);
-}
-
-/* ---------------------------------------------- */
-/* Loader Animation for Submit Button */
-/* ---------------------------------------------- */
-
-.btn-submit .loader {
-  width: 3px;
+.loader {
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-20px);
+  opacity: 90%;
+  color: rgb(19, 31, 36); 
+  width: 3px;  /* Reduced size */
   aspect-ratio: 1;
   border-radius: 50%;
   box-shadow: 10px 0 0 4px, 25px 0 0 2px, 40px 0 0 0;
   animation: l21 0.5s infinite alternate linear;
-  display: none;
 }
 
 @keyframes l21 {
-  50% { box-shadow: 10px 0 0 2px, 25px 0 0 4px, 40px 0 0 2px; }
+  50%  { box-shadow: 10px 0 0 2px, 25px 0 0 4px, 40px 0 0 2px; }
   100% { box-shadow: 10px 0 0 0, 25px 0 0 2px, 40px 0 0 4px; }
+}
+
+/* Ensure button text is still visible when loading */
+.button.primary-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+  
+
+/* ---------------------------------------------- */
+/* Manual Question */
+/* ---------------------------------------------- */
+
+.btn-add {
+  margin-bottom: 1.5rem;
+  background: transparent;
+  border: 2px dashed var(--grey-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--white-text);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: var(--main-font);
+  resize: vertical;
+}
+
+.btn-add:hover {
+  background-color: rgba(23, 26, 44, 0.3);
+  opacity: 50;
+  cursor: pointer;
 }
