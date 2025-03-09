@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/training.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="both-panel">
+        <div class="panel left">
+            <div class="top-part-left"> 
+                <div class="top-row-part-left"></div>
+                <div class="panel-top-left">
+                    <span class="text-top-left">SHARPEN YOUR SKILLS</span>
+                </div>
+            </div>
+            <div class="main-grid-certif">
+                <div class="grid-item-certif" id="uploads_grid-item-certif">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="certifCode">Certification Identifier:</label>
+                            <select id="certifCode" name="certifCode" required>
+                                <option value="" disabled selected>Select Certification</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="trainingBtn">
+                            <span class="button-text">DRIP THE BEAT</span>
+                            <div class="loader" style="display: none;"></div>
+                        </button
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Grid of blocks -->
+        <div class="panel right">
+            <div class="grid">
+                <div class="grid-item color-scheme-blue">
+                    <p class="text-create-profile">Upload a new question manually!</p>
+                    <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
+                        <span class="button-text">USE THE FORM</span>
+                        <span class="loading-dots"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="{{ url_for('static', filename='js/training.js') }}"></script>
+
+{% endblock %}

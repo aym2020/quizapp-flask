@@ -164,6 +164,21 @@ def uploads():
         current_user=current_user,
         current_page='uploads'  # This matches the navigation check
     )
+    
+
+# ------------------------------------------------------------
+# Training page
+# ------------------------------------------------------------
+ 
+@app.route("/training")
+def training():
+    current_user = fetch_current_user()
+    return render_template(
+        "training.html",
+        current_user=current_user,
+        current_page='training'  # This matches the navigation check
+    )
+
 
 # ------------------------------------------------------------
 # Get questions for a specific certification
