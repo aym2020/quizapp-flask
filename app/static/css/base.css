@@ -639,19 +639,45 @@ input[type="checkbox" i] {
 }
 
 /* Fix autofill background color */
+@keyframes autofillReset {
+  0%,
+  100% {
+    background-color: var(--dark-blue-bg);
+    color: var(--white-text);
+  }
+}
+
+/* Update your autofill styles */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-  background-color: var(--grey-bg) !important; /* Match input background */
-  color: var(--white-text) !important; /* Match text color */
-  -webkit-box-shadow: 0 0 0px 1000px rgb(32, 47, 54) inset !important;
-  transition: background-color 5000s ease-in-out 0s; /* Prevents sudden color change */
+  background-color: var(--dark-blue-bg) !important;
+  -webkit-text-fill-color: var(--white-text) !important; /* Add this line */
+  color: var(--white-text) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--dark-blue-bg) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Override autofill text color */
+/* Add these new rules */
 input:-webkit-autofill::first-line {
-  color: var(--white-text) !important; /* Match your default text color */
+  -webkit-text-fill-color: var(--white-text) !important;
+  color: var(--white-text) !important;
+}
+
+/* For Firefox */
+input:-moz-autofill,
+input:-moz-autofill:hover, 
+input:-moz-autofill:focus, 
+input:-moz-autofill:active {
+  filter: drop-shadow(0 0 0 var(--dark-blue-bg)) !important;
+  background-color: var(--dark-blue-bg) !important;
+  color: var(--white-text) !important;
+}
+
+/* Ensure caret color matches */
+input {
+  caret-color: var(--white-text);
 }
 
 
@@ -725,6 +751,28 @@ input:-webkit-autofill::first-line {
 
 .text-button:hover {
   color: var(--pink-main);
+}
+
+/* ---------------------------------------------- */
+/* REGISTER MODAL */
+/* ---------------------------------------------- */
+
+#registerForm .form-group {
+  margin-bottom: 1.5rem;
+}
+
+#registerForm input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--grey-border);
+  background: var(--dark-blue-bg);
+  color: var(--white-text);
+}
+
+#registerForm input:focus {
+  border-color: var(--blue-main);
+  outline: none;
 }
 
 /* ---------------------------------------------- */

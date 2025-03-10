@@ -82,6 +82,15 @@ function hideModal(modal) {
     }
     
     modal.removeEventListener('click', modalClickHandler, true);
+
+    const inputs = modal.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.value = '';
+      input.blur();
+    });
+    
+    // Force style recalculation
+    void modal.offsetHeight;
 }
 
 
@@ -95,45 +104,6 @@ function modalClickHandler(e) {
     e.preventDefault();
 }
 
-function updateNavbar() {
-    const authButtons = document.querySelector('.auth-buttons');
-    const logoutButton = document.getElementById('choice-menu-logout');
-
-    if (authState.isAuthenticated) {
-        // Hide Sign In & Create Profile buttons
-        if (authButtons) authButtons.style.display = 'none';
-
-        // Show Logout button
-        if (logoutButton) logoutButton.style.display = 'block';
-    } else {
-        // Show Sign In & Create Profile buttons
-        if (authButtons) authButtons.style.display = 'block';
-
-        // Hide Logout button
-        if (logoutButton) logoutButton.style.display = 'none';
-    }
-}
-
-async function checkAuthState() {
-    try {
-        const response = await fetch('/current_user');
-        const user = await response.json();
-
-        if (user.pseudo) {
-            authState.isAuthenticated = true;
-            authState.currentUser = user;
-            document.dispatchEvent(authEvents.LOGIN);
-        } else {
-            authState.isAuthenticated = false;
-            authState.currentUser = null;
-            document.dispatchEvent(authEvents.LOGOUT);
-        }
-
-        updateNavbar(); // ✅ Ensure navbar updates dynamically
-    } catch (error) {
-        console.error('Auth check error:', error);
-    }
-}
 
 async function handleSignIn(e) {
     e.preventDefault();
@@ -179,16 +149,15 @@ async function handleSignIn(e) {
             authState.currentUser = result;
 
             // Immediately update the navbar
-            updateNavbar();
+            window.location.reload();
 
             // Keep the loader visible for 1.5 seconds
             setTimeout(() => {
                 // Hide all modals
                 document.querySelectorAll('.modal').forEach(modal => {
-                    hideModal(modal);
+                    hideModal(modal);  
                 });
-            
-            }, 300);
+            }, 500);
         } else {
             if (result.error.includes("User not found")) {
                 showErrorMessage(pseudoInput, "This username does not exist.");
@@ -213,21 +182,27 @@ async function handleSignIn(e) {
 
 async function handleRegister(e) {
     e.preventDefault();
+    e.stopPropagation();
+
     const form = e.target;
-    const formData = new FormData(form);
+    const pseudoInput = form.querySelector('#regPseudo');
+    const passwordInput = form.querySelector('#regPassword');
     const loader = form.querySelector('.loader');
+    const buttonText = form.querySelector('.button-text');
+    
+    const formData = {
+        pseudo: pseudoInput.value.trim(),
+        password: passwordInput.value.trim()
+    };
 
     try {
-        form.querySelector('.button-text').style.visibility = 'hidden';
+        buttonText.style.visibility = 'hidden';
         loader.style.display = 'inline-block';
 
         const response = await fetch('/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                pseudo: formData.get('pseudo'),
-                password: formData.get('password')
-            })
+            body: JSON.stringify(formData)
         });
 
         if (response.ok) {
@@ -235,12 +210,16 @@ async function handleRegister(e) {
             showModal('signIn');
         } else {
             const error = await response.json();
-            showError(form, error.error);
+            if (error.error.includes("already exists")) {
+                showErrorMessage(pseudoInput, "Username already taken");
+            } else {
+                showErrorMessage(pseudoInput, "Registration failed");
+            }
         }
     } catch (error) {
-        showError(form, 'Connection error');
+        showErrorMessage(pseudoInput, "Connection error");
     } finally {
-        form.querySelector('.button-text').style.visibility = 'visible';
+        buttonText.style.visibility = 'visible';
         loader.style.display = 'none';
     }
 }
