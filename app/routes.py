@@ -551,21 +551,22 @@ def login():
     data = request.json
     pseudo = data.get("pseudo")
     password = data.get("password")
+    remember = data.get("remember", False)
 
     if not pseudo or not password:
         return jsonify({"error": "Pseudo and password are required"}), 400
 
     users = query_user_by_pseudo(pseudo)
     if not users:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "User not found"}), 404  # Ensure this is handled properly
 
     user = users[0]
     if not bcrypt.check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    # Store user ID in session
+        return jsonify({"error": "Incorrect password"}), 401  
     session["user_id"] = user["id"]
-    return jsonify({"message": "Login successful!", "user_id": user["id"]})
+    session.permanent = remember  # Make session permanent if "remember me" is checked
+
+    return jsonify({"message": "Login successful!", "pseudo": user["pseudo"]})
 
 # Logout user
 @app.route("/logout", methods=["GET"])
