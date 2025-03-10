@@ -46,17 +46,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showModal(type) {
     const modal = document.getElementById(`${type}Modal`);
+    if (!modal) return;
     modal.classList.remove('hidden');
     modal.classList.add('visible');
-    // Disable interactions on the background
     document.body.classList.add('modal-open');
+
+    // Disable interactive elements on the training page (if they exist)
+    const certifDropdown = document.getElementById('certifCode');
+    if (certifDropdown) {
+        certifDropdown.disabled = true;
+    }
+    const trainingBtn = document.getElementById('trainingBtn');
+    if (trainingBtn) {
+        trainingBtn.disabled = true;
+    }
+    
+    // Add a click handler on the modal overlay that only blocks clicks outside the modal-content
+    modal.addEventListener('click', modalClickHandler, true);
 }
 
 function hideModal(modal) {
+    if (!modal) return;
     modal.classList.remove('visible');
     modal.classList.add('hidden');
-    // Re-enable background interactions
     document.body.classList.remove('modal-open');
+
+    // Re-enable the underlying interactive elements
+    const certifDropdown = document.getElementById('certifCode');
+    if (certifDropdown) {
+        certifDropdown.disabled = false;
+    }
+    const trainingBtn = document.getElementById('trainingBtn');
+    if (trainingBtn) {
+        trainingBtn.disabled = false;
+    }
+    
+    modal.removeEventListener('click', modalClickHandler, true);
+}
+
+
+function modalClickHandler(e) {
+    // Allow any click that occurs within the modal-content, including the Sign In button
+    if (e.target.closest('.modal-content')) {
+        return;
+    }
+    // Otherwise, block the click to prevent it from interacting with the underlying page
+    e.stopImmediatePropagation();
+    e.preventDefault();
+}
+
+function updateNavbar() {
+    const authButtons = document.querySelector('.auth-buttons');
+    const logoutButton = document.getElementById('choice-menu-logout');
+
+    if (authState.isAuthenticated) {
+        // Hide Sign In & Create Profile buttons
+        if (authButtons) authButtons.style.display = 'none';
+
+        // Show Logout button
+        if (logoutButton) logoutButton.style.display = 'block';
+    } else {
+        // Show Sign In & Create Profile buttons
+        if (authButtons) authButtons.style.display = 'block';
+
+        // Hide Logout button
+        if (logoutButton) logoutButton.style.display = 'none';
+    }
+}
+
+async function checkAuthState() {
+    try {
+        const response = await fetch('/current_user');
+        const user = await response.json();
+
+        if (user.pseudo) {
+            authState.isAuthenticated = true;
+            authState.currentUser = user;
+            document.dispatchEvent(authEvents.LOGIN);
+        } else {
+            authState.isAuthenticated = false;
+            authState.currentUser = null;
+            document.dispatchEvent(authEvents.LOGOUT);
+        }
+
+        updateNavbar(); // ✅ Ensure navbar updates dynamically
+    } catch (error) {
+        console.error('Auth check error:', error);
+    }
 }
 
 async function handleSignIn(e) {
@@ -67,7 +143,8 @@ async function handleSignIn(e) {
     const pseudoInput = form.querySelector('#pseudo');
     const passwordInput = form.querySelector('#password');
     const loader = form.querySelector('.loader');
-
+    const buttonText = form.querySelector('.button-text');
+    
     if (!loader) {
         console.error("Loader element is missing inside the form.");
         return;
@@ -79,8 +156,12 @@ async function handleSignIn(e) {
         remember: form.querySelector('input[name="remember"]').checked
     };
 
+    // Flag to know if login succeeded
+    let loginSuccessful = false;
+
     try {
-        form.querySelector('.button-text').style.visibility = 'hidden';
+        // Hide button text and show loader
+        buttonText.style.visibility = 'hidden';
         loader.style.display = 'inline-block';
 
         const response = await fetch('/login', {
@@ -93,11 +174,21 @@ async function handleSignIn(e) {
         const result = await response.json();
 
         if (response.ok) {
+            loginSuccessful = true;
             authState.isAuthenticated = true;
             authState.currentUser = result;
 
-            hideModal(form.closest('.modal'));
-            location.reload();
+            // Immediately update the navbar
+            updateNavbar();
+
+            // Keep the loader visible for 1.5 seconds
+            setTimeout(() => {
+                // Hide all modals
+                document.querySelectorAll('.modal').forEach(modal => {
+                    hideModal(modal);
+                });
+            
+            }, 0);
         } else {
             if (result.error.includes("User not found")) {
                 showErrorMessage(pseudoInput, "This username does not exist.");
@@ -110,10 +201,14 @@ async function handleSignIn(e) {
     } catch (error) {
         showErrorMessage(form, "Connection error. Please try again.");
     } finally {
-        form.querySelector('.button-text').style.visibility = 'visible';
-        loader.style.display = 'none';
+        // Only reset the loader and button text if login was not successful
+        if (!loginSuccessful) {
+            buttonText.style.visibility = 'visible';
+            loader.style.display = 'none';
+        }
     }
 }
+
 
 
 async function handleRegister(e) {
