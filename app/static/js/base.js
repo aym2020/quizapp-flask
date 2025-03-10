@@ -188,7 +188,7 @@ async function handleSignIn(e) {
                     hideModal(modal);
                 });
             
-            }, 0);
+            }, 300);
         } else {
             if (result.error.includes("User not found")) {
                 showErrorMessage(pseudoInput, "This username does not exist.");
