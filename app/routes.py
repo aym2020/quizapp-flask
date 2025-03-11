@@ -1103,6 +1103,34 @@ def fetch_certif():
     return jsonify(sorted(certifs))
 
 
+@app.route('/get_certif_details')
+def get_certif_details():
+    certifs = {
+        "az-900": {
+            "code": "az-900",
+            "title": "CLOUD FUNDAMENTALS",
+            "name": "AZ-900",
+            "logo": "az900.svg",
+            "progress": 30
+        },
+        "dp-900": {
+            "code": "dp-900",
+            "title": "DATA FUNDAMENTALS",
+            "name": "DP-900",
+            "logo": "dp900.svg",
+            "progress": 25
+        },
+        "az-104": {
+            "code": "az-104",
+            "title": "ADMINISTRATOR ASSOCIATE",
+            "name": "AZ-104",
+            "logo": "az104.svg",
+            "progress": 25
+        }
+    }
+    return jsonify(certifs)
+
+
 # ------------------------------------------------------------
 # Run app
 # ------------------------------------------------------------

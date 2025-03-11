@@ -277,7 +277,7 @@ color: var(--white-text);
   height: 90%;
 }
 
-#az900-Logo {
+#certif-logo {
   width: 100%;
 }
 
@@ -296,12 +296,12 @@ color: var(--white-text);
 }
 
 .warning_message i {
-  color: var(--blue-main);
+  color: var(--pink-main);
   font-size: 1.2rem;
 }
 
 .progress-warning {
-  color: var(--blue-main);
+  color: var(--pink-main);
   margin: 0;
   font-size: 0.9rem;
   font-weight: 500;

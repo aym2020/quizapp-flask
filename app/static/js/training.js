@@ -1,78 +1,110 @@
 // training.js
+let certifications = {};
 let trainingEventListeners = [];
 
-// Modified to receive dropdown as parameter
 async function populateCertifDropdown(dropdown) {
-  try {
-    const response = await fetch('/get_certif');
-    const certifs = await response.json();
-    
-    // Clear and repopulate dropdown
-    dropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
-    certifs.forEach(certif => {
-      const option = document.createElement('option');
-      option.value = certif;
-      option.textContent = certif;
-      dropdown.appendChild(option);
-    });
-  } catch (error) {
-    console.error('Error loading certifications:', error);
-    // Remove alert to prevent blocking
-  }
+    try {
+        const response = await fetch('/get_certif_details');
+        certifications = await response.json();
+        
+        dropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
+        Object.values(certifications).forEach(certif => {
+            const option = document.createElement('option');
+            option.value = certif.code;
+            option.textContent = certif.code.toUpperCase();
+            dropdown.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading certifications:', error);
+    }
 }
 
-// Modified to receive elements as parameters
-function handleTrainingButtonClick(trainingBtn, dropdown) {
-  return function(e) {
-    e.preventDefault();
+function updateCertificationPanel(selectedCertif) {
+    const container = document.getElementById('certification-panel-container');
     
-    const selectedCertif = dropdown.value;
-    if (!selectedCertif) {
-      alert('Please select a certification first!');
+    if (!container) {
+      console.error('Certification panel container not found');
       return;
     }
 
-    const loader = trainingBtn.querySelector('.loader');
-    trainingBtn.disabled = true;
-    trainingBtn.querySelector('.button-text').style.visibility = 'hidden';
-    loader.style.display = 'inline-block';
 
-    setTimeout(() => {
-      window.location.href = `/quiz/${selectedCertif}`;
-      setTimeout(() => {
-        trainingBtn.disabled = false;
-        trainingBtn.querySelector('.button-text').style.visibility = 'visible';
-        loader.style.display = 'none';
-      }, 3000);
-    }, 2000);
-  };
+    if (!selectedCertif) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const certif = certifications[selectedCertif];
+    if (!certif) {
+        console.error('Certification not found:', selectedCertif);
+        return;
+    }
+    
+    const currentUser = CURRENT_USER;
+    
+    container.innerHTML = `
+        <div class="grid-item-certif">
+            <div class="left-part-grid-item color-scheme-pink">
+                <button class="button-certif-detail">
+                    <span class="grid-text-detail-certif-button">${certif.title}</span>
+                </button>
+                <span class="grid-certif-name">${certif.name}</span>
+                <div class="grid-progress-bar">
+                  <div class="progress-fill" style="width: ${currentUser ? certif.progress : 0}%"></div>
+                    <span class="progress-text">
+                        ${currentUser ? `${Math.round(certif.progress*2.5)}/250` : '0/250'}
+                    </span>
+                    <i class="fas fa-trophy cup-icon fa-xl"></i>
+                </div>
+                ${!currentUser ? `
+                <div class="warning_message">
+                    <i class="fa-solid fa-triangle-exclamation fa-xl"></i>
+                    <p class="progress-warning">Progress won't be saved</p>
+                </div>` : ''}
+                <div class="grid-left-button-continue">
+                    <button class="button primary-btn full-width-button scheme-button continue-btn" data-certif="${certif.code}">
+                        <span class="button-text">
+                            ${currentUser ? 'CONTINUE' : 'START'}
+                        </span>
+                        <span class="loading-dots"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="right-part-grid-item">
+                <img id="certif-logo" src="/static/images/${certif.logo}" alt="${certif.name} Logo">           
+            </div>
+        </div>
+    `;
+
+    container.style.display = 'block';
+    initializeContinueButton();
 }
 
-// Initialize with DOM elements
-function initTraining() {
-  const certifDropdown = document.getElementById('certifCode');
-
-  if (!certifDropdown) return;
-
-  // Initialize dropdown
-  populateCertifDropdown(certifDropdown);
-
-  // Event handlers with proper element references
-  const safeClickHandler = (e) => {
-    if (!document.body.classList.contains('modal-open') && certifDropdown.children.length <= 1) {
-      populateCertifDropdown(certifDropdown);
+function initializeContinueButton() {
+    const continueBtn = document.querySelector('.continue-btn');
+    if (continueBtn) {
+        continueBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const certifCode = this.dataset.certif;
+            window.location.href = `/quiz/${certifCode}`;
+        });
     }
-  };
+}
 
-  // Add event listeners
-  certifDropdown.addEventListener('click', safeClickHandler);
-  trainingBtn.addEventListener('click', handleTrainingButtonClick(trainingBtn, certifDropdown));
+function handleCertifSelection() {
+    const selectedCertif = this.value;
+    updateCertificationPanel(selectedCertif);
+}
 
-  // Store listeners for cleanup
-  trainingEventListeners = [
-    { element: certifDropdown, type: 'click', handler: safeClickHandler },
-    { element: trainingBtn, type: 'click', handler: handleTrainingButtonClick(trainingBtn, certifDropdown) }
-  ];
+function initTraining() {
+    const certifDropdown = document.getElementById('certifCode');
+    if (!certifDropdown) return;
+
+    populateCertifDropdown(certifDropdown);
+    certifDropdown.addEventListener('change', handleCertifSelection);
+
+    trainingEventListeners.push(
+        { element: certifDropdown, type: 'change', handler: handleCertifSelection }
+    );
 }
 
 // Cleanup function
