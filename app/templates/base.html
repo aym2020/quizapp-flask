@@ -1,3 +1,14 @@
+{% macro auth_promo() %}
+    <div class="grid-item color-scheme-pink auth-promo-block">
+        <p class="text-create-profile">Create a profile to save your progress!</p>
+        <div class="auth-promo-buttons">
+            <button class="button primary-btn full-width-button scheme-button">
+                <span class="button-text">JOIN US</span>
+            </button>
+        </div>
+    </div>
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,11 +62,11 @@
           </a>
           {% if not current_user %}
           <div class="auth-buttons" style="display: block;">
-            <button class="button primary-btn scheme-button color-scheme-pink" id="signInBtn">
-              <span class="button-text">SIGN IN</span>
-            </button>
-            <button class="button primary-btn scheme-button color-scheme-blue" id="createAccountBtn">
+            <button class="button primary-btn scheme-button color-scheme-pink full-width-button" id="createAccountBtn">
               <span class="button-text">CREATE PROFILE</span>
+            </button>
+            <button class="button primary-btn scheme-button color-scheme-blue full-width-button" id="signInBtn">
+              <span class="button-text">SIGN IN</span>
             </button>
           </div>
           {% endif %}
@@ -113,7 +124,7 @@
 
           <!-- Action Buttons -->
           <div class="modal-actions">
-            <button type="submit" class="button primary-btn scheme-button color-scheme-pink full-width-button">
+            <button type="submit" class="button primary-btn scheme-button color-scheme-blue full-width-button">
               <span class="button-text">SIGN IN</span>
               <div class="loader" style="display: none;"></div>
           </button>
@@ -149,7 +160,7 @@
   
           <!-- Action Buttons -->
           <div class="modal-actions">
-            <button type="submit" class="button primary-btn scheme-button color-scheme-blue full-width-button">
+            <button type="submit" class="button primary-btn scheme-button color-scheme-pink full-width-button">
               <span class="button-text">CREATE PROFILE</span>
               <div class="loader" style="display: none;"></div>
             </button>

@@ -25,6 +25,7 @@
   --dark-button-text-color: rgb(19, 31, 36);
   --dark-hover-color: #24283c;
   --dark-blue-text-negatif: #30344e;
+  --dark-blue-darker-bg: #131523;
 
   --pink-main: #ff99a9;
   --pink-shadow: #b55d6b;
@@ -94,7 +95,7 @@
 }
 
 body, html {
-  background-color: var(--dark-blue-bg);
+  background-color: var(--dark-blue-darker-bg);
   margin: 0;
   padding: 0;
   height: 100%;
@@ -116,7 +117,7 @@ button, .primary-btn {
 /* ---------------------------------------------- */
 .left-panel {
   width: 258px; /* fixed sidebar width */
-  background-color: var(--dark-blue-bg);
+  background-color: var(--dark-blue-darker-bg);
   color: var(--white-text);
   padding: 0 20px 0 20px;
   overflow-y: auto;
@@ -220,11 +221,12 @@ a {
   min-height: 0;
   overflow-y: auto;
   flex-direction: row;
-  padding: 0 150px 24px;
+  padding: 0 100px 24px;
   grid-gap: 48px;
   display: flex;
   gap: 48px; 
   width: 100%;
+  justify-content: center;
 }
 
 
@@ -246,6 +248,19 @@ a {
   border: none;
   position: relative;
   margin-top: 0;
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: center
+}
+
+.full-width-button {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
 }
 
 .button:hover:not([disabled]) {
@@ -312,15 +327,12 @@ a {
 #signInBtn {
     margin-top: 12px;
     margin-bottom: 12px;
-    width: 100%;
 }
 
 #createAccountBtn   {
   margin-top: 12px;
   margin-bottom: 12px;
-  width: 100%;
 }
-
 
 /* ---------------------------------------------- */
 /* Left panel: resizable (flexible) */
@@ -330,6 +342,7 @@ a {
   flex: 1;
   overflow-y: visible;
   min-width: 0;
+  max-width: 800px;
 }
 
 .top-part_left {
@@ -366,6 +379,7 @@ a {
   display: grid;
   gap: 16px;
   grid-template-columns: 1fr;
+  margin-bottom: 30px
 }
 
 .grid-item-certif {
@@ -379,7 +393,7 @@ a {
 }
 
 .left-part-grid-item{
-  padding: 21px 0;
+  padding: 0 0;
 }
 
 .button-certif-detail {
@@ -460,20 +474,6 @@ a {
     text-align: left;
   }
   
-.button-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.full-width-button {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: none !important;
-}
-
-
 
 /* ---------------------------------------------- */
 /* Bar Icons */
@@ -795,4 +795,18 @@ input {
   font-size: 0.9rem;
   margin-top: 5px;
   text-align: left;
+}
+
+/* ---------------------------------------------- */
+/* BLOCK */
+/* ---------------------------------------------- */
+
+.auth-promo-block {
+    text-align: center;
+    padding: 1.5rem;
+}
+.auth-promo-buttons {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
 }

@@ -269,3 +269,13 @@ document.addEventListener('keydown', function (e) {
         }
     }
 });
+
+
+// Update event listeners to use classes instead of IDs
+document.querySelectorAll('.sign-in-trigger').forEach(btn => {
+    btn.addEventListener('click', () => showModal('signInModal'));
+});
+
+document.querySelectorAll('.create-account-trigger').forEach(btn => {
+    btn.addEventListener('click', () => showModal('registerModal'));
+});

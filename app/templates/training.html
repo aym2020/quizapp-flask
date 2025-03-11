@@ -22,12 +22,43 @@
                                 <option value="" disabled selected>Select Certification</option>
                             </select>
                         </div>
-                        
-                        <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="trainingBtn">
-                            <span class="button-text">DRIP THE BEAT</span>
-                            <div class="loader" style="display: none;"></div>
-                        </button>
                     </form>
+                </div>
+            </div>
+            <div class="main-grid-certif">
+                <!-- AZ-900 Card -->
+                <div class="grid-item-certif">
+                    <div class="left-part-grid-item color-scheme-pink">
+                    <button class="button-certif-detail">
+                        <span class="grid-text-detail-certif-button">CLOUD FUNDAMENTALS</span>
+                    </button>
+                    <span class="grid-certif-name">AZ-900</span>
+                    <div class="grid-progress-bar">
+                        <div class="progress-fill" style="width: {% if current_user %}30%{% else %}0%{% endif %}"></div>
+                        <span class="progress-text">
+                        {% if current_user %}75/250{% else %}0/250{% endif %}
+                        </span>
+                        <i class="fas fa-trophy cup-icon fa-xl"></i>
+                    </div>
+                    {% if not current_user %}
+                    <div class="warning_message">
+                        <i class="fa-solid fa-triangle-exclamation fa-xl"></i>
+                        <p class="progress-warning">Progress won't be saved</p>
+                    </div>
+                    {% endif %}
+                    <div class="grid-left-button-continue">
+                        <button class="button primary-btn full-width-button scheme-button continue-btn" data-certif="az-900">
+                        <span class="button-text">
+                            {% if current_user %}CONTINUE{% else %}START{% endif %}
+                        </span>
+                        <span class="loading-dots"></span>
+                        </button>
+                    </div>
+                    </div>
+                    <div class="right-part-grid-item">
+                        <!-- Add AZ-900 badge SVG here -->
+                        <img id="az900-Logo" src="{{ url_for('static', filename='images/az900.svg') }}" alt="AZ-900 Logo">           
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,6 +66,9 @@
         <!-- Right Panel: Grid of blocks -->
         <div class="panel right">
             <div class="grid">
+                {% if not current_user %}
+                    {{ auth_promo() }}
+                {% endif %}
                 <div class="grid-item color-scheme-blue">
                     <p class="text-create-profile">Upload a new question manually!</p>
                     <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
