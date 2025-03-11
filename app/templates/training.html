@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="main-grid-certif">
-                <div id="certification-panel-container" style="display: none;">
+                <div id="certification-panel-container">
                     <!-- Dynamic content will be injected here -->
                 </div>
             </div>
@@ -38,13 +38,16 @@
                 {% if not current_user %}
                     {{ auth_promo() }}
                 {% endif %}
-                <div class="grid-item color-scheme-blue">
+
+                <!-- NOT VISIBLE-->
+                <div class="grid-item color-scheme-blue" style="display: none">
                     <p class="text-create-profile">Upload a new question manually!</p>
                     <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
                         <span class="button-text">USE THE FORM</span>
                         <span class="loading-dots"></span>
                     </button>
                 </div>
+                <!-- NOT VISIBLE-->
             </div>
         </div>
     </div>

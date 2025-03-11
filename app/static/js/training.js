@@ -38,7 +38,7 @@ function updateCertificationPanel(selectedCertif) {
         console.error('Certification not found:', selectedCertif);
         return;
     }
-    
+
     const currentUser = CURRENT_USER;
     
     container.innerHTML = `

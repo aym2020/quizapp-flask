@@ -47,6 +47,9 @@
         <!-- Right Panel: Grid of blocks -->
         <div class="panel right">
             <div class="grid">
+                {% if not current_user %}
+                    {{ auth_promo() }}
+                {% endif %}
                 <div class="grid-item color-scheme-blue">
                     <p class="text-create-profile">Upload a new question manually!</p>
                     <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">

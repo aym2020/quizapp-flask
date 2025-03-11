@@ -251,13 +251,6 @@ color: var(--white-text);
 /* Right panel: fixed width of 380px */
 /* ---------------------------------------------- */
 
-.panel.right {
-  flex: 0 0 380px;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-/* Optional grid layout for additional content in right panel */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -306,3 +299,9 @@ color: var(--white-text);
   font-size: 0.9rem;
   font-weight: 500;
 }
+
+
+
+/* ---------------------------------------------- */
+/* ANIMATION */
+/* ---------------------------------------------- */

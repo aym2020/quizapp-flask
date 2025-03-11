@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.body.addEventListener('click', (e) => {
+        if (e.target.closest('.auth-promo-block .button')) {
+            e.preventDefault();
+            showModal('register');
+        }
+    });
+
     // Form submissions
     document.getElementById('signInForm')?.addEventListener('submit', handleSignIn);
     document.getElementById('registerForm')?.addEventListener('submit', handleRegister);
