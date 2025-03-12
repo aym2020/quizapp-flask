@@ -1091,6 +1091,27 @@ def get_question_by_exam_id(certif, exam_topic_id):
 # ------------------------------------------------------------
 # FETCH CERTIF CODES
 # ------------------------------------------------------------
+def get_all_certifications():
+    try:
+        items = list(certif_container.query_items(
+            query="SELECT c.certifcode, c.title, c.name, c.logo FROM c",
+            enable_cross_partition_query=True
+        ))
+        return {
+            item['certifcode']: {
+                'code': item.get('certifcode', 'unknown'),
+                'title': item.get('title', 'Unknown Title'),
+                'name': item.get('name', 'Unknown Name'),
+                'logo': item.get('logo', 'default.svg'),
+                'progress': 0,
+                'total_questions': 0
+            }
+            for item in items
+        }
+    except Exception as e:
+        logging.error(f"Error fetching certifications: {str(e)}")
+        return {}
+    
 
 @app.route("/get_certif", methods=["GET"])
 def fetch_certif():
@@ -1105,27 +1126,40 @@ def fetch_certif():
 
 @app.route('/get_certif_details')
 def get_certif_details():
-    certifs = {
-        "az-900": {
-            "code": "az-900",
-            "title": "CLOUD FUNDAMENTALS",
-            "name": "AZ-900",
-            "logo": "az900.svg",
-        },
-        "dp-900": {
-            "code": "dp-900",
-            "title": "DATA FUNDAMENTALS",
-            "name": "DP-900",
-            "logo": "dp900.svg",
-        },
-        "az-104": {
-            "code": "az-104",
-            "title": "ADMINISTRATOR ASSOCIATE",
-            "name": "AZ-104",
-            "logo": "az104.svg",
-        }
-    }
-    return jsonify(certifs)
+    try:
+        certifications = get_all_certifications()
+        
+        if 'user_id' in session:
+            user_id = session['user_id']
+            user = users_container.read_item(user_id, user_id)
+            quiz_history = user.get('quiz_history', {})
+            
+            # Get total questions per certification using individual COUNT queries
+            certif_counts = {}
+            for certif_code in certifications.keys():
+                try:
+                    count = list(questions_container.query_items(
+                        query="SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif",
+                        parameters=[{"name": "@certif", "value": certif_code}],
+                        enable_cross_partition_query=True
+                    ))[0]
+                    certif_counts[certif_code] = count
+                except Exception as e:
+                    logging.error(f"Error counting questions for {certif_code}: {str(e)}")
+                    certif_counts[certif_code] = 0
+
+            for certif_code, certif_data in certifications.items():
+                total_questions = certif_counts.get(certif_code, 0)
+                history = quiz_history.get(certif_code, {})
+                correct_answers = sum(1 for q in history.get('details', {}).values() if q.get('correct', False))
+                certif_data['progress'] = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+                certif_data['total_questions'] = total_questions
+                
+        return jsonify(certifications)
+    
+    except Exception as e:
+        logging.error(f"Error in get_certif_details: {str(e)}")
+        return jsonify({"error": "Server error"}), 500
 
 
 # ------------------------------------------------------------

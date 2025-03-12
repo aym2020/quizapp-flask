@@ -54,6 +54,9 @@
 </div>
 
 <script>
-    const CURRENT_USER = {{ 'true' if current_user else 'false' }};
+    const CURRENT_USER = {{ current_user | tojson | safe }};
 </script>
-<script src="{{ url_for('static', filename='js/training.js') }}"></script>{% endblock %}
+<script src="/static/js/training.js"></script>
+
+
+{% endblock %}

@@ -6,13 +6,14 @@ async function populateCertifDropdown(dropdown) {
     try {
         const response = await fetch('/get_certif_details');
         certifications = await response.json();
-        
+       
         dropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
         Object.values(certifications).forEach(certif => {
-            const option = document.createElement('option');
-            option.value = certif.code;
-            option.textContent = certif.code.toUpperCase();
-            dropdown.appendChild(option);
+          const option = document.createElement('option');
+          option.value = certif.code;
+          // Add fallback for certification code display
+          option.textContent = certif.code ? certif.code.toUpperCase() : 'UNKNOWN';
+          dropdown.appendChild(option);
         });
     } catch (error) {
         console.error('Error loading certifications:', error);
@@ -51,7 +52,7 @@ function updateCertificationPanel(selectedCertif) {
                 <div class="grid-progress-bar">
                   <div class="progress-fill" style="width: ${currentUser ? certif.progress : 0}%"></div>
                     <span class="progress-text">
-                        ${currentUser ? `${Math.round(certif.progress*2.5)}/250` : '0/250'}
+                        ${currentUser ? `${Math.round(certif.progress/100 * certif.total_questions)}/${certif.total_questions}` : `0/${certif.total_questions || '0'}`}
                     </span>
                     <i class="fas fa-trophy cup-icon fa-xl"></i>
                 </div>
