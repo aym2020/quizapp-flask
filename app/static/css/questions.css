@@ -150,6 +150,15 @@
   min-width: 40px;
 }
 
+.fa-solid, .fas {
+  color: var(--pink-main);
+}
+
+#status-header-table, #action-header-table {
+  text-align: center
+
+}
+
 .question-type {
   display: inline-block;
   padding: 4px 8px;

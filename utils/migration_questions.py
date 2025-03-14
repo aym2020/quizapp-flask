@@ -1,4 +1,10 @@
 # migration.py
+import sys
+import os
+
+# Add the parent directory (root of project) to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import uuid
 from azure.cosmos import CosmosClient
 from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
@@ -14,7 +20,6 @@ from io import BytesIO
 from datetime import datetime
 import json 
 import random
-import os
 import re
 from PIL import Image
 import pytesseract
@@ -91,8 +96,43 @@ def migrate_questions():
         container.delete_item(item=original_id, partition_key=partition_key)
         
         print(f"Migrated {original_id} to {new_question['id']}")
-        
-"""
+
+
+def extract_number(id_str):
+    """Extract numeric part from alphanumeric ID"""
+    match = re.match(r'^\d+', id_str)
+    return int(match.group()) if match else 0
+
+
+def add_exam_topic_id_num():
+    client = CosmosClient.from_connection_string(COSMOS_DB_CONN)
+    db = client.get_database_client("quizdb")
+    container = db.get_container_client("questions")
+    
+    # Run this migration script once
+    questions = list(questions_container.query_items(
+        query="SELECT * FROM c",
+        enable_cross_partition_query=True
+    ))
+
+    for question in questions:
+        try:
+            numeric_id = extract_number(question['exam_topic_id'])
+            questions_container.patch_item(
+                item=question['id'],
+                partition_key=question['certifcode'],
+                patch_operations=[
+                    { 
+                        "op": "add", 
+                        "path": "/exam_topic_id_num", 
+                        "value": numeric_id 
+                    }
+                ]
+            )
+        except Exception as e:
+            print(f"Error updating {question['id']}: {str(e)}")
+            continue
+                
+
 if __name__ == "__main__":
-    migrate_questions()
-"""
+    add_exam_topic_id_num()

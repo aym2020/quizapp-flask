@@ -466,7 +466,10 @@ def insert_new_questions(certif_code, questions):
     inserted = 0
     try:
         for question in questions:
-            questions_container.create_item(body=question)
+            questions_container.create_item(body={
+                **question,
+                "exam_topic_id_num": int(question["exam_topic_id"])
+            })
             inserted += 1
         return inserted
     except cosmos_exceptions.CosmosResourceExistsError:
@@ -944,11 +947,17 @@ def submit_question():
     if not exam_topic_id:
         return jsonify({"error": "Missing exam_topic_id"}), 400
 
+    # Convert exam_topic_id to integer
+    try:
+        exam_topic_id_num = int(exam_topic_id)
+    except ValueError:
+        return jsonify({"error": "exam_topic_id must be a numeric value"}), 400
 
     # Generate UUID and preserve exam_topic_id
     final_question = {
         "id": str(uuid.uuid4()),
         "exam_topic_id": exam_topic_id,
+        "exam_topic_id_num": exam_topic_id_num,
         "certifcode": certifcode,
         "questiontype": question_data.get("questiontype"),
         "question": question_data.get("question"),
@@ -1206,7 +1215,7 @@ def api_questions():
         total_count = count_result[0] if count_result else 0
 
         # Data query with sorting and pagination
-        data_query = base_query + " ORDER BY c.exam_topic_id OFFSET @offset LIMIT @limit"
+        data_query = base_query + " ORDER BY c.exam_topic_id_num, c.exam_topic_id OFFSET @offset LIMIT @limit"
         parameters.extend([
             {"name": "@offset", "value": (page - 1) * per_page},
             {"name": "@limit", "value": per_page}
