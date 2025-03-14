@@ -24,7 +24,7 @@ async function populateCertifDropdown() {
         certifs.forEach(certif => {
             const option = document.createElement("option");
             option.value = certif;
-            option.textContent = certif;  
+            option.textContent = certif.toUpperCase();  
             certifDropdown.appendChild(option);
         });
     } catch (error) {

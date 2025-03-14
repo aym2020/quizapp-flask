@@ -25,17 +25,51 @@
                     </form>
                 </div>
             </div>
-        </div>
 
-        <!-- Right Panel: Grid of blocks -->
-        <div class="panel right">
-            <div class="grid">
-                {% if not current_user %}
-                    {{ auth_promo() }}
-                {% endif %}
-                
+            <div class="main-grid-certif" style="margin-top: 20px;">
+                <div class="grid-item-certif">
+                    <div class="table-controls">
+                        <div class="search-pagination-header">
+                            <input type="text" id="searchInput" placeholder="Search by Exam Topic ID..." 
+                                   class="scheme-form form-field full-width-search">
+                            
+                            <div class="pagination-info">
+                                <div class="pagination-buttons">
+                                    <button id="prevPage" class="button scheme-button compact" disabled>
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span id="pageInfo" class="page-info-text"></span>
+                                    <button id="nextPage" class="button scheme-button compact" disabled>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-table-container">
+                            <table class="questions-table">
+                                <thead class="header-table">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Question</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questionsBody">
+                                    <!-- Data will be inserted here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<script src="{{ url_for('static', filename='js/questions.js') }}"></script>
 {% endblock %}
+       
