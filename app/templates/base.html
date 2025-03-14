@@ -48,6 +48,12 @@
             </div>
             <span class="choice-menu-text">PROFILE</span>
           </a>
+          <a href="/questions" class="choice-menu-box {% if current_page == 'questions' %}selected{% endif %}">
+            <div class="choice-menu-icon">
+              <i class="fa-solid fa-database fa-xl" style="color:rgb(241, 160, 255);"></i>
+            </div>
+            <span class="choice-menu-text">QUESTIONS</span>
+          </a>
           <a href="/uploads" class="choice-menu-box {% if current_page in ['uploads', 'confirm_question'] %}selected{% endif %}" data-page="uploads">
             <div class="choice-menu-icon">
               <i class="fa-solid fa-cloud fa-xl" style="color:rgb(32, 199, 255);"></i>

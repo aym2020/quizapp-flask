@@ -178,6 +178,21 @@ def training():
         current_user=current_user,
         current_page='training'  # This matches the navigation check
     )
+    
+
+# ------------------------------------------------------------
+# Questions page
+# ------------------------------------------------------------
+ 
+@app.route("/questions")
+def questions():
+    current_user = fetch_current_user()
+    return render_template(
+        "questions.html",
+        current_user=current_user,
+        current_page='questions'  # This matches the navigation check
+    )
+
 
 
 # ------------------------------------------------------------

@@ -91,6 +91,8 @@ def migrate_questions():
         container.delete_item(item=original_id, partition_key=partition_key)
         
         print(f"Migrated {original_id} to {new_question['id']}")
-
+        
+"""
 if __name__ == "__main__":
     migrate_questions()
+"""
