@@ -69,13 +69,14 @@
               </select>
             </div>
 
-          {% elif question_data.questiontype == 'draganddrop' %}
+            {% elif question_data.questiontype == 'draganddrop' %}
             <div class="form-group">
               <label>Drag Items:</label>
               <div id="dragChoicesContainer">
                 {% for choice in question_data.choices %}
                   <div class="drag-choice-entry">
-                    <input type="text" name="dragChoiceLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
+                    <!-- Change name to dragLetter[] -->
+                    <input type="text" name="dragLetter[]" value="{{ choice.letter }}" placeholder="Letter" required>
                     <button type="button" class="remove-item" onclick="this.parentElement.remove()">
                       <i class="fas fa-times"></i>
                     </button>
@@ -83,14 +84,15 @@
                 {% endfor %}
               </div>
             </div>
-
+          
             <div class="form-group">
               <label>Drop Zones:</label>
               <div id="answerAreaContainer">
                 {% for answer in question_data.answer_area %}
                   <div class="answer-area-entry">
-                    <input type="text" name="answerAreaQuestion[]" value="{{ answer.question }}" placeholder="Question" required>
-                    <input type="text" name="answerAreaCorrect[]" value="{{ answer.correct_answer }}" placeholder="Correct Answer" required>
+                    <!-- Change names to dropQuestion[] and dropAnswer[] -->
+                    <input type="text" name="dropQuestion[]" value="{{ answer.question }}" placeholder="Question" required>
+                    <input type="text" name="dropAnswer[]" value="{{ answer.correct_answer }}" placeholder="Correct Answer" required>
                     <button type="button" class="remove-target" onclick="this.parentElement.remove()">
                       <i class="fas fa-times"></i>
                     </button>
@@ -99,14 +101,15 @@
               </div>
             </div>
 
-          {% elif question_data.questiontype == 'hotspot' %}
+            {% elif question_data.questiontype == 'hotspot' %}
             <div class="form-group">
               <label>Hotspot Statements:</label>
               <div id="hotspotAnswerAreaContainer">
                 {% for answer in question_data.answer_area %}
                   <div class="hotspot-answer-entry">
-                    <input type="text" name="hotspotStatement[]" value="{{ answer.statement }}" placeholder="Statement" required>
-                    <select name="hotspotCorrect[]" required>
+                    <!-- Change names to statement[] and correct[] -->
+                    <input type="text" name="statement[]" value="{{ answer.statement }}" placeholder="Statement" required>
+                    <select name="correct[]" required>
                       <option value="Yes" {% if answer.correct_answer == 'Yes' %}selected{% endif %}>Yes</option>
                       <option value="No" {% if answer.correct_answer == 'No' %}selected{% endif %}>No</option>
                     </select>

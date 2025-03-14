@@ -9,60 +9,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Build base data object
         const data = {
-            exam_topic_id: formData.get('exam_topic_id'),  
+            exam_topic_id: formData.get('exam_topic_id'),
             certifcode: formData.get('certifcode'),
             questiontype: questionType,
             question: formData.get('question'),
             explanation: formData.get('explanation'),
         };
 
-        // Handle different question types
-        if (questionType === 'multiplechoice') {
-            data.choices = Array.from(formData.getAll('choiceLetter[]'))
-                .map((letter, index) => ({
-                    letter: letter,
-                    text: formData.getAll('choiceText[]')[index]
-                }));
-            data.answer = formData.get('answer');
-
-        } else if (questionType === 'yesno') {
-            data.answer = formData.get('answer');
-
-        } else if (questionType === 'draganddrop') {
-            data.choices = Array.from(formData.getAll('dragChoiceLetter[]'))
-                .map((letter) => ({ letter }));
-            data.answer_area = Array.from(formData.getAll('answerAreaQuestion[]'))
-                .map((question, index) => ({
-                    question: question,
-                    correct_answer: formData.getAll('answerAreaCorrect[]')[index]
-                }));
-
-        } else if (questionType === 'hotspot') {
-            data.answer_area = Array.from(formData.getAll('hotspotStatement[]'))
-                .map((statement, index) => ({
-                    statement: statement,
-                    correct_answer: formData.getAll('hotspotCorrect[]')[index]
-                }));
-        }
-
         try {
+            // Handle different question types
+            if (questionType === 'multiplechoice') {
+                data.choices = Array.from(formData.getAll('choiceLetter[]'))
+                    .map((letter, index) => ({
+                        letter: letter,
+                        text: formData.getAll('choiceText[]')[index]
+                    }));
+                data.answer = formData.get('answer');
+
+            } else if (questionType === 'yesno') {
+                data.answer = formData.get('answer');
+
+            } else if (questionType === 'draganddrop') {
+                data.choices = Array.from(formData.getAll('dragLetter[]'))
+                    .map(letter => ({ letter }));
+                
+                data.answer_area = Array.from(formData.getAll('dropQuestion[]'))
+                    .map((question, index) => ({
+                        question: question,
+                        correct_answer: formData.getAll('dropAnswer[]')[index]
+                    }));
+
+            } else if (questionType === 'hotspot') {
+                data.answer_area = Array.from(formData.getAll('statement[]'))
+                    .map((statement, index) => ({
+                        statement: statement,
+                        correct_answer: formData.getAll('correct[]')[index]
+                    }));
+            }
+
             const response = await fetch('/submit_question', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
-            const result = await response.json();
-            
-            if (response.ok) {
-                alert('Question created successfully!');
-                window.location.href = '/uploads';
-            } else {
-                alert(`Error: ${result.error}`);
+            const text = await response.text();
+            const result = text ? JSON.parse(text) : {};
+
+            if (!response.ok) {
+                throw new Error(result.error || `HTTP error! status: ${response.status}`);
             }
+
+            alert('Question created successfully!');
+            window.location.href = '/uploads';
+            
         } catch (error) {
             console.error('Submission error:', error);
-            alert('Failed to submit question. Please check the console for details.');
+            alert(`Failed to submit question: ${error.message}`);
         }
     }
 

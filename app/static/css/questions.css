@@ -180,7 +180,6 @@
   overflow-x: auto;
   background: var(--dark-blue-panel);
   border-radius: var(--border-radius);
-  margin-top: 1rem;
 }
 
 .questions-table {
@@ -275,6 +274,24 @@
   box-sizing: border-box; /* Include padding in width calculation */
   vertical-align: middle;
 }
+
+
+.search-pagination-header input {
+  font: var(--main-font);
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--grey-border);
+  background: var(--dark-blue-bg);
+  color: var(--white-text);
+}
+
+.search-pagination-header input:focus {
+  outline: none;
+  border: 2px solid var(--pink-main);
+}
+
+
 /* Status indicator alignment */
 .status-indicator {
   width: 12px;
@@ -284,6 +301,6 @@
   margin: 0 auto; /* Center in cell */
 }
 
-.status-indicator.correct { background-color: #4CAF50; }
+.status-indicator.correct { background-color: #45ff4d; }
 .status-indicator.incorrect { background-color: #F44336; }
 .status-indicator.unanswered { background-color: #9E9E9E; }

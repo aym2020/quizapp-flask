@@ -609,7 +609,7 @@ a {
 
 .scheme-form {
   padding: .6rem .8rem;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 100%;
 }
 
@@ -622,7 +622,7 @@ a {
 .form-group input {
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 2px solid var(--grey-border);
   background: var(--dark-blue-bg);
   color: var(--white-text);
@@ -757,14 +757,9 @@ input {
 /* REGISTER MODAL */
 /* ---------------------------------------------- */
 
-#registerForm .form-group {
-  margin-bottom: 1.5rem;
-}
-
 #registerForm input {
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
   border: 2px solid var(--grey-border);
   background: var(--dark-blue-bg);
   color: var(--white-text);

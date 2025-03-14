@@ -941,35 +941,77 @@ def submit_question():
 
     # Validate required fields
     certifcode = question_data.get("certifcode")
-    exam_topic_id = question_data.get("exam_topic_id")  # Changed from 'id'
+    exam_topic_id = question_data.get("exam_topic_id")
+    question_type = question_data.get("questiontype")
+    
     if not certifcode:
         return jsonify({"error": "Missing certification code"}), 400
     if not exam_topic_id:
         return jsonify({"error": "Missing exam_topic_id"}), 400
+    if not question_type:
+        return jsonify({"error": "Missing question type"}), 400
 
-    # Convert exam_topic_id to integer
     try:
         exam_topic_id_num = int(exam_topic_id)
     except ValueError:
         return jsonify({"error": "exam_topic_id must be a numeric value"}), 400
 
-    # Generate UUID and preserve exam_topic_id
+    # Base question structure
     final_question = {
         "id": str(uuid.uuid4()),
         "exam_topic_id": exam_topic_id,
         "exam_topic_id_num": exam_topic_id_num,
         "certifcode": certifcode,
-        "questiontype": question_data.get("questiontype"),
+        "questiontype": question_type,
         "question": question_data.get("question"),
-        "choices": question_data.get("choices", []),
-        "answer": question_data.get("answer"),
         "explanation": question_data.get("explanation")
     }
 
+    # Handle type-specific fields
+    if question_type == "multiplechoice":
+        final_question.update({
+            "choices": question_data.get("choices", []),
+            "answer": question_data.get("answer")
+        })
+    elif question_type == "draganddrop":
+        # Process the choices so that each becomes an object with a simple "letter" property.
+        choices_data = question_data.get("choices", [])
+        processed_choices = []
+        for c in choices_data:
+            # If the choice is a dict and has a nested structure, extract it.
+            if isinstance(c, dict) and "letter" in c:
+                if isinstance(c["letter"], dict) and "letter" in c["letter"]:
+                    processed_choices.append({"letter": c["letter"]["letter"]})
+                else:
+                    processed_choices.append({"letter": c["letter"]})
+            else:
+                # Otherwise, assume it's already a string
+                processed_choices.append({"letter": c})
+        final_question.update({
+            "choices": processed_choices,
+            "answer_area": question_data.get("answer_area", [])
+        })
+    elif question_type == "hotspot":
+        final_question["answer_area"] = question_data.get("answer_area", [])
+    elif question_type == "yesno":
+        # Validate Yes/No answer
+        answer = question_data.get("answer", "").strip().upper()
+        if answer not in ["Y", "N", "YES", "NO"]:
+            return jsonify({"error": "Invalid answer for Yes/No question. Use Y/N"}), 400
+        final_question["answer"] = "Y" if answer in ["Y", "YES"] else "N"
+
+    # Remove fields that don't apply for certain types
+    if question_type == "hotspot":
+        final_question.pop("answer", None)
+        final_question.pop("choices", None)
+    if question_type == "yesno":
+        final_question.pop("choices", None)
+
+    # Create the document in Cosmos DB
     questions_container.create_item(body=final_question)
     return jsonify({"message": "Question added successfully!", "id": final_question["id"]})
     
-
+    
 @app.route("/clear-pending-question", methods=["POST"])
 def clear_pending_question():
     session.pop('pending_question', None)
@@ -1215,7 +1257,7 @@ def api_questions():
         total_count = count_result[0] if count_result else 0
 
         # Data query with sorting and pagination
-        data_query = base_query + " ORDER BY c.exam_topic_id_num, c.exam_topic_id OFFSET @offset LIMIT @limit"
+        data_query = base_query + " ORDER BY c.exam_topic_id_num OFFSET @offset LIMIT @limit"
         parameters.extend([
             {"name": "@offset", "value": (page - 1) * per_page},
             {"name": "@limit", "value": per_page}

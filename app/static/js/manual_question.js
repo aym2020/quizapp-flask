@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const questionType = formData.get('questiontype');
     
         const questionData = {
-            exam_topic_id: formData.get('exam_topic_id'), // Changed from 'id'
+            exam_topic_id: formData.get('exam_topic_id'),
             certifcode: formData.get('certifcode'),
             questiontype: questionType,
             question: formData.get('question'),
             explanation: formData.get('explanation'),
         };
-
+    
         // Handle question type specific data
         switch(questionType) {
             case 'multiplechoice':
@@ -107,17 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }));
                 questionData.answer = formData.get('answer');
                 break;
-
+    
             case 'draganddrop':
-                questionData.choices = Array.from(formData.getAll('dragLetter[]'))
-                    .map(letter => ({ letter }));
+                // Drag items (choices)
+                questionData.choices = Array.from(formData.getAll('dragLetter[]'));
+                
+                // Drop targets (answer_area)
                 questionData.answer_area = Array.from(formData.getAll('dropQuestion[]'))
                     .map((question, index) => ({
                         question: question,
                         correct_answer: formData.getAll('dropAnswer[]')[index]
                     }));
                 break;
-
+    
             case 'hotspot':
                 questionData.answer_area = Array.from(formData.getAll('statement[]'))
                     .map((statement, index) => ({
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         correct_answer: formData.getAll('correct[]')[index]
                     }));
                 break;
-
+    
             case 'yesno':
                 questionData.answer = formData.get('answer');
                 break;
