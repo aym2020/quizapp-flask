@@ -624,7 +624,7 @@ a {
   padding: 12px;
   border-radius: 12px;
   border: 2px solid var(--grey-border);
-  background: var(--dark-blue-bg);
+  background: var(--dark-blue-darker-bg);
   color: var(--white-text);
   font: var(--main-font);
 }
@@ -642,7 +642,7 @@ input[type="checkbox" i] {
 @keyframes autofillReset {
   0%,
   100% {
-    background-color: var(--dark-blue-bg);
+    background-color: var(--dark-blue-darker-bg);
     color: var(--white-text);
   }
 }
@@ -652,10 +652,10 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-  background-color: var(--dark-blue-bg) !important;
+  background-color: var(--dark-blue-darker-bg) !important;
   -webkit-text-fill-color: var(--white-text) !important; /* Add this line */
   color: var(--white-text) !important;
-  -webkit-box-shadow: 0 0 0px 1000px var(--dark-blue-bg) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--dark-blue-darker-bg) inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -670,8 +670,8 @@ input:-moz-autofill,
 input:-moz-autofill:hover, 
 input:-moz-autofill:focus, 
 input:-moz-autofill:active {
-  filter: drop-shadow(0 0 0 var(--dark-blue-bg)) !important;
-  background-color: var(--dark-blue-bg) !important;
+  filter: drop-shadow(0 0 0 var(--dark-blue-darker-bg)) !important;
+  background-color: var(--dark-blue-darker-bg) !important;
   color: var(--white-text) !important;
 }
 
@@ -761,7 +761,7 @@ input {
   width: 100%;
   padding: 12px;
   border: 2px solid var(--grey-border);
-  background: var(--dark-blue-bg);
+  background: var(--dark-blue-darker-bg);
   color: var(--white-text);
 }
 

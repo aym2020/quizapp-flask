@@ -166,7 +166,7 @@
   font-size: 0.8em;
   font-weight: 700;
   text-transform: uppercase;
-  background: var(--dark-blue-bg);
+  background: var(--dark-blue-darker-bg);
   color: var(--white-text);
 }
 
@@ -197,14 +197,14 @@
 
 /* Column width distribution */
 .questions-table th:nth-child(1) { width: 8%; } /* # */
-.questions-table th:nth-child(2) { width: 52%; } /* Question */
-.questions-table th:nth-child(3) { width: 20%; } /* Type */
-.questions-table th:nth-child(4) { width: 10%; } /* Status */
-.questions-table th:nth-child(5) { width: 15%; } /* Action */
+.questions-table th:nth-child(2) { width: 62%; } /* Question */
+.questions-table th:nth-child(3) { width: 18%; } /* Type */
+.questions-table th:nth-child(4) { width: 8%; } /* Status */
+.questions-table th:nth-child(5) { width: 10%; } /* Action */
 
 .questions-table th {
   text-align: left;
-  background-color: var(--dark-blue-bg);
+  background-color: var(--dark-blue-darker-bg);
   font-weight: 700;
   text-transform: uppercase;
   font-size: 0.9em;
@@ -263,7 +263,7 @@
 }
 
 .questions-table tr:hover {
-  background-color: var(--dark-hover-color);
+  background-color: #13152347;
   cursor: pointer;
 }
 
@@ -275,6 +275,9 @@
   vertical-align: middle;
 }
 
+/* ---------------------------------------------- */
+/* FILTERS */
+/* ---------------------------------------------- */
 
 .search-pagination-header input {
   font: var(--main-font);
@@ -282,7 +285,7 @@
   padding: 12px;
   border-radius: 12px;
   border: 2px solid var(--grey-border);
-  background: var(--dark-blue-bg);
+  background: var(--dark-blue-darker-bg);
   color: var(--white-text);
 }
 
@@ -291,6 +294,53 @@
   border: 2px solid var(--pink-main);
 }
 
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.filter-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-group select {
+  flex: 1;
+  min-width: 180px;
+}
+
+.scheme-form.form-field {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--grey-border);
+  background: var(--dark-blue-darker-bg);
+  color: var(--white-text);
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.scheme-form.form-field:focus {
+  outline: none;
+  border-color: var(--pink-main);
+}
+
+@media (max-width: 768px) {
+  .filter-group {
+      grid-template-columns: 1fr;
+  }
+  
+  .search-pagination-header {
+      gap: 1rem;
+  }
+}
+
+/* ---------------------------------------------- */
+/* STATUS */
+/* ---------------------------------------------- */
 
 /* Status indicator alignment */
 .status-indicator {

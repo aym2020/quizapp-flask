@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextPageBtn = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
     const tbody = document.getElementById('questionsBody');
+    const statusFilter = document.getElementById('statusFilter');
+    const typeFilter = document.getElementById('typeFilter');
 
     let currentPage = 1;
     let currentCertif = '';
@@ -42,7 +44,15 @@ async function populateCertifDropdown() {
     /** Load Questions from API */
     async function loadQuestions() {
         try {
-            const response = await fetch(`/api/questions?certif=${currentCertif}&page=${currentPage}&search=${searchQuery}`);
+            const params = new URLSearchParams({
+                certif: currentCertif,
+                page: currentPage,
+                search: searchQuery,
+                status: statusFilter.value,
+                type: typeFilter.value
+            });
+    
+            const response = await fetch(`/api/questions?${params}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -132,6 +142,16 @@ async function populateCertifDropdown() {
 
     nextPageBtn.addEventListener('click', () => {
         currentPage++;
+        loadQuestions();
+    });
+
+    statusFilter.addEventListener('change', () => {
+        currentPage = 1;
+        loadQuestions();
+    });
+
+    typeFilter.addEventListener('change', () => {
+        currentPage = 1;
         loadQuestions();
     });
 

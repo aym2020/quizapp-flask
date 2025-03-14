@@ -1237,9 +1237,11 @@ def api_questions():
         certif = request.args.get("certif", "")
         page = int(request.args.get("page", 1))
         search = request.args.get("search", "").strip()
+        status_filter = request.args.get("status", "").strip()
+        type_filter = request.args.get("type", "").strip()
         per_page = 10
 
-        # Base query without ORDER BY
+        # Base query (without pagination)
         base_query = "SELECT * FROM c WHERE c.certifcode = @certif"
         parameters = [{"name": "@certif", "value": certif}]
 
@@ -1247,29 +1249,18 @@ def api_questions():
             base_query += " AND c.exam_topic_id = @search"
             parameters.append({"name": "@search", "value": search})
 
-        # Get total count (without ORDER BY)
-        count_query = f"SELECT VALUE COUNT(1) FROM ({base_query})"
-        count_result = list(questions_container.query_items(
-            query=count_query,
-            parameters=parameters,
-            enable_cross_partition_query=True
-        ))
-        total_count = count_result[0] if count_result else 0
+        if type_filter:
+            base_query += " AND c.questiontype = @type"
+            parameters.append({"name": "@type", "value": type_filter})
 
-        # Data query with sorting and pagination
-        data_query = base_query + " ORDER BY c.exam_topic_id_num OFFSET @offset LIMIT @limit"
-        parameters.extend([
-            {"name": "@offset", "value": (page - 1) * per_page},
-            {"name": "@limit", "value": per_page}
-        ])
-
+        # Get ALL matching questions (without pagination)
         questions = list(questions_container.query_items(
-            query=data_query,
+            query=base_query,
             parameters=parameters,
             enable_cross_partition_query=True
         ))
 
-        # Process results
+        # Process results and apply status filter
         current_user = fetch_current_user()
         processed = []
         for q in questions:
@@ -1277,18 +1268,34 @@ def api_questions():
             if current_user:
                 history = current_user.get("quiz_history", {}).get(certif, {})
                 details = history.get("details", {}).get(q['id'], {})
-                status = "correct" if details.get('correct') else "incorrect" if details else "unanswered"
+                # Ensure boolean conversion
+                is_correct = details.get('correct', False)
+                status = "correct" if is_correct else "incorrect" if details else "unanswered"
             
             processed.append({
                 "id": q['id'],
                 "exam_topic_id": q.get('exam_topic_id', 'N/A'),
+                "exam_topic_id_num": q.get('exam_topic_id_num', 0),  # Add for sorting
                 "question": q.get('question', ''),
-                "type": q.get('questiontype', 'unknown').lower(),
+                "type": q.get('questiontype', 'unknown'),
                 "status": status
             })
 
+        # Apply status filter
+        if status_filter:
+            processed = [q for q in processed if q['status'] == status_filter]
+
+        # Sort by exam_topic_id_num (mimic original DB ordering)
+        processed.sort(key=lambda x: x['exam_topic_id_num'])
+
+        # Paginate results
+        total_count = len(processed)
+        start = (page - 1) * per_page
+        end = start + per_page
+        paginated = processed[start:end]
+
         return jsonify({
-            "questions": processed,
+            "questions": paginated,
             "total_count": total_count
         })
 
