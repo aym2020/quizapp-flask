@@ -8,13 +8,22 @@ async function populateCertifDropdown(dropdown) {
         certifications = await response.json();
        
         dropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
-        Object.values(certifications).forEach(certif => {
-          const option = document.createElement('option');
-          option.value = certif.code;
-          // Add fallback for certification code display
-          option.textContent = certif.code ? certif.code.toUpperCase() : 'UNKNOWN';
-          dropdown.appendChild(option);
+        const certifList = Object.values(certifications);
+        
+        certifList.forEach(certif => {
+            const option = document.createElement('option');
+            option.value = certif.code;
+            option.textContent = certif.code ? certif.code.toUpperCase() : 'UNKNOWN';
+            dropdown.appendChild(option);
         });
+
+        // Auto-select first certification if available
+        if (certifList.length > 0) {
+            const firstCertif = certifList[0];
+            dropdown.value = firstCertif.code;
+            updateCertificationPanel(firstCertif.code);
+        }
+
     } catch (error) {
         console.error('Error loading certifications:', error);
     }
@@ -49,17 +58,23 @@ function updateCertificationPanel(selectedCertif) {
                     <span class="grid-text-detail-certif-button">${certif.title}</span>
                 </button>
                 <span class="grid-certif-name">${certif.name}</span>
-                <div class="grid-progress-bar">
-                  <div class="progress-fill" style="width: ${currentUser ? certif.progress : 0}%"></div>
+                <div class="progress-bar-container">
+                    <div class="grid-progress-bar">
+                        <div class="progress-fill" 
+                            style="--target-width: ${currentUser ? certif.progress : 0}%">
+                        </div>      
+                    </div>
                     <span class="progress-text">
-                        ${currentUser ? `${Math.round(certif.progress/100 * certif.total_questions)}/${certif.total_questions}` : `0/${certif.total_questions || '0'}`}
+                            ${currentUser ? 
+                                `${Math.round(certif.progress/100 * certif.total_questions)}/${certif.total_questions}` : 
+                                `0/${certif.total_questions}`  // Removed || '0'
+                            }
                     </span>
-                    <i class="fas fa-trophy cup-icon fa-xl"></i>
                 </div>
                 ${!currentUser ? `
                 <div class="warning_message">
                     <i class="fa-solid fa-triangle-exclamation fa-xl"></i>
-                    <p class="progress-warning">Progress won't be saved</p>
+                    <p class="progress-warning">Progress won't be saved!</p>
                 </div>` : ''}
                 <div class="grid-left-button-continue">
                     <button class="button primary-btn full-width-button scheme-button continue-btn" data-certif="${certif.code}">
@@ -78,6 +93,36 @@ function updateCertificationPanel(selectedCertif) {
 
     container.style.display = 'block';
     initializeContinueButton();
+
+    setTimeout(() => {
+        const progressFill = container.querySelector('.progress-fill');
+        const cupIcon = container.querySelector('.cup-icon');
+        
+        if (progressFill) {
+          void progressFill.offsetWidth; 
+          progressFill.style.animation = 'none';
+          
+          const targetWidth = progressFill.style.getPropertyValue('--target-width');
+          const animation = `
+            @keyframes fillBars {
+              from { width: 0; }
+              to { width: ${targetWidth}; }
+          `;
+          
+          const style = document.createElement('style');
+          style.textContent = animation;
+          document.head.appendChild(style);
+          
+          setTimeout(() => {
+            // Faster animation (0.8s instead of 1.5s)
+            progressFill.style.animation = 'fillBars 0.8s ease-in-out forwards';
+            if (cupIcon) {
+              cupIcon.style.transition = 'transform 0.8s ease-in-out';
+              cupIcon.style.transform = `translate(calc(${targetWidth} - 50%), -50%)`;
+            }
+          }, 50);
+        }
+      }, 100);
 }
 
 function initializeContinueButton() {

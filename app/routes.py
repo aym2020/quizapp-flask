@@ -1195,31 +1195,30 @@ def get_certif_details():
     try:
         certifications = get_all_certifications()
         
-        if 'user_id' in session:
-            user_id = session['user_id']
-            user = users_container.read_item(user_id, user_id)
-            quiz_history = user.get('quiz_history', {})
-            
-            # Get total questions per certification using individual COUNT queries
-            certif_counts = {}
-            for certif_code in certifications.keys():
-                try:
-                    count = list(questions_container.query_items(
-                        query="SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif",
-                        parameters=[{"name": "@certif", "value": certif_code}],
-                        enable_cross_partition_query=True
-                    ))[0]
-                    certif_counts[certif_code] = count
-                except Exception as e:
-                    logging.error(f"Error counting questions for {certif_code}: {str(e)}")
-                    certif_counts[certif_code] = 0
+        # Always calculate total questions per certification
+        for certif_code, certif_data in certifications.items():
+            try:
+                count = list(questions_container.query_items(
+                    query="SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif",
+                    parameters=[{"name": "@certif", "value": certif_code}],
+                    enable_cross_partition_query=True
+                ))[0]
+            except Exception as e:
+                logging.error(f"Error counting questions for {certif_code}: {str(e)}")
+                count = 0
 
-            for certif_code, certif_data in certifications.items():
-                total_questions = certif_counts.get(certif_code, 0)
+            certif_data['total_questions'] = count
+
+            # If user is logged in, update progress accordingly
+            if 'user_id' in session:
+                user_id = session['user_id']
+                user = users_container.read_item(user_id, user_id)
+                quiz_history = user.get('quiz_history', {})
                 history = quiz_history.get(certif_code, {})
                 correct_answers = sum(1 for q in history.get('details', {}).values() if q.get('correct', False))
-                certif_data['progress'] = (correct_answers / total_questions * 100) if total_questions > 0 else 0
-                certif_data['total_questions'] = total_questions
+                certif_data['progress'] = (correct_answers / count * 100) if count > 0 else 0
+            else:
+                certif_data['progress'] = 0
                 
         return jsonify(certifications)
     
