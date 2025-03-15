@@ -201,14 +201,13 @@ color: var(--white-text);
   background-color: var(--pink-text);
   border-radius: 12px;
   position: relative;
-  animation: fillBars 0.8s ease-in-out forwards;
   transform-origin: left;
   width: 0;
   z-index: 1;
   background: linear-gradient(
     90deg,
-    #ff9600 0%,    /* Fox color */
-    #ffc800 100%   /* Bee color */
+    var(--fox) 0%,    
+    var(--bee) 100%  
   );
   box-shadow: 
     2px 0 4px rgba(255, 150, 0, 0.3),    /* Right glow */
@@ -253,6 +252,7 @@ color: var(--white-text);
   justify-self: flex-start;
   margin-top: 24px;
 }
+
 
 /* ---------------------------------------------- */
 /* Right panel: fixed width of 380px */

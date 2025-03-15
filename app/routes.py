@@ -1160,7 +1160,7 @@ def get_question_by_exam_id(certif, exam_topic_id):
 def get_all_certifications():
     try:
         items = list(certif_container.query_items(
-            query="SELECT c.certifcode, c.title, c.name, c.logo FROM c",
+            query="SELECT c.certifcode, c.title, c.name, c.logo, c.logo_complete FROM c",
             enable_cross_partition_query=True
         ))
         return {
@@ -1169,6 +1169,7 @@ def get_all_certifications():
                 'title': item.get('title', 'Unknown Title'),
                 'name': item.get('name', 'Unknown Name'),
                 'logo': item.get('logo', 'default.svg'),
+                'logo_complete': item.get('logo_complete', 'default_complete.svg'),
                 'progress': 0,
                 'total_questions': 0
             }

@@ -50,6 +50,8 @@ function updateCertificationPanel(selectedCertif) {
     }
 
     const currentUser = CURRENT_USER;
+    const logoToShow = (currentUser && certif.progress >= 100) ? certif.logo_complete : certif.logo;
+
     
     container.innerHTML = `
         <div class="grid-item-certif">
@@ -86,7 +88,7 @@ function updateCertificationPanel(selectedCertif) {
                 </div>
             </div>
             <div class="right-part-grid-item">
-                <img id="certif-logo" src="/static/images/${certif.logo}" alt="${certif.name} Logo">           
+                <img id="certif-logo" src="/static/images/${logoToShow}" alt="${certif.name} Logo">                     
             </div>
         </div>
     `;
@@ -99,30 +101,41 @@ function updateCertificationPanel(selectedCertif) {
         const cupIcon = container.querySelector('.cup-icon');
         
         if (progressFill) {
-          void progressFill.offsetWidth; 
-          progressFill.style.animation = 'none';
-          
-          const targetWidth = progressFill.style.getPropertyValue('--target-width');
-          const animation = `
-            @keyframes fillBars {
-              from { width: 0; }
-              to { width: ${targetWidth}; }
-          `;
-          
-          const style = document.createElement('style');
-          style.textContent = animation;
-          document.head.appendChild(style);
-          
-          setTimeout(() => {
-            // Faster animation (0.8s instead of 1.5s)
-            progressFill.style.animation = 'fillBars 0.8s ease-in-out forwards';
-            if (cupIcon) {
-              cupIcon.style.transition = 'transform 0.8s ease-in-out';
-              cupIcon.style.transform = `translate(calc(${targetWidth} - 50%), -50%)`;
+            void progressFill.offsetWidth; // Trigger reflow
+            progressFill.style.animation = 'none';
+    
+            const targetWidth = progressFill.style.getPropertyValue('--target-width');
+            const targetWidthValue = parseFloat(targetWidth);
+    
+            // Clean up previous animation style
+            if (window.animationStyleTag) {
+                window.animationStyleTag.remove();
             }
-          }, 50);
+    
+            if (targetWidthValue > 0) {
+                // Create new animation
+                const animation = `
+                    @keyframes fillBars {
+                        from { width: 0; }
+                        to { width: ${targetWidth}; }
+                    }
+                `;
+                window.animationStyleTag = document.createElement('style');
+                window.animationStyleTag.textContent = animation;
+                document.head.appendChild(window.animationStyleTag);
+    
+                setTimeout(() => {
+                    progressFill.style.animation = 'fillBars 0.8s ease-in-out forwards';
+                    if (cupIcon) {
+                        cupIcon.style.transform = `translate(calc(${targetWidth} - 50%), -50%)`;
+                    }
+                }, 50);
+            } else {
+                // Set width directly without animation
+                progressFill.style.width = targetWidth;
+            }
         }
-      }, 100);
+    }, 100);
 }
 
 function initializeContinueButton() {
