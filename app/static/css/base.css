@@ -43,6 +43,9 @@
   --grey-text: #2d2b2b;
   --grey-border: rgba(69, 69, 69, 0.58);
   --grey-disabled: rgb(79 94 102);
+  
+  --red-danger-btn:rgb(169, 25, 25);
+  --grey-admin-btn: #dbdbdb;
 
   --white-text: #ecf0f1;
 
@@ -930,4 +933,64 @@ input {
   white-space: nowrap;
   animation: typing 3s steps(40, end);
   border-right: 2px solid var(--pink-main);
+}
+
+
+/* ---------------------------------------------- */
+/* NOTIF */
+/* ---------------------------------------------- */
+.notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 90%; /* Responsive width */
+  max-width: 350px; /* Maximum width for larger screens */
+  padding: 16px 20px; /* Adjusted padding for better text wrapping */
+  border-radius: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-start; /* Better for multi-line text */
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+             fadeOut 0.4s ease 3.2s forwards;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  white-space: normal; /* Allow text wrapping */
+  word-wrap: break-word; /* Break long words */
+}
+
+/* Keep existing color styles */
+.notification-success {
+  background: rgb(40, 167, 69);
+  color: var(--white-text);
+}
+
+.notification-error {
+  background: rgb(220, 53, 69);
+  color: var(--white-text);
+}
+
+.notification i {
+  font-size: 1.4em;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  margin-top: 2px; /* Better alignment with first line */
+}
+
+/* Keep existing animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }

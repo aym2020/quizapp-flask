@@ -1,3 +1,35 @@
 .panel.left {
     max-width: none;
 }
+
+/* ---------------------------------------------- */
+/* Loading Animation */
+/* ---------------------------------------------- */
+
+.loader {
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-20px);
+    opacity: 90%;
+    color: rgb(19, 31, 36); 
+    width: 3px;  /* Reduced size */
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: 10px 0 0 4px, 25px 0 0 2px, 40px 0 0 0;
+    animation: l21 0.5s infinite alternate linear;
+  }
+  
+  @keyframes l21 {
+    50%  { box-shadow: 10px 0 0 2px, 25px 0 0 4px, 40px 0 0 2px; }
+    100% { box-shadow: 10px 0 0 0, 25px 0 0 2px, 40px 0 0 4px; }
+  }
+  
+  /* Ensure button text is still visible when loading */
+  .button.primary-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }

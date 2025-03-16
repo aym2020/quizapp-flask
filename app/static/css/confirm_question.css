@@ -83,6 +83,10 @@
   border-color: var(--pink-border);
 }
 
+#pseudo {
+  background: var(--dark-blue-darker-bg);
+}
+
 #questionText {
   overflow: hidden;
 }

@@ -5,7 +5,8 @@ const UPLOAD_SELECTORS = {
     previewContainer: null,
     previewImage: null,
     uploadForm: null,
-    certifCode: null
+    certifCode: null,
+    pasteContainer: document.body // Moved to init function
 };
 
 let eventListeners = [];
@@ -18,7 +19,6 @@ async function populateCertifDropdown() {
         const response = await fetch("/get_certif");
         const certifs = await response.json();
         
-        // Clear and repopulate with valid options
         certifDropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
         
         certifs.forEach(certif => {
@@ -33,10 +33,7 @@ async function populateCertifDropdown() {
     }
 }
 
-
-// Initialize upload functionality
 function initUploads() {
-
     // RE-INITIALIZE DOM ELEMENTS EVERY TIME
     const UPLOAD_SELECTORS = {
         dropArea: document.getElementById('dropArea'),
@@ -44,13 +41,12 @@ function initUploads() {
         previewContainer: document.getElementById('previewContainer'),
         previewImage: document.getElementById('previewImage'),
         uploadForm: document.getElementById('uploadForm'),
-        certifCode: document.getElementById('certifCode')
+        certifCode: document.getElementById('certifCode'),
+        pasteContainer: document.body // Added here
     };
 
     // Populate dropdown
     populateCertifDropdown();
-
-    // Reset previous state
     destroyUploads();
 
     // Drag & Drop Handlers
@@ -77,6 +73,24 @@ function initUploads() {
 
         updateFileDisplay(file);
         showImagePreview(file);
+    };
+
+    const handlePaste = (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        
+        for (const item of items) {
+            if (item.type.indexOf('image') === 0) {
+                const blob = item.getAsFile();
+                const file = new File([blob], 'screenshot.png', {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+                
+                handleFiles([file]);
+                e.preventDefault();
+                break;
+            }
+        }
     };
 
     const updateFileDisplay = (file) => {
@@ -147,6 +161,15 @@ function initUploads() {
         { element: UPLOAD_SELECTORS.imageInput, type: 'change', handler: changeHandler },
         { element: UPLOAD_SELECTORS.uploadForm, type: 'submit', handler: handleSubmit },
     ];
+
+    // Only add paste handler if container exists
+    if (UPLOAD_SELECTORS.pasteContainer) {
+        eventListeners.push({
+            element: UPLOAD_SELECTORS.pasteContainer,
+            type: 'paste',
+            handler: handlePaste
+        });
+    }
 
     eventListeners.forEach(({ element, type, handler }) => {
         element.addEventListener(type, handler);

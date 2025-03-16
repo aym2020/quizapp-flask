@@ -19,6 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.height = element.scrollHeight + 'px'; // Set height to match content
     }
 
+    function showNotification(message, type = 'success') {
+        const icon = type === 'success' 
+            ? '<i class="fas fa-check-circle"></i>'
+            : '<i class="fas fa-exclamation-triangle"></i>';
+        
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `${icon} ${message}`;
+        
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3600);
+    }
+
     // Initialize form based on selected question type
     function updateForm() {
         const type = document.getElementById('questionType').value;
@@ -107,6 +120,15 @@ document.addEventListener('DOMContentLoaded', () => {
             question: formData.get('question'),
             explanation: formData.get('explanation'),
         };
+
+        const submitBtn = document.getElementById('createQuestionBtn');
+        const buttonText = submitBtn.querySelector('.button-text');
+        const loader = submitBtn.querySelector('.loader');
+        
+        // Disable button and show loader
+        submitBtn.disabled = true;
+        buttonText.style.visibility = 'hidden'; // Hide text
+        loader.style.display = 'block'; // Show loader
     
         // Handle question type specific data
         switch(questionType) {
@@ -152,15 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             const result = await response.json();
-            if (response.ok) {
-                alert('Question created successfully!');
-                window.location.href = '/uploads';
-            } else {
-                alert(`Error: ${result.error}`);
+            
+            if (!response.ok) {
+                throw new Error(result.error || 'Submission failed');
             }
+    
+            showNotification('Question created successfully!', 'success');
+            setTimeout(() => window.location.href = '/uploads', 1000);
+            
         } catch (error) {
-            console.error('Submission error:', error);
-            alert('Failed to submit question');
+            showNotification(error.message || 'Failed to submit question', 'error');
+            submitBtn.disabled = false;
+            buttonText.style.visibility = 'visible';
+            loader.style.display = 'none';
         }
     });
 
