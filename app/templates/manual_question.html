@@ -71,7 +71,6 @@
   </div>
 </div>
 
-<!-- Templates (same as before but styled to match) -->
 <template id="multiplechoiceTemplate">
   <div class="form-group">
     <label>Choices:</label>
@@ -165,9 +164,11 @@
   
   // Run on page load
   document.addEventListener("DOMContentLoaded", function() {
-      const textarea = document.getElementById("autoResizeTextarea");
-      adjustHeight(textarea);
-  });
+    const questionarea = document.getElementById("questionText");
+    const explanationarea = document.getElementById("explanation");
+    adjustHeight(questionarea);
+    adjustHeight(explanationarea);
+});
 </script>
 
 {% endblock %}

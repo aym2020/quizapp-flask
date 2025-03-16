@@ -22,23 +22,23 @@
               <label for="certifcode">Certification Code:</label>
               <input type="text" id="certifcode" name="certifcode" value="{{ question_data.certifcode }}" required>
             </div>
-
+    
             <div class="form-group">
               <label for="questionId">Question Number:</label>
               <input type="text" id="questionId" name="exam_topic_id" value="{{ question_data.exam_topic_id  }}" required>
             </div>
-
+    
             <div class="form-group">
               <label for="questionType">Question Type:</label>
               <input type="text" id="questionType" name="questiontype" value="{{ question_data.questiontype }}" readonly required>
             </div>
           </div>
-
+    
           <div class="form-group">
             <label for="questionText">Question:</label>
-            <textarea id="questionText" name="question" required>{{ question_data.question }}</textarea>
+            <textarea id="questionText" oninput="adjustHeight(this)" name="question" required>{{ question_data.question }}</textarea>
           </div>
-
+    
           <!-- Dynamic Sections -->
           {% if question_data.questiontype in ['multiplechoice'] %}
             <div class="form-group">
@@ -59,7 +59,7 @@
               <label for="answer">Correct Answer (Letter):</label>
               <input type="text" id="answer" name="answer" value="{{ question_data.answer }}" required>
             </div>
-
+    
           {% elif question_data.questiontype == 'yesno' %}
             <div class="form-group">
               <label for="answer">Correct Answer:</label>
@@ -68,7 +68,7 @@
                 <option value="N" {% if question_data.answer == 'N' %}selected{% endif %}>N</option>
               </select>
             </div>
-
+    
             {% elif question_data.questiontype == 'draganddrop' %}
             <div class="form-group">
               <label>Drag Items:</label>
@@ -100,7 +100,7 @@
                 {% endfor %}
               </div>
             </div>
-
+    
             {% elif question_data.questiontype == 'hotspot' %}
             <div class="form-group">
               <label>Hotspot Statements:</label>
@@ -121,15 +121,16 @@
               </div>
             </div>
           {% endif %}
-
+    
           <div class="form-group">
             <label for="explanation">Explanation:</label>
-            <textarea id="explanation" name="explanation" required>{{ question_data.explanation }}</textarea>
+            <textarea id="explanation" oninput="adjustHeight(this)" name="explanation" required>{{ question_data.explanation }}</textarea>
           </div>
           <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="createQuestionBtn">
             <span class="button-text">CREATE QUESTION</span>
             <div class="loader" style="display: none;"></div>
           </button>
+          
         </form>
       </div>
     </div>
@@ -137,5 +138,18 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/confirm_question.js') }}"></script>
-
+<script>
+  function adjustHeight(element) {
+      element.style.height = 'auto'; // Reset height to recalculate
+      element.style.height = element.scrollHeight + 'px'; // Set height to match content
+  }
+  
+  // Run on page load
+  document.addEventListener("DOMContentLoaded", function() {
+      const questionarea = document.getElementById("questionText");
+      const explanationarea = document.getElementById("explanation");
+      adjustHeight(questionarea);
+      adjustHeight(explanationarea);
+  });
+</script>
 {% endblock %}

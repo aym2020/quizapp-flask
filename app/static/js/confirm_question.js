@@ -1,7 +1,18 @@
 // static/js/confirm_question.js
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('confirmForm');
-    
+
+    const textarea = document.getElementById("questionText");
+    const explanationarea = document.getElementById("explanation");
+
+    adjustHeight(textarea);
+    adjustHeight(explanationarea);
+
+    function adjustHeight(element) {
+        element.style.height = 'auto'; // Reset height to recalculate
+        element.style.height = element.scrollHeight + 'px'; // Set height to match content
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
         const formData = new FormData(form);

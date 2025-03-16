@@ -1,10 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
-from azure.cosmos import CosmosClient
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response, abort, session
+from azure.cosmos import CosmosClient, exceptions
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 from app import app
 from flask_bcrypt import Bcrypt
-from flask import session
 from werkzeug.utils import secure_filename
 from openai import OpenAI
 from io import BytesIO
@@ -1307,64 +1306,80 @@ def api_questions():
         }), 500
 
 
-@app.route('/question/<question_id>')
-def question_admin(question_id):
-    try:
-        # Get the question with proper error handling
-        question = list(questions_container.query_items(
-            query="SELECT * FROM c WHERE c.id = @id",
-            parameters=[{"name": "@id", "value": question_id}],
-            enable_cross_partition_query=True
-        ))
-        
-        if not question:
-            return "Question not found", 404
-            
-        question = question[0]
-
-        # Get certifications safely
-        certif_codes = []
-        certif_items = list(certif_container.query_items(
-            query="SELECT DISTINCT c.certifcode FROM c",
-            enable_cross_partition_query=True
-        ))
-        for item in certif_items:
-            if 'certifcode' in item:
-                certif_codes.append(item['certifcode'])
-
-        return render_template(
-            'question_admin.html',
-            question_data=question,
-            question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"],
-            certif_codes=certif_codes
-        )
-
-    except Exception as e:
-        return f"Error loading question: {str(e)}", 500
+@app.route("/question/<question_id>")
+def question_detail(question_id):
+    # Get question from CosmosDB
+    query = "SELECT * FROM c WHERE c.id = @id"
+    parameters = [dict(name="@id", value=question_id)]
+    items = list(questions_container.query_items(
+        query=query,
+        parameters=parameters,
+        enable_cross_partition_query=True
+    ))
+    
+    if not items:
+        abort(404)
+    
+    return render_template(
+        "question_admin.html",
+        question_data=items[0],
+        current_page='question_admin'
+    )
 
 
-@app.route('/update_question/<question_id>', methods=['PUT'])
+@app.route("/question/<question_id>", methods=["PUT"])
 def update_question(question_id):
     try:
-        # Get existing question to find partition key
-        original = list(questions_container.query_items(
-            query="SELECT * FROM c WHERE c.id = @id",
-            parameters=[{"name": "@id", "value": question_id}],
-            enable_cross_partition_query=True
-        ))[0]
+        updated_data = request.get_json()
+        if not updated_data:
+            return jsonify({"error": "No update data provided"}), 400
 
-        # Merge updates
-        updated = {**original, **request.get_json()}
+        # Get existing question first to preserve questiontype
+        existing_question = questions_container.read_item(
+            item=question_id,
+            partition_key=updated_data.get("certifcode", "")
+        )
+
+        # Merge updates with priority to existing type-specific fields
+        final_question = {
+            **existing_question,
+            "exam_topic_id": updated_data.get("exam_topic_id", existing_question.get("exam_topic_id")),
+            "exam_topic_id_num": int(updated_data.get("exam_topic_id", existing_question.get("exam_topic_id"))),
+            "question": updated_data.get("question", existing_question.get("question")),
+            "explanation": updated_data.get("explanation", existing_question.get("explanation"))
+        }
+
+        # Preserve original type-specific structure
+        question_type = existing_question.get("questiontype")
+        if question_type == "multiplechoice":
+            final_question.update({
+                "choices": updated_data.get("choices", existing_question.get("choices", [])),
+                "answer": updated_data.get("answer", existing_question.get("answer", "")).upper()
+            })
+        elif question_type == "draganddrop":
+            final_question.update({
+                "choices": updated_data.get("choices", existing_question.get("choices", [])),
+                "answer_area": updated_data.get("answer_area", existing_question.get("answer_area", []))
+            })
+        elif question_type == "hotspot":
+            final_question["answer_area"] = updated_data.get("answer_area", existing_question.get("answer_area", []))
+        elif question_type == "yesno":
+            answer = updated_data.get("answer", existing_question.get("answer", "N")).upper()
+            final_question["answer"] = "Y" if answer in ["Y", "YES"] else "N"
+
+        # Update in CosmosDB
+        replaced_item = questions_container.replace_item(
+            item=question_id,
+            body=final_question
+        )
         
-        # Replace in database
-        questions_container.replace_item(item=question_id, body=updated)
-        
-        return jsonify({"success": True})
-        
+        return jsonify(replaced_item)
+    
+    except exceptions.CosmosResourceNotFoundError:
+        abort(404)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
+        return jsonify({"error": f"Update failed: {str(e)}"}), 500
+    
 # ------------------------------------------------------------
 # Run app
 # ------------------------------------------------------------
