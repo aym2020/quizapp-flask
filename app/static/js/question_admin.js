@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Properly handle hidden data
     try {
         const jsonEl = document.getElementById('questionData');
-        if (jsonEl && jsonEl.value) {
-            existingData = JSON.parse(jsonEl.value);
+        if (jsonEl && jsonEl.textContent) {
+            existingData = JSON.parse(jsonEl.textContent);
         } else {
             console.warn('questionData element or value missing');
         }
@@ -111,11 +111,94 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleFormEditable(enabled) {
         Array.from(form.elements).forEach(element => {
-            // Only disable exam_topic_id, keep questiontype enabled but readonly
             const isDisabledField = ['exam_topic_id'].includes(element.id);
             element.disabled = !enabled || isDisabledField;
         });
+
+        // Show/hide add buttons based on question type
+        const type = document.getElementById('questionType').value;
+        const addButtons = {
+            multiplechoice: document.querySelectorAll('.add-choice-btn'),
+            draganddrop: document.querySelectorAll('.add-drag-btn, .add-drop-btn'),
+            hotspot: document.querySelectorAll('.add-hotspot-btn'),
+            yesno: [] // No add buttons for yesno
+        }[type] || [];
+
+        addButtons.forEach(btn => {
+            btn.style.display = enabled ? 'inline-block' : 'none';
+        });
     }
+
+    // Clone existing empty template or last entry
+    window.addChoice = function() {
+        const container = document.getElementById('choicesContainer');
+        const entries = container.querySelectorAll('.choice-entry');
+        const newEntry = entries[entries.length - 1].cloneNode(true);
+        newEntry.querySelectorAll('input').forEach(input => input.value = '');
+        container.appendChild(newEntry);
+    }
+
+    window.addDragItem = function() {
+        const container = document.getElementById('dragChoicesContainer');
+        const newItem = container.lastElementChild.cloneNode(true);
+        newItem.querySelector('input').value = '';
+        container.appendChild(newItem);
+    }
+
+    window.addDropTarget = function() {
+        const container = document.getElementById('answerAreaContainer');
+        const newTarget = container.lastElementChild.cloneNode(true);
+        newTarget.querySelectorAll('input').forEach(input => input.value = '');
+        container.appendChild(newTarget);
+    }
+
+    window.addHotspotStatement = function() {
+        const container = document.getElementById('hotspotAnswerAreaContainer');
+        const newStatement = container.lastElementChild.cloneNode(true);
+        newStatement.querySelectorAll('input, select').forEach(el => {
+            if(el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+        });
+        container.appendChild(newStatement);
+    }
+
+    function initAddButtons() {
+        const type = document.getElementById('questionType').value;
+        const buttons = `
+            ${type === 'multiplechoice' ? `<button type="button" class="button small-btn add-choice-btn" onclick="addChoice()" style="display: none;">
+                <i class="fas fa-plus"></i> Add Choice
+            </button>` : ''}
+            
+            ${type === 'draganddrop' ? `
+            <div class="button-group">
+                <button type="button" class="button small-btn add-drag-btn" onclick="addDragItem()" style="display: none;">
+                    <i class="fas fa-plus"></i> Add Drag Item
+                </button>
+                <button type="button" class="button small-btn add-drop-btn" onclick="addDropTarget()" style="display: none;">
+                    <i class="fas fa-plus"></i> Add Drop Zone
+                </button>
+            </div>` : ''}
+            
+            ${type === 'hotspot' ? `<button type="button" class="button small-btn add-hotspot-btn" onclick="addHotspotStatement()" style="display: none;">
+                <i class="fas fa-plus"></i> Add Statement
+            </button>` : ''}
+        `;
+    
+        const buttonContainer = document.getElementById('dynamicButtons');
+        const adminControls = document.querySelector('.admin-controls');
+        
+        if (!buttonContainer && adminControls) {
+            const div = document.createElement('div');
+            div.id = 'dynamicButtons';
+            div.innerHTML = buttons;
+            adminControls.parentNode.insertBefore(div, adminControls);
+        } else if (buttonContainer) {
+            buttonContainer.innerHTML = buttons;
+        }
+    }
+
+
+
     function getFormData() {
         const formData = new FormData(form);
         const baseData = {
@@ -192,5 +275,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return baseData;
     }
+
+    // Update on type change (if applicable)
+    document.getElementById('questionType')?.addEventListener('change', () => {
+        initAddButtons();
+        toggleFormEditable(isEditMode);
+    });
+
+    // Initial setup
+    initAddButtons();
+    toggleFormEditable(isEditMode);
 
 });
