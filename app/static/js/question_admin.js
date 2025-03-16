@@ -105,32 +105,75 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateFormData(data) {
         // Basic validation
         if (!data.certifcode || !data.question || !data.explanation) {
-            alert('Please fill all required fields');
+            showNotification('Please fill all required fields', 'error');
             return false;
         }
-
+    
         // Type-specific validation
+        let isValid = true;
         switch(data.questiontype) {
             case 'multiplechoice':
-                if (!data.answer || data.choices.length < 2) {
-                    alert('Multiple choice requires at least 2 choices and an answer');
-                    return false;
+                // Check minimum choices
+                if (data.choices.length < 2) {
+                    showNotification('Multiple choice requires at least 2 choices', 'error');
+                    isValid = false;
+                }
+                
+                // Validate answer exists in choices
+                if (data.answer && isValid) {
+                    const validChoices = data.choices.map(c => c.letter.toUpperCase());
+                    const answerLetters = data.answer.toUpperCase().split('');
+                    
+                    const invalidAnswers = answerLetters.filter(
+                        letter => !validChoices.includes(letter)
+                    );
+    
+                    if (invalidAnswers.length > 0) {
+                        showNotification(
+                            `Invalid answer(s): ${invalidAnswers.join(', ')}. ` +
+                            `Valid choices are: ${validChoices.join(', ')}`,
+                            'error'
+                        );
+                        isValid = false;
+                    }
                 }
                 break;
+    
             case 'draganddrop':
+                // Check presence of both elements
                 if (data.choices.length === 0 || data.answer_area.length === 0) {
-                    alert('Drag & drop requires both items and drop zones');
-                    return false;
+                    showNotification('Drag & drop requires both items and drop zones', 'error');
+                    isValid = false;
+                }
+                
+                // Validate drop answers exist in drag items
+                if (isValid) {
+                    const dragLetters = data.choices.map(c => c.letter.toUpperCase());
+                    const invalidAnswers = data.answer_area
+                        .filter(item => !dragLetters.includes(item.correct_answer.toUpperCase()))
+                        .map(item => item.correct_answer);
+    
+                    if (invalidAnswers.length > 0) {
+                        const uniqueInvalid = [...new Set(invalidAnswers)];
+                        showNotification(
+                            `Invalid drag answers: ${uniqueInvalid.join(', ')}. ` +
+                            `Valid drag items are: ${dragLetters.join(', ')}`,
+                            'error'
+                        );
+                        isValid = false;
+                    }
                 }
                 break;
+    
             case 'hotspot':
                 if (data.answer_area.length === 0) {
-                    alert('Hotspot requires at least one statement');
-                    return false;
+                    showNotification('Hotspot requires at least one statement', 'error');
+                    isValid = false;
                 }
                 break;
         }
-        return true;
+    
+        return isValid;
     }
 
     function toggleFormEditable(enabled) {
