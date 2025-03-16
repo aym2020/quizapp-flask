@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm_question.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual_question.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+  <div class="both-panel">
+    <div class="panel left">
+      <div class="top-part-left"> 
+        <div class="top-row-part-left"></div>
+        <div class="panel-top-left">
+          <span class="text-top-left">EDIT QUESTION</span>
+        </div>
+      </div>
+      <div class="confirm-question-container">
+        <form id="confirmForm" 
+            data-choices="{{ question_data.get('choices', [])|tojson|safe }}"
+            data-answer-area="{{ question_data.get('answer_area', [])|tojson|safe }}"
+            data-answer="{{ question_data.get('answer', '') }}">
+        <input type="hidden" name="question_id" value="{{ question_data.id }}">
+          
+          <!-- Same form structure as manual_question.html but with pre-filled values -->
+          <div class="row-inline">
+            <div class="form-group">
+                <label for="certifcode">Certification Code:</label>
+                <select id="certifcode" name="certifcode" required>
+                  <option value="" disabled>Select a certification</option>
+                  {% for certif in certif_codes %}
+                  <option value="{{ certif }}" {% if question_data.certifcode == certif %}selected{% endif %}>
+                    {{ certif }}
+                  </option>
+                  {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+              <label for="questionId">ID:</label>
+              <input type="text" id="questionId" name="exam_topic_id" 
+                     value="{{ question_data.exam_topic_id }}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="questionType">Question Type:</label>
+              <select id="questionType" name="questiontype" required>
+                {% for qtype in question_types %}
+                <option value="{{ qtype }}" 
+                        {% if question_data.questiontype == qtype %}selected{% endif %}>
+                  {{ qtype|title }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="questionText">Question:</label>
+            <textarea id="questionText" oninput="adjustHeight(this)" name="question" required>{{ question_data.question }}</textarea>
+          </div>
+
+          <!-- Dynamic Fields Container -->
+          <div id="typeSpecificFields">
+            <!-- Fields injected via JavaScript -->
+          </div>
+
+          <div class="form-group">
+            <label for="explanation">Explanation:</label>
+            <textarea id="explanation" oninput="adjustHeight(this)" name="explanation" required>{{ question_data.explanation }}</textarea>
+          </div>
+
+          <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="updateQuestionBtn">
+            <span class="button-text">UPDATE QUESTION</span>
+            <div class="loader" style="display: none;"></div>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Same templates as manual_question.html -->
+<script src="{{ url_for('static', filename='js/question_admin.js') }}"></script>
+<script>
+    function adjustHeight(element) {
+        element.style.height = 'auto'; // Reset height to recalculate
+        element.style.height = element.scrollHeight + 'px'; // Set height to match content
+    }
+    
+    // Run on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const textarea = document.getElementById("autoResizeTextarea");
+        adjustHeight(textarea);
+    });
+  </script>
+{% endblock %}

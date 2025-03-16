@@ -46,6 +46,14 @@
 
   --fox: #ff9600;  
   --bee: #ffc800;
+  --right-glow-orange: rgba(255, 150, 0, 0.3);
+  --bottom-inner-shadow-orange: rgba(255, 150, 0, 0.3);
+  --top-inner-highlight-orange: rgba(255, 200, 0, 0.3);
+  --blue-first : #0088c7;
+  --blue-second: #81d4df;
+  --right-glow-blue: rgb(0 41 255 / 30%);      
+  --bottom-inner-shadow-blue: rgb(0 128 255 / 30%);  
+  --top-inner-highlight-blue: rgb(0 168 255 / 30%);
 }
 
 /* Color Schemes */
@@ -95,6 +103,22 @@
 
 .scheme-form .see-pwd-signup i {
   color: var(--scheme-main);
+}
+
+.progress-bar-scheme-orange {
+  background: linear-gradient(90deg, var(--fox) 0%, var(--bee) 100%);
+  box-shadow: 
+    2px 0 4px var(--right-glow-orange),  
+    inset 0 -2px 4px var(--bottom-inner-shadow-orange), 
+    inset 0 2px 4px var(--top-inner-highlight-orange); 
+}
+
+.progress-bar-scheme-blue {
+  background: linear-gradient(90deg, var(--blue-first) 0%, var(--blue-second) 100%);
+  box-shadow: 
+  2px 0 4px var(--right-glow-blue),  
+  inset 0 -2px 4px var(--bottom-inner-shadow-blue), 
+  inset 0 2px 4px var(--top-inner-highlight-blue); 
 }
 
 body, html {
@@ -436,6 +460,21 @@ a {
 
 #choice-menu-logout {
   margin-top: 20px;
+}
+
+/* ---------------------------------------------- */
+/* NAV BAR */
+/* ---------------------------------------------- */
+
+.nav-box {
+display: flex;
+height: 100%;
+width: fit-content;
+}
+
+.nav-logo {
+  width: 35px;
+  margin-right: 16px;
 }
 
 
@@ -807,4 +846,83 @@ input {
     display: flex;
     gap: 10px;
     flex-direction: column;
+}
+
+
+
+/* ---------------------------------------------- */
+/* AVATAR */
+/* ---------------------------------------------- */
+
+.container-profil-user {
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-avatar-user {
+  display: block;
+  height: 100%;
+  width: fit-content;
+}
+
+#avatar {
+  width: 120px;
+}
+
+/* ---------------------------------------------- */
+/* ROBOT VOICE ANIMATION */
+/* ---------------------------------------------- */
+
+.robot-message {
+  color: var(--pink-main);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 24px;
+  min-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add rainbow animation for special messages */
+@keyframes rainbow {
+  0% { color: #ff61d0; }
+  20% { color: #7d6bff; }
+  40% { color: #6be2ff; }
+  60% { color: #6bff72; }
+  80% { color: #ffeb6b; }
+  100% { color: #ff61d0; }
+}
+
+.rainbow-text {
+  animation: rainbow 2s infinite;
+}
+
+.robot-message::after {
+  content: "▋";
+  color: var(--pink-main);
+  animation: cursor-blink 1s infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0 }
+}
+
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3s steps(40, end);
+  border-right: 2px solid var(--pink-main);
 }

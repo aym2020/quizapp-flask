@@ -9,7 +9,14 @@ LOGIN: new CustomEvent('auth-login'),
 LOGOUT: new CustomEvent('auth-logout')
 };
 
+let messageTimeout = null;
+const MESSAGE_INTERVAL = 16000; // 8 seconds between messages
+const TYPING_SPEED = 50; // 50ms per character
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    initRobotAnimation();
+
     // Auth state elements
     const authButtons = document.querySelector('.auth-buttons');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -286,3 +293,116 @@ document.querySelectorAll('.sign-in-trigger').forEach(btn => {
 document.querySelectorAll('.create-account-trigger').forEach(btn => {
     btn.addEventListener('click', () => showModal('registerModal'));
 });
+
+
+const ROBOT_MESSAGES = [
+    "INITIALIZING NEURAL NETWORKS...",
+    "CALCULATING QUANTUM PROBABILITIES...",
+    "DEFRAGGING KNOWLEDGE BASE...",
+    "SYNTHESIZING WISDOM MATRIX...",
+    "OPTIMIZING COGNITIVE PATHS...",
+    "UPDATING BRAIN FIRMWARE...",
+    "COMPILING LIFE EXPERIENCES...",
+    "DOWNLOADING KNOWLEDGE PACKAGE...",
+    "DECRYPTING ANCIENT ALGORITHMS...",
+    "PARALLEL PROCESSING REALITY...",
+    "SIMULATING INTELLIGENCE BOOST...",
+    "REBOOTING CREATIVITY ENGINE...",
+    "GENERATING INNOVATION WAVEFORMS...",
+    "ANALYZING THOUGHT PATTERNS...",
+    "REINFORCING LEARNING PATHWAYS...",
+    "ACTIVING SYNAPTIC FIRING...",
+    "BEEP... BOOP... PROCESSING...",
+    "NEURO-LINGUISTIC PROGRAM RUNNING...",
+    "SEARCHING COSMIC DATABANK...",
+    "TRANSLATING QUANTUM THOUGHTS...",
+    "CONNECTING TO MIND NETWORK...",
+    "OPTICAL NEURONS ACTIVATED...",
+    "SYNAPSE CONNECTIVITY AT 100%...",
+    "COGNITIVE OVERDRIVE ENGAGED...",
+    "THOUGHT ACCELERATION INITIATED...",
+    "NEURAL PATHWAYS OPTIMIZED...",
+    "BRAIN POWER: OVER 9000...",
+    "DOWNLOADING GENIUS.EXE...",
+    "PROCESSOR TEMP: 42°C...",
+    "MEMORY ALLOCATION COMPLETE...",
+    "SYSTEMS: NOMINAL...",
+    "INITIALIZING WIT MODULE...",
+    "CALCULATING SNARK PARAMETERS...",
+    "WARNING: INTELLIGENCE OVERLOAD...",
+    "ENGAGING CREATIVITY SUBSYSTEM...",
+    "COMPILING DAD JOKES...",
+    "ERROR 404: SERIOUSNESS NOT FOUND...",
+    "WARNING: HUMOR CIRCUITS ACTIVE...",
+    "SARCASM MODULE: ONLINE...",
+    "THE ANSWER IS 42. ALWAYS.",
+    "DON'T PANIC.",
+    "MAY THE FORCE BE WITH YOU...",
+    "LIVE LONG AND PROSPER.",
+    "EXTERMINATE! EXTERMINATE!",
+    "RESISTANCE IS FUTILE...",
+    "THIS IS THE WAY.",
+    "HELLO WORLD!",
+    "GOOD NEWS, EVERYONE!",
+    "BITE MY SHINY METAL ASS!",
+    "I AM BENDER. PLEASE INSERT GIRDER."
+];
+
+// Random message selector
+function getRobotMessage() {
+    const index = Math.floor(Math.random() * 50);
+    return ROBOT_MESSAGES[index];
+}
+
+function startMessageCycle() {
+    const robotElement = document.getElementById('robotMessage');
+    if (!robotElement) return;
+
+    // Clear existing timeout
+    if (messageTimeout) {
+        clearTimeout(messageTimeout);
+    }
+
+    const message = getRobotMessage();
+    typeRobotMessage(message, robotElement);
+}
+
+// Animated typing function
+function typeRobotMessage(message, element) {
+    let i = 0;
+    element.textContent = '';
+    
+    // Reset rainbow effect
+    element.classList.remove('rainbow-text');
+    
+    // Add rainbow class for special messages
+    if (message.includes('42') || message.includes('BENDER')) {
+        element.classList.add('rainbow-text');
+    }
+    
+    function type() {
+        if (i < message.length) {
+            element.textContent += message.charAt(i);
+            i++;
+            setTimeout(type, TYPING_SPEED);
+        } else {
+            // Schedule next message after interval
+            messageTimeout = setTimeout(startMessageCycle, MESSAGE_INTERVAL);
+        }
+    }
+    
+    type();
+}
+
+// Initialize robot message
+function initRobotAnimation() {
+    startMessageCycle(); // Start the infinite cycle
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (messageTimeout) {
+        clearTimeout(messageTimeout);
+    }
+});
+

@@ -35,19 +35,21 @@
         <!-- Right Panel: Grid of blocks -->
         <div class="panel right">
             <div class="grid">
+                {{ robot_speaking() }}
+                
                 {% if not current_user %}
                     {{ auth_promo() }}
                 {% endif %}
 
-                <!-- NOT VISIBLE-->
-                <div class="grid-item color-scheme-blue" style="display: none">
+                <!-- UNDER CONSTRUCTION-->
+                <div class="grid-item color-scheme-blue" style="display: block">
                     <p class="text-create-profile">Upload a new question manually!</p>
                     <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
                         <span class="button-text">USE THE FORM</span>
                         <span class="loading-dots"></span>
                     </button>
                 </div>
-                <!-- NOT VISIBLE-->
+                <!-- UNDER CONSTRUCTION-->
             </div>
         </div>
     </div>

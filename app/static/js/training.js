@@ -62,7 +62,7 @@ function updateCertificationPanel(selectedCertif) {
                 <span class="grid-certif-name">${certif.name}</span>
                 <div class="progress-bar-container">
                     <div class="grid-progress-bar">
-                        <div class="progress-fill" 
+                        <div class="progress-fill progress-bar-scheme-blue" 
                             style="--target-width: ${currentUser ? certif.progress : 0}%">
                         </div>      
                     </div>
@@ -88,7 +88,7 @@ function updateCertificationPanel(selectedCertif) {
                 </div>
             </div>
             <div class="right-part-grid-item">
-                <img id="certif-logo" src="/static/images/${logoToShow}" alt="${certif.name} Logo">                     
+                <img id="certif-logo" src="/static/images/certif/${logoToShow}" alt="${certif.name} Logo">                     
             </div>
         </div>
     `;
@@ -173,6 +173,7 @@ function destroyTraining() {
   });
   trainingEventListeners = [];
 }
+
 
 // Initialize when ready
 document.addEventListener('DOMContentLoaded', initTraining);

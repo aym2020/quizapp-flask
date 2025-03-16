@@ -9,6 +9,18 @@
     </div>
 {% endmacro %}
 
+{% macro robot_speaking() %}
+    <div class="container-profil-user">
+      <div class="container-avatar-user">
+          <img id="avatar" src="{{ url_for('static', filename='images/avatar/avatar20.svg') }}" alt="User Avatar">
+      </div>
+    </div>
+
+    <div class="robot-message-container">
+      <div class="robot-message" id="robotMessage"></div>
+    </div>
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,38 +43,38 @@
         </div>
         <div class="nav-menu">
           <a href="/home" class="choice-menu-box {% if current_page == 'home' %}selected{% endif %}">
-            <div class="choice-menu-icon">
-              <i class="fa-solid fa-medal fa-xl" style="color:#d3c422;"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="sunHomeLogo" src="{{ url_for('static', filename='images/nav/sun.svg') }}" alt="Sun Home Logo">
             </div>
             <span class="choice-menu-text">HOME</span>
           </a>
           <a href="/training" class="choice-menu-box {% if current_page == 'training' %}selected{% endif %}">
-            <div class="choice-menu-icon">
-                <i class="fa-solid fa-dumbbell fa-lg" style="color:rgb(255, 140, 0);"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="mercuryHomeLogo" src="{{ url_for('static', filename='images/nav/mercury.svg') }}" alt="Mercury Home Logo">
             </div>
             <span class="choice-menu-text">TRAINING</span>
           </a>
           <a href="/profile" class="choice-menu-box {% if current_page == 'profile' %}selected{% endif %}">
-            <div class="choice-menu-icon">
-              <i class="fa-solid fa-ghost fa-xl" style="color:rgb(255, 255, 255);"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="astronautHomeLogo" src="{{ url_for('static', filename='images/nav/astronaut.svg') }}" alt="Astronaut Home Logo">
             </div>
             <span class="choice-menu-text">PROFILE</span>
           </a>
           <a href="/questions" class="choice-menu-box {% if current_page == 'questions' %}selected{% endif %}">
-            <div class="choice-menu-icon">
-              <i class="fa-solid fa-database fa-xl" style="color:rgb(241, 160, 255);"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="venusHomeLogo" src="{{ url_for('static', filename='images/nav/venus.svg') }}" alt="Venus Home Logo">
             </div>
             <span class="choice-menu-text">QUESTIONS</span>
           </a>
           <a href="/uploads" class="choice-menu-box {% if current_page in ['uploads', 'confirm_question'] %}selected{% endif %}" data-page="uploads">
-            <div class="choice-menu-icon">
-              <i class="fa-solid fa-cloud fa-xl" style="color:rgb(32, 199, 255);"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="earthHomeLogo" src="{{ url_for('static', filename='images/nav/earth.svg') }}" alt="Earth Home Logo">
             </div>
             <span class="choice-menu-text">UPLOADS</span>
           </a>
           <a href="/settings" class="choice-menu-box {% if current_page == 'settings' %}selected{% endif %}">
-            <div class="choice-menu-icon">
-              <i class="fa-solid fa-gear fa-xl" style="color:rgb(199, 199, 199);"></i>
+            <div class="nav-box">
+              <img class="nav-logo" id="marsHomeLogo" src="{{ url_for('static', filename='images/nav/mars.svg') }}" alt="Mars Home Logo">
             </div>
             <span class="choice-menu-text">SETTINGS</span>
           </a>

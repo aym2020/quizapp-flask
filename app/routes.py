@@ -1306,6 +1306,65 @@ def api_questions():
             "message": str(e)
         }), 500
 
+
+@app.route('/question/<question_id>')
+def question_admin(question_id):
+    try:
+        # Get the question with proper error handling
+        question = list(questions_container.query_items(
+            query="SELECT * FROM c WHERE c.id = @id",
+            parameters=[{"name": "@id", "value": question_id}],
+            enable_cross_partition_query=True
+        ))
+        
+        if not question:
+            return "Question not found", 404
+            
+        question = question[0]
+
+        # Get certifications safely
+        certif_codes = []
+        certif_items = list(certif_container.query_items(
+            query="SELECT DISTINCT c.certifcode FROM c",
+            enable_cross_partition_query=True
+        ))
+        for item in certif_items:
+            if 'certifcode' in item:
+                certif_codes.append(item['certifcode'])
+
+        return render_template(
+            'question_admin.html',
+            question_data=question,
+            question_types=["multiplechoice", "yesno", "draganddrop", "hotspot"],
+            certif_codes=certif_codes
+        )
+
+    except Exception as e:
+        return f"Error loading question: {str(e)}", 500
+
+
+@app.route('/update_question/<question_id>', methods=['PUT'])
+def update_question(question_id):
+    try:
+        # Get existing question to find partition key
+        original = list(questions_container.query_items(
+            query="SELECT * FROM c WHERE c.id = @id",
+            parameters=[{"name": "@id", "value": question_id}],
+            enable_cross_partition_query=True
+        ))[0]
+
+        # Merge updates
+        updated = {**original, **request.get_json()}
+        
+        # Replace in database
+        questions_container.replace_item(item=question_id, body=updated)
+        
+        return jsonify({"success": True})
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # ------------------------------------------------------------
 # Run app
 # ------------------------------------------------------------

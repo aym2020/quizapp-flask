@@ -204,16 +204,8 @@ color: var(--white-text);
   transform-origin: left;
   width: 0;
   z-index: 1;
-  background: linear-gradient(
-    90deg,
-    var(--fox) 0%,    
-    var(--bee) 100%  
-  );
-  box-shadow: 
-    2px 0 4px rgba(255, 150, 0, 0.3),    /* Right glow */
-    inset 0 -2px 4px rgba(255, 150, 0, 0.3), /* Bottom inner shadow */
-    inset 0 2px 4px rgba(255, 200, 0, 0.3);  /* Top inner highlight */
 }
+
 @keyframes fillBars {
   from { width: 0; }
   to { width: var(--target-width); } /* Will be set dynamically */
@@ -279,6 +271,7 @@ color: var(--white-text);
 
 #certif-logo {
   width: 100%;
+  padding: 12px;
 }
 
 
@@ -306,4 +299,7 @@ color: var(--white-text);
   font-size: 0.9rem;
   font-weight: 500;
 }
+
+
+
 

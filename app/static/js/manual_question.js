@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
         yesno: document.getElementById('yesnoTemplate').content
     };
 
+    const textarea = document.getElementById("questionText");
+    const explanationarea = document.getElementById("explanation");
+
+    adjustHeight(textarea);
+    adjustHeight(explanationarea);
+
+    function adjustHeight(element) {
+        element.style.height = 'auto'; // Reset height to recalculate
+        element.style.height = element.scrollHeight + 'px'; // Set height to match content
+    }
+
     // Initialize form based on selected question type
     function updateForm() {
         const type = document.getElementById('questionType').value;

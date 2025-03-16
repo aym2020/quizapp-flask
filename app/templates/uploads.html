@@ -47,6 +47,8 @@
         <!-- Right Panel: Grid of blocks -->
         <div class="panel right">
             <div class="grid">
+                {{ robot_speaking() }}
+
                 {% if not current_user %}
                     {{ auth_promo() }}
                 {% endif %}
@@ -59,7 +61,7 @@
                 </div>
                 <div class="grid-item color-scheme-blue">
                     <p class="text-create-profile">Explore the exiting questions!</p>
-                    <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
+                    <button type="button" class="button primary-btn full-width-button scheme-button" id="questionsTable">
                         <span class="button-text">TAKE A LOOK</span>
                         <span class="loading-dots"></span>
                     </button>
@@ -78,6 +80,10 @@
         // Add this click handler
         document.getElementById('manualForm')?.addEventListener('click', () => {
             window.location.href = "{{ url_for('manual_question') }}";
+        });
+
+        document.getElementById('questionsTable')?.addEventListener('click', () => {
+            window.location.href = "{{ url_for('questions') }}";
         });
     });
 </script>

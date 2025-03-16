@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block styles %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm_question.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manual_question.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -47,7 +48,7 @@
 
           <div class="form-group">
             <label for="questionText">Question:</label>
-            <textarea id="questionText" name="question" required>{{ question_data.question }}</textarea>
+            <textarea id="questionText" oninput="adjustHeight(this)" name="question" required>{{ question_data.question }}</textarea>
           </div>
 
           <!-- Dynamic Fields Container -->
@@ -57,7 +58,7 @@
 
           <div class="form-group">
             <label for="explanation">Explanation:</label>
-            <textarea id="explanation" name="explanation" required>{{ question_data.explanation }}</textarea>
+            <textarea id="explanation" oninput="adjustHeight(this)" name="explanation" required>{{ question_data.explanation }}</textarea>
           </div>
 
           <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="createQuestionBtn">
@@ -156,6 +157,18 @@
 </template>
 
 <script type="module" src="{{ url_for('static', filename='js/manual_question.js') }}"></script>
+<script>
+  function adjustHeight(element) {
+      element.style.height = 'auto'; // Reset height to recalculate
+      element.style.height = element.scrollHeight + 'px'; // Set height to match content
+  }
+  
+  // Run on page load
+  document.addEventListener("DOMContentLoaded", function() {
+      const textarea = document.getElementById("autoResizeTextarea");
+      adjustHeight(textarea);
+  });
+</script>
 
 {% endblock %}
 
