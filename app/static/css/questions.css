@@ -142,7 +142,6 @@
 .page-info-text {
   font-size: 0.9em;
   color: var(--white-text);
-  margin: 0 1rem;
 }
 
 .compact {
@@ -304,12 +303,26 @@
 .filter-group {
   display: flex;
   gap: 1rem;
-  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+}
+
+.filter-group > * {
+  flex: 1;
+  min-width: 150px;
 }
 
 .filter-group select {
   flex: 1;
   min-width: 180px;
+}
+
+#certifFilter {
+  max-width: 200px;
+}
+
+#searchInput {
+  flex: 2;
 }
 
 .scheme-form.form-field {

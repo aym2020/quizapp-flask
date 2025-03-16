@@ -1,3 +1,115 @@
 .panel.left {
     max-width: none;
 }
+
+#certifcode, 
+#questionType {
+    color: var(--grey-disabled);
+}
+
+#certifcode:focus, 
+#questionType:focus {
+    border-color: var(--grey-border);
+}
+
+.admin-button {
+    color: var(--dark-blue-panel);
+    border-bottom: solid 2px var(--dark-blue-panel);
+}
+
+.admin-button:hover {
+    color: var(--grey-hover);
+    border-bottom: solid 2px var(--grey-hover);
+}
+
+ #deleteBtn:hover {
+    color: #761d1d;
+    border-bottom: solid 2px #761d1d;
+ }
+
+#dynamicButtons {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.cmd-btn {
+    color: var(--dark-blue-panel);
+    border-bottom: solid 2px var(--dark-blue-panel);
+    
+}
+
+.cmd-btn:hover {
+    color: var(--grey-hover);
+    border-bottom: solid 2px var(--grey-hover);
+}
+
+.back-button-container {
+    margin-bottom: 1.5rem;
+}
+
+.back-button {
+    font-size: 0.8rem;
+    color: var(--dark-blue-panel);
+    border-radius: 12px;
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-bottom: solid 2px var(--dark-blue-panel);
+}
+
+.back-button:hover {
+    color: var(--grey-hover);
+    border-bottom: solid 2px var(--grey-hover);
+}
+
+
+/* ---------------------------------------------- */
+/* NOTIF */
+/* ---------------------------------------------- */
+.notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 18px 25px;
+    border-radius: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+               fadeOut 0.4s ease 3.2s forwards;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.notification-success {
+    background: rgb(40, 167, 69);
+    color: var(--white-text);
+}
+
+.notification-error {
+    background: rgb(220, 53, 69);
+    color: var(--white-text);
+}
+
+.notification i {
+    font-size: 1.4em;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

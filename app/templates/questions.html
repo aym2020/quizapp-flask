@@ -13,41 +13,33 @@
                     <span class="text-top-left">DISCOVER NEW HORIZONS</span>
                 </div>
             </div>
-            <div class="main-grid-certif">
-                <div class="grid-item-certif" id="uploads_grid-item-certif">
-                    <form id="uploadForm" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="certifCode">Certification Identifier:</label>
-                            <select id="certifCode" name="certifCode" required>
-                                <option value="" disabled selected>Select Certification</option>
-                            </select>
-                        </div>  
-                    </form>
-                </div>
-            </div>
 
             <div class="main-grid-certif" style="margin-top: 20px;">
                 <div class="grid-item-certif">
                     <div class="table-controls">
                         <div class="search-pagination-header">
                             <div class="filter-controls">
-                                <input type="text" id="searchInput" placeholder="Search by Exam Topic ID..." 
-                                       class="scheme-form form-field full-width-search" autocomplete="off">
-                                
                                 <div class="filter-group">
-                                    <select id="statusFilter" class="scheme-form form-field">
-                                        <option value="">All Statuses</option>
-                                        <option value="correct">Correct</option>
-                                        <option value="incorrect">Incorrect</option>
-                                        <option value="unanswered">Unanswered</option>
+                                    <select id="certifFilter" class="scheme-form form-field">
+                                        <option value="">All Certifications</option>
                                     </select>
-                        
+                                    
+                                    <input type="text" id="searchInput" placeholder="Search by Exam Topic ID..." 
+                                           class="scheme-form form-field" autocomplete="off">
+                                    
                                     <select id="typeFilter" class="scheme-form form-field">
                                         <option value="">All Types</option>
                                         <option value="multiplechoice">Multiple Choice</option>
                                         <option value="hotspot">Hotspot</option>
                                         <option value="draganddrop">Drag and Drop</option>
                                         <option value="yesno">Yes/No</option>
+                                    </select>
+
+                                    <select id="statusFilter" class="scheme-form form-field">
+                                        <option value="">All Statuses</option>
+                                        <option value="correct">Correct</option>
+                                        <option value="incorrect">Incorrect</option>
+                                        <option value="unanswered">Unanswered</option>
                                     </select>
                                 </div>
                             </div>
@@ -72,8 +64,8 @@
                                         <th>#</th>
                                         <th>Question</th>
                                         <th>Type</th>
-                                        <th id="status-header-table">Status</th>
-                                        <th id="action-header-table">Action</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="questionsBody">
@@ -88,7 +80,5 @@
     </div>
 </div>
 
-
 <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
 {% endblock %}
-       

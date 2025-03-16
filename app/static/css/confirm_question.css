@@ -1,3 +1,7 @@
+.panel.left {
+  max-width: none;
+}
+
 .choice-menu-box[data-page="uploads"].selected {
   background-color: rgb(32, 47, 54);
   border-color: var(--pink-border);

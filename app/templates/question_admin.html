@@ -11,7 +11,12 @@
       <div class="top-part-left"> 
         <div class="top-row-part-left"></div>
         <div class="panel-top-left">
-          <span class="text-top-left">QUESTION DETAILS</span>
+            <span class="text-top-left">QUESTION DETAILS</span>
+        </div>
+        <div class="back-button-container">
+            <a href="{{ url_for('questions') }}" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Questions
+            </a>
         </div>
       </div>
       <!-- REUSE confirm_question.html's form structure -->
@@ -20,7 +25,7 @@
           <div class="row-inline">
             <div class="form-group">
               <label for="certifcode">Certification Code:</label>
-              <input type="text" id="certifcode" name="certifcode" value="{{ question_data.certifcode }}" readonly required>
+              <input class="disabled-btn" type="text" id="certifcode" name="certifcode" value="{{ question_data.certifcode }}" readonly required>
             </div>
     
             <div class="form-group">
@@ -30,7 +35,7 @@
     
             <div class="form-group">
               <label for="questionType">Question Type:</label>
-              <input type="text" id="questionType" name="questiontype" value="{{ question_data.questiontype }}" readonly required>
+              <input class="disabled-btn" type="text" id="questionType" name="questiontype" value="{{ question_data.questiontype }}" readonly required>
             </div>
           </div>
     
@@ -126,19 +131,21 @@
             <label for="explanation">Explanation:</label>
             <textarea id="explanation" oninput="adjustHeight(this)" name="explanation" required>{{ question_data.explanation }}</textarea>
           </div>
-          <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="updateQuestionBtn">
-            <span class="button-text">UPDATE QUESTION</span>
-            <div class="loader" style="display: none;"></div>
-          </button>
+          <div class="button-container">
+            <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="updateQuestionBtn">
+                <span class="button-text">UPDATE QUESTION</span>
+                <div class="loader" style="display: none;"></div>
+            </button>
+          </div>
         </form>
       </div>
       
       <!-- Add admin controls -->
       <div class="admin-controls">
-        <button class="button danger-btn" id="deleteBtn">
+        <button class="button admin-button danger-btn" id="deleteBtn">
             <i class="fas fa-trash"></i> Delete Question
         </button>
-        <button class="button secondary-btn" id="editToggle">
+        <button class="button admin-button secondary-btn" id="editToggle">
             <i class="fas fa-edit"></i> Toggle Edit
         </button>
       </div>
@@ -148,6 +155,7 @@
     </div>
   </div>
 </div>
+
 
 <script src="{{ url_for('static', filename='js/question_admin.js') }}"></script>
 <script>

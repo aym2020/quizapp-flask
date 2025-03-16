@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const certifDropdown = document.getElementById('certifCode');
+    const certifDropdown = document.getElementById('certifFilter');
     const questionsTableBody = document.getElementById('questionsBody');
     const searchInput = document.getElementById('searchInput');
     const prevPageBtn = document.getElementById('prevPage');
@@ -15,31 +15,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageSize = 10;
 
     /** Load Certifications into Dropdown */
-async function populateCertifDropdown() {
-    try {
-        const response = await fetch('/get_certif_details');
-        const certifications = await response.json();
-        const certifList = Object.values(certifications);
-        
-        certifDropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
-        
-        certifList.forEach(certif => {
-            const option = document.createElement('option');
-            option.value = certif.code;
-            option.textContent = certif.code.toUpperCase();
-            certifDropdown.appendChild(option);
-        });
+    async function populateCertifDropdown() {
+        try {
+            const response = await fetch('/get_certif_details');
+            const certifications = await response.json();
+            const certifList = Object.values(certifications);
+            
+            certifDropdown.innerHTML = '<option value="" disabled selected>Select Certification</option>';
+            
+            certifList.forEach(certif => {
+                const option = document.createElement('option');
+                option.value = certif.code;
+                option.textContent = certif.code.toUpperCase();
+                certifDropdown.appendChild(option);
+            });
 
-        // Auto-select first certification if available
-        if (certifList.length > 0) {
-            certifDropdown.value = certifList[0].code;
-            currentCertif = certifList[0].code;
-            loadQuestions();
+            // Auto-select first certification if available
+            if (certifList.length > 0) {
+                certifDropdown.value = certifList[0].code;
+                currentCertif = certifList[0].code;
+                loadQuestions();
+            }
+        } catch (error) {
+            console.error('Error loading certifications:', error);
         }
-    } catch (error) {
-        console.error('Error loading certifications:', error);
     }
-}
 
     /** Load Questions from API */
     async function loadQuestions() {

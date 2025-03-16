@@ -1,3 +1,4 @@
+//question_admin.js
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('confirmForm');
     const editToggle = document.getElementById('editToggle');
@@ -49,31 +50,54 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const formData = getFormData();
         
-        if (!validateFormData(formData)) {
-            return;
-        }
-
+        if (!validateFormData(formData)) return;
+    
         try {
             updateBtn.disabled = true;
             loader.style.display = "inline-block";
-
+    
             const response = await fetch(window.location.pathname, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-
+    
+            const result = await response.json();
+            
             if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error || 'Update failed');
+                throw new Error(result.message || 'Update failed');
             }
-
-            window.location.reload();
+    
+            showNotification('Question updated successfully!', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+            
         } catch (error) {
-            alert(`Update failed: ${error.message}`);
+            showNotification(error.message || 'Update failed. Please try again.', 'error');
         } finally {
             updateBtn.disabled = false;
             loader.style.display = "none";
+        }
+    });
+
+    deleteBtn.addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to delete this question?')) return;
+    
+        try {
+            const response = await fetch(window.location.pathname, {
+                method: 'DELETE'
+            });
+    
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Delete failed');
+            }
+    
+            showNotification('Question deleted successfully!', 'success');
+            setTimeout(() => window.location.href = "{{ url_for('questions') }}", 1000);
+            
+        } catch (error) {
+            showNotification(error.message || 'Delete failed. Please try again.', 'error');
         }
     });
 
@@ -114,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isDisabledField = ['exam_topic_id'].includes(element.id);
             element.disabled = !enabled || isDisabledField;
         });
-
+    
         // Show/hide add buttons based on question type
         const type = document.getElementById('questionType').value;
         const addButtons = {
@@ -123,10 +147,22 @@ document.addEventListener('DOMContentLoaded', () => {
             hotspot: document.querySelectorAll('.add-hotspot-btn'),
             yesno: [] // No add buttons for yesno
         }[type] || [];
-
+    
         addButtons.forEach(btn => {
             btn.style.display = enabled ? 'inline-block' : 'none';
         });
+    
+        // Hide/Show remove buttons (✕ icons)
+        const removeButtons = document.querySelectorAll('[class*="remove-"]');
+        removeButtons.forEach(btn => {
+            btn.style.display = enabled ? 'inline-block' : 'none';
+        });
+    
+        // Hide/Show update button
+        const updateButton = document.getElementById('updateQuestionBtn');
+        if (updateButton) {
+            updateButton.style.display = enabled ? 'block' : 'none';
+        }
     }
 
     // Clone existing empty template or last entry
@@ -165,21 +201,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function initAddButtons() {
         const type = document.getElementById('questionType').value;
         const buttons = `
-            ${type === 'multiplechoice' ? `<button type="button" class="button small-btn add-choice-btn" onclick="addChoice()" style="display: none;">
+            ${type === 'multiplechoice' ? `<button type="button" class="button cmd-btn add-choice-btn" onclick="addChoice()" style="display: none;">
                 <i class="fas fa-plus"></i> Add Choice
             </button>` : ''}
             
             ${type === 'draganddrop' ? `
             <div class="button-group">
-                <button type="button" class="button small-btn add-drag-btn" onclick="addDragItem()" style="display: none;">
+                <button type="button" class="button cmd-btn add-drag-btn" onclick="addDragItem()" style="display: none;">
                     <i class="fas fa-plus"></i> Add Drag Item
                 </button>
-                <button type="button" class="button small-btn add-drop-btn" onclick="addDropTarget()" style="display: none;">
+                <button type="button" class="button cmd-btn add-drop-btn" onclick="addDropTarget()" style="display: none;">
                     <i class="fas fa-plus"></i> Add Drop Zone
                 </button>
             </div>` : ''}
             
-            ${type === 'hotspot' ? `<button type="button" class="button small-btn add-hotspot-btn" onclick="addHotspotStatement()" style="display: none;">
+            ${type === 'hotspot' ? `<button type="button" class="button cmd-btn add-hotspot-btn" onclick="addHotspotStatement()" style="display: none;">
                 <i class="fas fa-plus"></i> Add Statement
             </button>` : ''}
         `;
@@ -274,6 +310,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         return baseData;
+    }
+
+    function showNotification(message, type = 'success') {
+        const icon = type === 'success' 
+            ? '<i class="fas fa-check-circle"></i>'
+            : '<i class="fas fa-exclamation-triangle"></i>';
+        
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `${icon} ${message}`;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after animation
+        setTimeout(() => {
+            notification.remove();
+        }, 3600);
     }
 
     // Update on type change (if applicable)

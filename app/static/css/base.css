@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 /* Reset and box-sizing */
 *, *::before, *::after {
@@ -10,7 +11,10 @@
 }
 
 :root {
-  --main-font: "Averia Sans Libre", serif;
+  --main-font: "Nunito", sans-serif;
+
+  --fw700: 700;
+  --fw800: 800;
 
   --border-radius: 16px;
 
@@ -38,6 +42,7 @@
   --grey-hover: #646262;
   --grey-text: #2d2b2b;
   --grey-border: rgba(69, 69, 69, 0.58);
+  --grey-disabled: rgb(79 94 102);
 
   --white-text: #ecf0f1;
 
@@ -214,7 +219,7 @@ button, .primary-btn {
 .choice-menu-text {
   display: initial;
   font-size: 15px;
-  font-weight: 1000;
+  font-weight: var(--fw700);
   letter-spacing: .8px;
   text-transform: uppercase;
   transition: none;
@@ -266,7 +271,7 @@ a {
   background-color: var(--button-bg);
   padding: 15px 30px;
   border-radius: 12px;
-  font-weight: 700;
+  font-weight: var(--fw700);;
   font-size: 15px;
   text-transform: uppercase;
   cursor: pointer;
@@ -399,7 +404,7 @@ a {
   padding: 18px 16px 18px 0px;
   position: relative;
   font-size: 40px;
-  font-weight: 1000;
+  font-weight: var(--fw700);;
 }
 
 .main-grid-certif {
@@ -432,7 +437,7 @@ a {
   padding: 11px 0;
   transition: filter .2s;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--fw700);;
   height: 48px;
   line-height: 4px;
   align-items: center;
@@ -449,7 +454,7 @@ a {
   font-size: 25px;
   line-height: 34px;
   margin-bottom: 15px;
-  font-weight: 700;
+  font-weight: var(--fw700);;
   color: var(--white-text);
   display: block;
 }
@@ -542,7 +547,7 @@ width: fit-content;
   
   .bar-number {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: var(--fw700);;
   }
   
   #streak-number {

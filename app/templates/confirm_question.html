@@ -126,10 +126,12 @@
             <label for="explanation">Explanation:</label>
             <textarea id="explanation" oninput="adjustHeight(this)" name="explanation" required>{{ question_data.explanation }}</textarea>
           </div>
-          <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="createQuestionBtn">
-            <span class="button-text">CREATE QUESTION</span>
-            <div class="loader" style="display: none;"></div>
-          </button>
+          <div class="button-container">
+            <button type="submit" class="button primary-btn scheme-button color-scheme-pink" id="createQuestionBtn">
+              <span class="button-text">CREATE QUESTION</span>
+              <div class="loader" style="display: none;"></div>
+            </button>
+          </div>
           
         </form>
       </div>
