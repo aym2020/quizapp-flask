@@ -364,6 +364,7 @@ def process_question(q):
 
     # Ensure weight exists in processed question
     processed_q['weight'] = q.get('weight', 100)
+    processed_q['main_question'] = q.get('question', '').replace('\n', '<br>')
     return processed_q
 
 # Map question types to processing functions
@@ -1224,6 +1225,47 @@ def get_certif_details():
     
     except Exception as e:
         logging.error(f"Error in get_certif_details: {str(e)}")
+        return jsonify({"error": "Server error"}), 500
+
+
+@app.route("/get_certif_details/<certif>", methods=["GET"])
+def get_single_certif_details(certif):
+    try:
+        # Get certification metadata
+        certif_item = list(certif_container.query_items(
+            query="SELECT * FROM c WHERE c.certifcode = @certif",
+            parameters=[{"name": "@certif", "value": certif}],
+            enable_cross_partition_query=True
+        ))[0]
+
+        # Get total questions count
+        total_questions = list(questions_container.query_items(
+            query="SELECT VALUE COUNT(1) FROM c WHERE c.certifcode = @certif",
+            parameters=[{"name": "@certif", "value": certif}],
+            enable_cross_partition_query=True
+        ))[0]
+
+        # Calculate progress
+        progress = 0
+        if 'user_id' in session:
+            user = users_container.read_item(session["user_id"], session["user_id"])
+            history = user.get('quiz_history', {}).get(certif, {})
+            correct = sum(1 for q in history.get('details', {}).values() if q.get('correct', False))
+            progress = (correct / total_questions * 100) if total_questions > 0 else 0
+
+        return jsonify({
+            "progress": progress,
+            "total_questions": total_questions,
+            "title": certif_item.get('title', ''),
+            "name": certif_item.get('name', ''),
+            "logo": certif_item.get('logo', ''),
+            "logo_complete": certif_item.get('logo_complete', '')
+        })
+
+    except IndexError:
+        return jsonify({"error": "Certification not found"}), 404
+    except Exception as e:
+        logging.error(f"Error fetching certif details: {str(e)}")
         return jsonify({"error": "Server error"}), 500
 
 

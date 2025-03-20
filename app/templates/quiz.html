@@ -5,11 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
 </head>
 <body>
   <header class="site-header"></header>
 
   <main class="main-container">
+
+    <!-- Progress Bar Header -->
+    <div id="quiz-progress" class="progress-bar-header">
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div class="grid-progress-bar">
+            <div class="progress-fill progress-bar-scheme-blue"></div>
+          </div>
+        </div>
+        <span class="progress-text">0/0</span>
+      </div>
+    </div>
+
     <div class="quiz-content">
       <section id="quiz-section">
         <div id="question-container">
@@ -29,22 +44,41 @@
         </div>
       </section>
 
-      <!-- Action Buttons Section -->
-      <section id="action-buttons">
-        <div id="buttons-container">
-          <button id="submit-btn" class="quiz-button">Submit Answer</button>
-          <button id="stop-quiz" class="quiz-button">Stop Quiz</button>
-        </div>
+      <!-- Action Buttons Footer -->
+      <div id="action-footer">
+        <section id="action-buttons">
+          <div id="buttons-container">
+            <button class="button primary-btn scheme-button color-scheme-pink" id="submit-btn">
+              <span class="button-text">SUBMIT ANSWER</span>
+              <div class="loader" style="display: none;"></div>
+            </button>
 
-        <div id="result-container" style="display: none;">
-          <p id="result-message"></p>
-          <div id="nav-buttons">
-            <button id="explanation-btn" class="quiz-button">Show Explanation</button>
-            <button id="next-question-btn" class="quiz-button">Next Question</button>
-            <button id="stop-quiz-result" class="quiz-button">Stop Quiz</button>
+            <button class="button primary-btn scheme-button color-scheme-red" id="stop-quiz">
+              <span class="button-text">STOP QUIZ</span>
+              <div class="loader" style="display: none;"></div>
+            </button>
           </div>
-        </div>
-      </section>
+
+          <div id="result-container" style="display: none;">
+            <div id="buttons-container">
+              <button class="button primary-btn scheme-button color-scheme-pink" id="explanation-btn">
+                <span class="button-text">SHOW EXPLANATION</span>
+                <div class="loader" style="display: none;"></div>
+              </button>
+
+              <button class="button primary-btn scheme-button color-scheme-pink" id="next-question-btn">
+                <span class="button-text">NEXT QUESTION</span>
+                <div class="loader" style="display: none;"></div>
+              </button>
+
+              <button class="button primary-btn scheme-button color-scheme-red" id="stop-quiz-result">
+                <span class="button-text">STOP QUIZ</span>
+                <div class="loader" style="display: none;"></div>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 

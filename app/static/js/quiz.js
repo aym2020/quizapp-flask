@@ -6,29 +6,63 @@ let selectedAnswers = [];
 let hotspotAnswers = [];
 let dragDropAnswer = "";
 let isDragging = false;
+let certifDetails = null;
+
 
 // Initialization
 async function initializeQuiz() {
   try {
-    // Get certification from URL path
     const pathParts = window.location.pathname.split('/');
     certif = pathParts[pathParts.length - 1];
+
+    // Check localStorage for existing question
+    const savedQuestionId = localStorage.getItem(`currentQuestion_${certif}`);
+    let shouldLoadNew = true;
+
+    if (savedQuestionId) {
+      try {
+        const response = await fetch(`/get_question/${certif}/${savedQuestionId}`);
+        if (response.ok) {
+          questions = [await response.json()];
+          currentIndex = 0;
+          shouldLoadNew = false;
+        }
+      } catch (error) {
+        console.log('No saved question found');
+      }
+    }
+    
+    // Fetch certification details
+    const certifResponse = await fetch(`/get_certif_details/${certif}`);
+    if (!certifResponse.ok) {
+      throw new Error(`Failed to load certification details: ${certifResponse.status}`);
+    }
+    certifDetails = await certifResponse.json();
+    
+    // Initialize progress bar with actual counts
+    updateCertifProgress(
+      Math.round(certifDetails.progress/100 * certifDetails.total_questions),
+      certifDetails.total_questions
+    );
     
     // Show loading state
     document.getElementById('question-id').textContent = "Loading...";
     
-    // Fetch initial question
-    const response = await fetch(`/questions/${certif}?limit=1`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    questions = await response.json();
-    
-    if (!Array.isArray(questions)) throw new Error('Invalid question data format');
+    if (shouldLoadNew) {
+      // Fetch initial question
+      const response = await fetch(`/questions/${certif}?limit=1`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      questions = await response.json();
+      
+      if (!Array.isArray(questions)) throw new Error('Invalid question data format');
 
-    if (questions.length === 0) throw new Error('No questions available');
-    
-    currentIndex = 0;
-    initializeQuestion();
-    setupEventListeners();
+      if (questions.length === 0) throw new Error('No questions available');
+    }
+      currentIndex = 0;
+      initializeQuestion();
+      setupEventListeners();
+
+      localStorage.setItem(`currentQuestion_${certif}`, questions[currentIndex].id);
   } catch (error) {
     console.error('Quiz initialization failed:', error);
     showError(error.message);
@@ -49,15 +83,15 @@ function initializeQuestion() {
   header.id = 'question-header';
   header.innerHTML = `
     <div class="question-header-top">
-      <p id="question-id">Question ${currentQuestion.id}</p>
+      <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
       <div class="weight-indicator weight-${getWeightClass(currentQuestion.weight)}">
         <span class="difficulty-icon">🏋️</span>
         <span class="difficulty-text">${getDifficultyText(currentQuestion.weight)}</span>
         <span class="weight-value">(Weight: ${currentQuestion.weight})</span>
       </div>
     </div>
-    <pre id="question-text">${currentQuestion.main_question}</pre>
-  `;
+    <pre id="question-text">${formatXmlQuestion(currentQuestion.main_question)}</pre>
+`;
   container.appendChild(header);
 
   // Create question body
@@ -117,6 +151,12 @@ function setupEventListeners() {
   });
   document.getElementById('quiz-section').addEventListener('dragover', allowDrop);
   document.getElementById('quiz-section').addEventListener('drop', handleDrop);
+
+  ['stop-quiz', 'stop-quiz-result'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      localStorage.removeItem(`currentQuestion_${certif}`);
+    });
+  });
 }
 
 // Answer Selection Handling
@@ -211,7 +251,7 @@ function checkAnswer() {
             isCorrect = validateStandardAnswer(currentQuestion);
     }
 
-    showResult(isCorrect);
+    // showResult(isCorrect);
     highlightCorrectAnswers(currentQuestion);
     disableInteractions();
     document.getElementById('buttons-container').style.display = 'none';
@@ -234,6 +274,16 @@ async function submitQuizAnswer(questionId, isCorrect) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
+
+        // Refresh certification progress after submission
+        const updatedCertifResponse = await fetch(`/get_certif_details/${certif}`);
+        if (updatedCertifResponse.ok) {
+          certifDetails = await updatedCertifResponse.json();
+          updateCertifProgress(
+            Math.round(certifDetails.progress/100 * certifDetails.total_questions),
+            certifDetails.total_questions
+          );
+        }
         
         // Fetch the updated question data
         await fetchUpdatedQuestion(questionId);
@@ -387,48 +437,101 @@ function enableInteractions() {
 
 async function loadNextQuestion() {
   const quizContent = document.querySelector('.quiz-content');
+  const questionContainer = document.getElementById('question-container');
   const actionButtons = document.getElementById('action-buttons');
 
   try {
-    // Start fade-out animations
-    quizContent.classList.add('fade-out');
-    actionButtons.style.opacity = '0';
-
-    // Wait for animations to complete
-    await Promise.all([
-      new Promise(resolve => quizContent.addEventListener('transitionend', resolve, { once: true })),
-      new Promise(resolve => setTimeout(resolve, 300))
-    ]);
-
+    // Disable buttons during transition
+    document.querySelectorAll('.quiz-button').forEach(btn => btn.disabled = true);
+    
+    // Fade out only the question content
+    questionContainer.style.opacity = '0';
+    questionContainer.style.transform = 'translateY(20px)';
+    
+    // Wait for fade-out animation
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Reset state without removing DOM elements
     resetQuestionState();
-    actionButtons.style.display = 'none';
-
-    // Fetch new question
+    
+    // Fetch new question in the background
     const response = await fetch(`/questions/${certif}?limit=1`);
     const newQuestions = await response.json();
 
     if (newQuestions.length > 0) {
       questions.push(...newQuestions);
-      currentIndex = questions.length > 0 ? questions.length - 1 : 0;
-      initializeQuestion();
+      currentIndex = questions.length - 1;
 
-      // Force reflow before showing new content
-      void quizContent.offsetHeight;
-
+      // Store new question
+      localStorage.setItem(`currentQuestion_${certif}`, questions[currentIndex].id);
+      
+      // Update question content while hidden
+      updateQuestionContent();
+      
       // Fade in new content
-      actionButtons.style.display = 'block';
-      quizContent.classList.remove('fade-out');
-      setTimeout(() => {
-        actionButtons.style.opacity = '1';
-      }, 150);
+      questionContainer.style.opacity = '1';
+      questionContainer.style.transform = 'translateY(0)';
     }
   } catch (error) {
     console.error('Error fetching next question:', error);
-    // Ensure elements are visible even on error
-    quizContent.classList.remove('fade-out');
-    actionButtons.style.display = 'block';
-    actionButtons.style.opacity = '1';
+  } finally {
+    // Re-enable buttons
+    document.querySelectorAll('.quiz-button').forEach(btn => btn.disabled = false);
   }
+}
+
+function updateQuestionContent() {
+  const currentQuestion = questions[currentIndex];
+  const container = document.getElementById('question-container');
+
+  // Ensure header exists
+  let header = container.querySelector('#question-header');
+  if (!header) {
+    header = document.createElement('div');
+    header.id = 'question-header';
+    container.prepend(header); // Add at the top
+  }
+
+  // Update header content
+  header.innerHTML = `
+    <div class="question-header-top">
+      <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
+      <div class="weight-indicator weight-${getWeightClass(currentQuestion.weight)}">
+        <span class="difficulty-icon">🏋️</span>
+        <span class="difficulty-text">${getDifficultyText(currentQuestion.weight)}</span>
+        <span class="weight-value">(Weight: ${currentQuestion.weight})</span>
+      </div>
+    </div>
+    <pre id="question-text">${formatXmlQuestion(currentQuestion.main_question)}</pre>
+  `;
+
+  // Handle question body
+  let questionBody = container.querySelector('.dynamic-content');
+  if (!questionBody) {
+    questionBody = document.createElement('div');
+    questionBody.className = 'dynamic-content';
+    container.appendChild(questionBody);
+  } else {
+    questionBody.innerHTML = ''; // Clear existing content
+  }
+
+  // Populate new content
+  switch(currentQuestion.questiontype) {
+    case 'hotspot':
+      questionBody.appendChild(createHotspotContainer(currentQuestion));
+      break;
+    case 'draganddrop':
+      questionBody.appendChild(createDragDropContainer(currentQuestion));
+      break;
+    case 'yesno':
+      questionBody.appendChild(createYesNoContainer());
+      break;
+    default:
+      questionBody.appendChild(createMultipleChoiceContainer(currentQuestion));
+  }
+
+  enableInteractions();
+  localStorage.setItem(`currentQuestion_${certif}`, currentQuestion.id);
 }
 
 function resetQuestionState() {
@@ -436,8 +539,12 @@ function resetQuestionState() {
   hotspotAnswers = [];
   dragDropAnswer = "";
   enableInteractions();
-  // Remove dynamic question containers if they exist
-  document.querySelectorAll('.dynamic-content').forEach(el => el.remove());
+  
+  // Only clear interactive elements
+  const questionBody = document.querySelector('.dynamic-content');
+  if (questionBody) questionBody.innerHTML = '';
+  
+  // Reset UI states
   document.getElementById('buttons-container').style.display = 'flex';
   document.getElementById('result-container').style.display = 'none';
 }
@@ -556,4 +663,47 @@ function showExplanation() {
 
 function closeExplanation() {
   document.getElementById('explanation-modal').style.display = 'none';
+}
+
+function formatXmlQuestion(xml) {
+  return xml
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/(&lt;[^>]+&gt;)/g, '<span class="xml-tag">$1</span>');
+}
+
+/*------------------------------------------------- */
+// PROGRESS BAR
+/*------------------------------------------------- */
+
+function updateCertifProgress(correctCount, totalQuestions) {
+  const progressFill = document.querySelector('.progress-fill');
+  const progressText = document.querySelector('.progress-text');
+  
+  if (!progressFill || !progressText) {
+    console.error('Progress bar elements not found');
+    return;
+  }
+
+  const progressPercent = totalQuestions > 0 
+    ? Math.round((correctCount / totalQuestions) * 100)
+    : 0;
+
+  // Reset animation
+  progressFill.style.animation = 'none';
+  void progressFill.offsetWidth; // Trigger reflow
+
+  // Create new animation
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    @keyframes fillProgress {
+      from { width: 0; }
+      to { width: ${progressPercent}%; }
+    }
+  `;
+  document.head.appendChild(styleTag);
+
+  // Apply animation
+  progressFill.style.animation = 'fillProgress 0.8s ease-in-out forwards';
+  progressText.textContent = `${correctCount}/${totalQuestions}`;
 }

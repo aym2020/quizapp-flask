@@ -1,4 +1,7 @@
-// Initialize when DOM is ready
+// manual_question.js
+import { showNotification, validateFormData } from './utilities.js';
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // Question type templates
     const templates = {
@@ -19,19 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.height = element.scrollHeight + 'px'; // Set height to match content
     }
 
-    function showNotification(message, type = 'success') {
-        const icon = type === 'success' 
-            ? '<i class="fas fa-check-circle"></i>'
-            : '<i class="fas fa-exclamation-triangle"></i>';
-        
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `${icon} ${message}`;
-        
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3600);
-    }
-
+    
     // Initialize form based on selected question type
     function updateForm() {
         const type = document.getElementById('questionType').value;
@@ -59,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     certifs.forEach(certif => {
         const option = document.createElement('option');
         option.value = certif;
-        option.textContent = certif;
+        option.textContent = certif.toUpperCase();
         certifSelect.appendChild(option);
     });
     
@@ -124,12 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitBtn = document.getElementById('createQuestionBtn');
         const buttonText = submitBtn.querySelector('.button-text');
         const loader = submitBtn.querySelector('.loader');
-        
-        // Disable button and show loader
-        submitBtn.disabled = true;
-        buttonText.style.visibility = 'hidden'; // Hide text
-        loader.style.display = 'block'; // Show loader
-    
+
         // Handle question type specific data
         switch(questionType) {
             case 'multiplechoice':
@@ -138,12 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         letter: letter,
                         text: formData.getAll('choiceText[]')[index]
                     }));
-                questionData.answer = formData.get('answer');
+                questionData.answer = formData.get('answer').toUpperCase().replace(/\s/g, '');
                 break;
     
             case 'draganddrop':
-                // Drag items (choices)
-                questionData.choices = Array.from(formData.getAll('dragLetter[]'));
+                // Drag items (choices) - map to objects with 'letter' property
+                questionData.choices = Array.from(formData.getAll('dragLetter[]')).map(letter => ({
+                    letter: letter
+                }));
                 
                 // Drop targets (answer_area)
                 questionData.answer_area = Array.from(formData.getAll('dropQuestion[]'))
@@ -165,6 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 questionData.answer = formData.get('answer');
                 break;
         }
+
+        if (!validateFormData(questionData)) return;
+        
+        // Disable button and show loader
+        submitBtn.disabled = true;
+        buttonText.style.visibility = 'hidden'; // Hide text
+        loader.style.display = 'block'; // Show loader
+    
 
         try {
             const response = await fetch('/submit_question', {

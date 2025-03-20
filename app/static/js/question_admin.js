@@ -1,4 +1,7 @@
 //question_admin.js
+import { showNotification, validateFormData } from './utilities.js';
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('confirmForm');
     const editToggle = document.getElementById('editToggle');
@@ -355,23 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return baseData;
     }
 
-    function showNotification(message, type = 'success') {
-        const icon = type === 'success' 
-            ? '<i class="fas fa-check-circle"></i>'
-            : '<i class="fas fa-exclamation-triangle"></i>';
-        
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `${icon} ${message}`;
-        
-        document.body.appendChild(notification);
-        
-        // Auto-remove after animation
-        setTimeout(() => {
-            notification.remove();
-        }, 3600);
-    }
-
+    
     // Update on type change (if applicable)
     document.getElementById('questionType')?.addEventListener('change', () => {
         initAddButtons();
