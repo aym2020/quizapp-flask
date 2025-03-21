@@ -46,6 +46,10 @@ async function initializeQuiz() {
       Math.round(certifDetails.progress/100 * certifDetails.total_questions),
       certifDetails.total_questions
     );
+
+    // Initialize progress bar with actual counts
+    const initialCorrect = Math.round((certifDetails.progress / 100) * certifDetails.total_questions);
+    updateCertifProgress(initialCorrect, certifDetails.total_questions);
     
     // Show loading state
     document.getElementById('question-id').textContent = "Loading...";
@@ -281,10 +285,8 @@ async function submitQuizAnswer(questionId, isCorrect) {
         const updatedCertifResponse = await fetch(`/get_certif_details/${certif}`);
         if (updatedCertifResponse.ok) {
           certifDetails = await updatedCertifResponse.json();
-          updateCertifProgress(
-            Math.round(certifDetails.progress/100 * certifDetails.total_questions),
-            certifDetails.total_questions
-          );
+          const correctCount = Math.round((certifDetails.progress / 100) * certifDetails.total_questions);
+          updateCertifProgress(correctCount, certifDetails.total_questions);
         }
         
         // Fetch the updated question data
@@ -680,30 +682,12 @@ function updateCertifProgress(correctCount, totalQuestions) {
   const progressFill = document.querySelector('.progress-fill');
   const progressText = document.querySelector('.progress-text');
   
-  if (!progressFill || !progressText) {
-    console.error('Progress bar elements not found');
-    return;
-  }
+  if (!progressFill || !progressText) return;
 
   const progressPercent = totalQuestions > 0 
-    ? Math.round((correctCount / totalQuestions) * 100)
+    ? (correctCount / totalQuestions) * 100 
     : 0;
 
-  // Reset animation
-  progressFill.style.animation = 'none';
-  void progressFill.offsetWidth; // Trigger reflow
-
-  // Create new animation
-  const styleTag = document.createElement('style');
-  styleTag.textContent = `
-    @keyframes fillProgress {
-      from { width: 0; }
-      to { width: ${progressPercent}%; }
-    }
-  `;
-  document.head.appendChild(styleTag);
-
-  // Apply animation
-  progressFill.style.animation = 'fillProgress 0.8s ease-in-out forwards';
+  progressFill.style.width = `${progressPercent}%`;
   progressText.textContent = `${correctCount}/${totalQuestions}`;
 }

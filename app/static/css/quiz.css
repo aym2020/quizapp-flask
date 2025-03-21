@@ -87,11 +87,6 @@ body {
     text-align: center;
     color: var(--white-text);
 }
-
-@keyframes fillProgress {
-    from { width: 0; }
-    to { width: var(--target-width); }
-}
   
 .progress-fill {
     animation: fillProgress 0.8s ease-in-out forwards;
