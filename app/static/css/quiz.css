@@ -12,16 +12,18 @@ body {
 /* Main Container */
 .main-container {
     flex: 1;
-    padding: 0 20rem;
+    padding: 0 23rem;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
+    padding-bottom: 90px;
+    overflow: scroll;
 }
-
 
 .quiz-content {
     opacity: 1;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+
 }
 
 
@@ -37,6 +39,7 @@ body {
     z-index: 1000;
     background-color: var(--dark-blue-panel);
     border-bottom: solid 2px var(--pink-main);
+    position: sticky;
 }
   
 .progress-bar-container {
@@ -98,7 +101,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 #question-id {
@@ -158,7 +161,7 @@ body {
 /* ------------------------------------------------------------ */ 
 
 .dynamic-content {
-    padding: 1rem;
+    padding: 0;
 }
   
 #quiz-section {
@@ -167,11 +170,6 @@ body {
     border-radius: 12px;
 }
 
-.quiz-content {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* QUESTION */ 
 #question-container {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -187,23 +185,23 @@ body {
 }
 
 pre {
-    background-color: #282c34;
-    color: #abb2bf;
-    padding: 0.5em;
-    border-radius: 5px;
-    font-family: 'Fira Code', 'Courier New', monospace;
-    font-size: 12px;
+    background-color: #343434;
+    border: 2px solid #686868;
+    color: #b8b8b8;
+    padding: 1.2em;
+    border-radius: 6px;
+    font-family: var(--main-font);
     white-space: pre-wrap;
     overflow-x: auto;
-    max-height: 300px;
     line-height: 1.5;
-    border: 1px solid #3a3f4b;
     display: block;
+    font-size: 14px;
 }
   
 code {
     white-space: pre-wrap; /* allows line breaks in long strings */
     display: inline;       /* remove block display to avoid extra scrollbar */
+    font-family: var(--main-font);
 }
 
 /* CHOICES */
@@ -219,13 +217,12 @@ code {
 }
 
 .choice-btn {
-    background-color: transparent;
-    padding: 5px 30px;
-    border: none;
-    color: #2d3748;
+    background-color: var(--dark-blue-panel);
+    padding: 5px 10px;
+    border: 2px solid #424660;
     font-size: 10pt;
     cursor: pointer;
-    border-radius: 30px;
+    border-radius: 6px;
     transition: all 0.2s ease;
     text-align: left;
     display: flex;
@@ -234,15 +231,14 @@ code {
 }
 
 .choice-btn:hover {
-    background: #edf2f7;
-    border-color: #cbd5e0;
+    background-color: #42465c;
+    cursor: pointer;
 }
 
 .choice-btn.selected {
-    box-shadow: none; /* Optional: remove hover shadow */
-    background-color: #23814f;
+    background-color: #42465c;
+    border: solid 2px var(--pink-main);
 }
-
 
 /* ------------------------------------------------------------ */
 /* Multiple Choice Specific Styles */
@@ -250,9 +246,7 @@ code {
 .choice-letter {
     width: 30px;
     height: 30px;
-    border-radius: 50%;
-    background: var(--white-text);
-    color: var(--dark-blue-panel);
+    color: var(--white-text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -263,8 +257,29 @@ code {
 
 
 /* ------------------------------------------------------------ */
-/* ------------------------------------------------------------ */
+/* ANSWERS */
 /* ------------------------------------------------------------ */  
+
+/* Existing correct/wrong answer rules */
+.correct-answer {
+    background-color: var(--green-bg) !important;
+    color: white !important;
+    border: 2px solid var(--green-bg) !important;
+}
+
+.wrong-answer {
+    background-color: var(--red-main) !important;
+    color: white !important;
+    border: 2px solid var(--red-main) !important;
+}
+
+
+
+
+
+
+
+
 
 
 /* BUTTONS */
@@ -400,29 +415,6 @@ code {
     border-radius: 16px;
 }
 
-/* Existing correct/wrong answer rules */
-.correct-answer {
-    background: #38a169 !important;
-    border-color: #38a169 !important;
-    color: white !important;
-}
-
-.wrong-answer {
-    background: #e53e3e !important;
-    border-color: #e53e3e !important;
-    color: white !important;
-}
-
-/* Also update the letter circle inside the button for multiple-choice */
-.correct-answer .choice-letter {
-    background: #23814f !important;
-    color: white !important;
-}
-
-.wrong-answer .choice-letter {
-    background: #c22424 !important;
-    color: white !important;
-}
 
 /* ------------------------------------------------------------ */
 /* Hotspot Specific Styles */
@@ -587,25 +579,13 @@ code {
     margin-right: 5px;
 }
 
-/* Correct/Wrong Feedback (applies to both buttons and inner elements) */
-.correct-answer {
-    background: #38a169 !important;
-    border-color: #38a169 !important;
-    color: white !important;
-}
-.wrong-answer {
-    background: #e53e3e !important;
-    border-color: #e53e3e !important;
-    color: white !important;
-}
+
 /* If using inner elements (like .draggable-letter), update them too */
-.correct-answer .draggable-letter,
-.correct-answer .choice-letter {
+.correct-answer .draggable-letter {
     background: #38a169 !important;
     color: white !important;
 }
-.wrong-answer .draggable-letter,
-.wrong-answer .choice-letter {
+.wrong-answer .draggable-letter {
     background: #e53e3e !important;
     color: white !important;
 }

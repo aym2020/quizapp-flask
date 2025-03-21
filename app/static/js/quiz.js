@@ -1,3 +1,5 @@
+// Quiz.js
+
 // Global Variables
 let questions = [];
 let certif = null;
@@ -451,7 +453,7 @@ async function loadNextQuestion() {
     
     // Fade out only the question content
     questionContainer.style.opacity = '0';
-    questionContainer.style.transform = 'translateY(20px)';
+    questionContainer.style.transform = 'translateY(5px)';
     
     // Wait for fade-out animation
     await new Promise(resolve => setTimeout(resolve, 300));
