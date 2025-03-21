@@ -12,7 +12,7 @@ body {
 /* Main Container */
 .main-container {
     flex: 1;
-    padding: 1rem 10rem;
+    padding: 0 20rem;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
@@ -33,18 +33,17 @@ body {
 .progress-bar-header {
     padding: 1rem 2rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky;
     top: 0;
     z-index: 1000;
     background-color: var(--dark-blue-panel);
-    border-radius: 12px;
+    border-bottom: solid 2px var(--pink-main);
 }
   
 .progress-bar-container {
     display: flex;
     align-items: center;
     gap: 1rem;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -95,6 +94,20 @@ body {
     animation: fillProgress 0.8s ease-in-out forwards;
 }
 
+.question-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+#question-id {
+    font-size: 12pt;
+    color: var(--white-text);
+    font-weight: 700;
+    margin: 0;
+}
+
 
 /* ------------------------------------------------------------ */
 /* FOOTER ACTIONS BUTTONS */
@@ -107,11 +120,12 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--dark-blue-darker-bg);
-    padding: 1rem;
-    z-index: 1000;
+    background: var(--dark-blue-panel);
     transition: opacity 0.2s ease;
     border-top: 2px solid var(--pink-main);
+    height: 80px;
+    padding: 1rem 20rem;
+    box-sizing: border-box;
 }
 
 /* Add loading state */
@@ -141,13 +155,16 @@ body {
 
 /* ------------------------------------------------------------ */
 /* QUIZ SECTION */
-/* ------------------------------------------------------------ */  
+/* ------------------------------------------------------------ */ 
+
+.dynamic-content {
+    padding: 1rem;
+}
   
 #quiz-section {
-    background: var(--dark-blue-panel);
-    padding: 1rem 2rem;
+    background: var(--dark-blue-darker-bg);
+    padding: 1.5rem 2rem;
     border-radius: 12px;
-    margin-top: 1.5rem;
 }
 
 .quiz-content {
@@ -169,27 +186,42 @@ body {
     white-space: pre-line; /* Ensures \n is handled properly */
 }
 
-.xml-tag {
-    font-family: Consolas, Monaco, 'Courier New', monospace;
-  }
-
+pre {
+    background-color: #282c34;
+    color: #abb2bf;
+    padding: 0.5em;
+    border-radius: 5px;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    max-height: 300px;
+    line-height: 1.5;
+    border: 1px solid #3a3f4b;
+    display: block;
+}
+  
+code {
+    white-space: pre-wrap; /* allows line breaks in long strings */
+    display: inline;       /* remove block display to avoid extra scrollbar */
+}
 
 /* CHOICES */
 .choice-text {
     color: var(--white-text);
+    font-weight: var(--fw700);
 }
 
 #choices-container {
     display: flex;
     flex-direction: column; /* Forces items into rows */
     gap: 10px;
-    margin-bottom: 2rem;
 }
 
 .choice-btn {
-    padding: 5px;
-    border: 2px solid #e2e8f0;
-    background: #f8fafc;
+    background-color: transparent;
+    padding: 5px 30px;
+    border: none;
     color: #2d3748;
     font-size: 10pt;
     cursor: pointer;
@@ -207,12 +239,33 @@ body {
 }
 
 .choice-btn.selected {
-    background: #5a67d8;
-    border-color: #5a67d8;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(90, 103, 216, 0.2);
+    box-shadow: none; /* Optional: remove hover shadow */
+    background-color: #23814f;
 }
+
+
+/* ------------------------------------------------------------ */
+/* Multiple Choice Specific Styles */
+/* ------------------------------------------------------------ */  
+.choice-letter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--white-text);
+    color: var(--dark-blue-panel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+
+/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------ */  
+
 
 /* BUTTONS */
 #buttons-container {
@@ -266,6 +319,12 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+/* Larger rounded corners for modal */
+.modal-content {
+    border-radius: 16px;
+}
+
 
   
 
@@ -336,14 +395,6 @@ body {
     white-space: pre-line; /* Handles \n as line breaks */
 }
 
-/* Add question ID styling */
-#question-id {
-    font-size: 25px;
-    color: var(--white-text);
-    font-weight: 700;
-    margin: 0;
-}
-
 /* More rounded corners */
 #quiz-section {
     border-radius: 16px;
@@ -372,52 +423,6 @@ body {
     background: #c22424 !important;
     color: white !important;
 }
-
-/* ------------------------------------------------------------ */
-/* Multiple Choice Specific Styles */
-/* ------------------------------------------------------------ */  
-.choice-letter {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--white-text);
-    color: var(--dark-blue-panel);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-weight: 700;
-    transition: all 0.2s ease;
-}
-
-.choice-btn.selected .choice-letter {
-    background: #5a67d8;
-    color: white;
-}
-
-/* More rounded buttons */
-.quiz-button {
-    border-radius: 12px;
-}
-
-/* Selected state adjustments */
-.choice-btn.selected {
-    background: #5a67d8;
-    border-color: #5a67d8;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(90, 103, 216, 0.2);
-}
-
-.choice-btn.selected .choice-text {
-    color: white;
-}
-
-/* Larger rounded corners for modal */
-.modal-content {
-    border-radius: 16px;
-}
-
 
 /* ------------------------------------------------------------ */
 /* Hotspot Specific Styles */
@@ -612,13 +617,7 @@ body {
 }
 
 
-/* Question Header Top */
-.question-header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
+
 
 
 /* ---------------------------------------------- */

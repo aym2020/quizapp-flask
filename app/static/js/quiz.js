@@ -84,14 +84,14 @@ function initializeQuestion() {
   header.innerHTML = `
     <div class="question-header-top">
       <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
-      <div class="weight-indicator weight-${getWeightClass(currentQuestion.weight)}">
-        <span class="difficulty-icon">🏋️</span>
-        <span class="difficulty-text">${getDifficultyText(currentQuestion.weight)}</span>
-        <span class="weight-value">(Weight: ${currentQuestion.weight})</span>
-      </div>
     </div>
-    <pre id="question-text">${formatXmlQuestion(currentQuestion.main_question)}</pre>
+    <pre><code id="question-code" class="language-json"></code></pre>
+
 `;
+
+  const questionText = header.querySelector('#question-code');
+  questionText.textContent = currentQuestion.main_question;
+
   container.appendChild(header);
 
   // Create question body
@@ -316,8 +316,13 @@ async function fetchUpdatedQuestion(questionId) {
   // New helper function
   function showError(message) {
     const header = document.getElementById('question-header');
+    if (!header) {
+        header = document.createElement('div');
+        header.id = 'question-header';
+        document.getElementById('question-container').appendChild(header);
+    }
     header.innerHTML = `<div class="error-message">${message}</div>`;
-  }
+}
   
   // Start the quiz
   document.addEventListener('DOMContentLoaded', initializeQuiz);
@@ -496,14 +501,13 @@ function updateQuestionContent() {
   header.innerHTML = `
     <div class="question-header-top">
       <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
-      <div class="weight-indicator weight-${getWeightClass(currentQuestion.weight)}">
-        <span class="difficulty-icon">🏋️</span>
-        <span class="difficulty-text">${getDifficultyText(currentQuestion.weight)}</span>
-        <span class="weight-value">(Weight: ${currentQuestion.weight})</span>
-      </div>
     </div>
-    <pre id="question-text">${formatXmlQuestion(currentQuestion.main_question)}</pre>
-  `;
+    <pre><code id="question-code" class="language-json"></code></pre>
+
+`;
+
+  const questionText = header.querySelector('#question-code');
+  questionText.textContent = currentQuestion.main_question;
 
   // Handle question body
   let questionBody = container.querySelector('.dynamic-content');
@@ -617,7 +621,7 @@ function createMultipleChoiceContainer(question) {
   container.id = 'choices-container';
   question.choices.forEach(choice => {
     const btn = document.createElement('button');
-    btn.className = 'choice-btn button primary-btn full-width-button scheme-button continue-btn';
+    btn.className = 'choice-btn';
     btn.dataset.letter = choice.letter;
     btn.innerHTML = `
       <span class="choice-letter">${choice.letter}</span>
@@ -665,12 +669,6 @@ function closeExplanation() {
   document.getElementById('explanation-modal').style.display = 'none';
 }
 
-function formatXmlQuestion(xml) {
-  return xml
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/(&lt;[^>]+&gt;)/g, '<span class="xml-tag">$1</span>');
-}
 
 /*------------------------------------------------- */
 // PROGRESS BAR

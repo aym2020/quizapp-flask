@@ -364,7 +364,7 @@ def process_question(q):
 
     # Ensure weight exists in processed question
     processed_q['weight'] = q.get('weight', 100)
-    processed_q['main_question'] = q.get('question', '').replace('\n', '<br>')
+    processed_q['main_question'] = q.get('question', '')
     return processed_q
 
 # Map question types to processing functions

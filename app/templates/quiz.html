@@ -6,25 +6,25 @@
   <title>Quiz</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="site-header"></header>
 
-  <main class="main-container">
-
-    <!-- Progress Bar Header -->
-    <div id="quiz-progress" class="progress-bar-header">
-      <div class="progress-bar-container">
-        <div class="progress-bar">
-          <div class="grid-progress-bar">
-            <div class="progress-fill progress-bar-scheme-blue"></div>
-          </div>
+  <!-- Progress Bar Header -->
+  <div id="quiz-progress" class="progress-bar-header">
+    <div class="progress-bar-container">
+      <span class="progress-text">0/0</span>
+      <div class="progress-bar">
+        <div class="grid-progress-bar">
+          <div class="progress-fill progress-bar-scheme-blue"></div>
         </div>
-        <span class="progress-text">0/0</span>
       </div>
+      <span class="progress-text">0/0</span>
     </div>
+  </div>
 
+  <main class="main-container">
     <div class="quiz-content">
       <section id="quiz-section">
         <div id="question-container">
