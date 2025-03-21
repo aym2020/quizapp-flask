@@ -191,7 +191,6 @@ color: var(--white-text);
 }
 
 
-
 /* ---------------------------------------------- */
 /* PROGRESS BAR */
 /* ---------------------------------------------- */
@@ -199,10 +198,7 @@ color: var(--white-text);
 .progress-fill {
   height: 100%;
   background-color: var(--pink-text);
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-radius: 6px;
   position: relative;
   transform-origin: left;
   width: 0;

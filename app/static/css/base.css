@@ -137,14 +137,6 @@
     inset 0 2px 4px var(--top-inner-highlight-orange); 
 }
 
-.progress-bar-scheme-blue {
-  background: linear-gradient(90deg, var(--blue-first) 0%, var(--blue-second) 100%);
-  box-shadow: 
-  2px 0 4px var(--right-glow-blue),  
-  inset 0 -2px 4px var(--bottom-inner-shadow-blue), 
-  inset 0 2px 4px var(--top-inner-highlight-blue); 
-}
-
 body, html {
   background-color: var(--dark-blue-darker-bg);
   margin: 0;
