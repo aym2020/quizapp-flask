@@ -74,21 +74,10 @@ body {
     transition: width 0.8s ease-in-out;
     border-radius: 6px;
     position: relative;
-    overflow: hidden;0
+    overflow: hidden;
 }
 
-.progress-bar-scheme-blue {
-    background: linear-gradient(90deg, var(--blue-first) 0%, var(--blue-second) 100%);
-    box-shadow: 
-        2px 0 4px var(--right-glow-blue),  
-        inset 0 -2px 4px var(--bottom-inner-shadow-blue), 
-        inset 0 2px 4px var(--top-inner-highlight-blue);
-    position: relative;
-    height: 100%;
-}
-
-/* Add light animation */
-.progress-bar-scheme-blue::after {
+.progress-bar-scheme-orange::after {
     content: '';
     position: absolute;
     top: 0;
@@ -104,15 +93,6 @@ body {
     transform: skewX(-20deg);
     animation: lightSweep 2s infinite linear;
     pointer-events: none;
-}
-
-@keyframes lightSweep {
-    0% {
-        transform: translateX(-150%) skewX(-20deg);
-    }
-    100% {
-        transform: translateX(250%) skewX(-20deg);
-    }
 }
       
 .progress-text {

@@ -65,8 +65,8 @@
   --right-glow-orange: rgba(255, 150, 0, 0.3);
   --bottom-inner-shadow-orange: rgba(255, 150, 0, 0.3);
   --top-inner-highlight-orange: rgba(255, 200, 0, 0.3);
-  --blue-first : #0088c7;
-  --blue-second: #81d4df;
+  --blue-first : #22ffde;
+  --blue-second: #2196f3;
   --right-glow-blue: rgb(0 41 255 / 30%);      
   --bottom-inner-shadow-blue: rgb(0 128 255 / 30%);  
   --top-inner-highlight-blue: rgb(0 168 255 / 30%);
@@ -129,13 +129,7 @@
   color: var(--scheme-main);
 }
 
-.progress-bar-scheme-orange {
-  background: linear-gradient(90deg, var(--fox) 0%, var(--bee) 100%);
-  box-shadow: 
-    2px 0 4px var(--right-glow-orange),  
-    inset 0 -2px 4px var(--bottom-inner-shadow-orange), 
-    inset 0 2px 4px var(--top-inner-highlight-orange); 
-}
+
 
 body, html {
   background-color: var(--dark-blue-darker-bg);
@@ -1001,4 +995,56 @@ input {
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+
+/* ---------------------------------------------- */
+/* PROGRESS BAR */
+/* ---------------------------------------------- */
+.progress-bar-scheme-orange {
+  background: linear-gradient(90deg, var(--fox) 0%, var(--bee) 100%);
+  box-shadow: 
+    2px 0 4px var(--right-glow-orange),  
+    inset 0 -2px 4px var(--bottom-inner-shadow-orange), 
+    inset 0 2px 4px var(--top-inner-highlight-orange); 
+  position: relative;
+  height: 100%;
+}
+
+.progress-bar-scheme-blue {
+  background: linear-gradient(90deg, var(--blue-first) 0%, var(--blue-second) 100%);
+  box-shadow: 
+      2px 0 4px var(--right-glow-blue),  
+      inset 0 -2px 4px var(--bottom-inner-shadow-blue), 
+      inset 0 2px 4px var(--top-inner-highlight-blue);
+  position: relative;
+  height: 100%;
+}
+
+/* Add light animation */
+.progress-bar-scheme-blue::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  animation: shineSweep 2.5s linear infinite;
+  pointer-events: none;
+}
+@keyframes shineSweep {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
