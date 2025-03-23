@@ -192,6 +192,18 @@ def questions():
         current_page='questions'  # This matches the navigation check
     )
 
+# ------------------------------------------------------------
+# Profile page
+# ------------------------------------------------------------
+ 
+@app.route("/profile")
+def profile():
+    current_user = fetch_current_user()
+    return render_template(
+        "profile.html",
+        current_user=current_user,
+        current_page='profile'  # This matches the navigation check
+    )
 
 
 # ------------------------------------------------------------

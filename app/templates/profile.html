@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="both-panel">
+        <!-- Left Panel -->
+        <div class="panel left">
+            <div class="top-part-left"> 
+                <div class="top-row-part-left"></div>
+                <div class="panel-top-left">
+                    <span class="text-top-left">WHO ARE YOU ?</span>
+                </div>
+            </div>
+            
+            <!-- ID Card Section -->
+            <div class="main-grid-certif">
+                <div class="grid-item-certif" id="id-card-container">
+                    <div class="id-card">
+                        <div class="id-card-content">
+                            <div class="id-card-header">
+                                <h2 class="id-card-title">Galactic Explorer ID</h2>
+                            </div>
+                            <div class="id-card-body">
+                                <div class="id-card-photo">
+                                    <!-- Add user avatar here if available -->
+                                </div>
+                                <div class="id-card-details">
+                                    <div class="detail-item">
+                                        <strong>Agent Name:</strong>
+                                        <span>{{ current_user.username | default('CLASSIFIED') }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Security Clearance:</strong>
+                                        <span>Level Gamma</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Member Since:</strong>
+                                        <span>2023-11-15</span> <!-- Replace with actual date -->
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Current Rank:</strong>
+                                        <span>Stellar Commander</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Specialization:</strong>
+                                        <span>Quantum Development</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-card-footer">
+                                <span class="security-stamp">⏣ ENCRYPTED BIO-SIGNATURE</span>
+                                <span class="clearance-level">CLEARANCE: OMEGA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Content Section -->
+            <div class="main-grid-certif">
+                <div id="certification-panel-container">
+                    <!-- Dynamic content will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Grid of blocks -->
+        <div class="panel right">
+            <div class="grid">
+                {{ robot_speaking() }}
+                
+                {% if not current_user %}
+                    {{ auth_promo() }}
+                {% endif %}
+
+                <!-- UNDER CONSTRUCTION-->
+                <div class="grid-item color-scheme-blue">
+                    <p class="text-create-profile">Explore the exiting questions!</p>
+                    <button type="button" class="button primary-btn full-width-button scheme-button" id="questionsTable">
+                        <span class="button-text">TAKE A LOOK</span>
+                        <span class="loading-dots"></span>
+                    </button>
+                </div>
+                <!-- UNDER CONSTRUCTION-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="/static/js/training.js"></script>
+<script>
+// Add holographic tilt effect for ID card
+document.querySelectorAll('.id-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.transform = `
+            perspective(1000px)
+            rotateX(${(y - rect.height/2) / 15}deg)
+            rotateY(${-(x - rect.width/2) / 15}deg)
+            scale(1.02)
+        `;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+    });
+});
+</script>
+{% endblock %}

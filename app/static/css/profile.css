@@ -1,0 +1,132 @@
+/* ID CARD STYLES */
+.id-card {
+    position: relative;
+    background: linear-gradient(145deg, var(--dark-blue-panel) 30%, #2a2f4d 100%);
+    border: 2px solid var(--pink-border);
+    border-radius: 16px;
+    padding: 2rem;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(255, 153, 169, 0.2);
+    transform-style: preserve-3d;
+}
+
+.id-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 45%,
+        rgba(255, 153, 169, 0.1) 50%,
+        transparent 55%);
+    animation: holographic 6s infinite linear;
+    z-index: 1;
+}
+
+.id-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes holographic {
+    0% { transform: rotate(0deg) translateZ(-1px); }
+    100% { transform: rotate(360deg) translateZ(-1px); }
+}
+
+.id-card-header {
+    border-bottom: 2px solid var(--pink-border);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.id-card-title {
+    font-family: var(--retro-font);
+    color: var(--pink-text);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 153, 169, 0.4);
+}
+
+.id-card-body {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 2rem;
+}
+
+.id-card-photo {
+    width: 120px;
+    height: 160px;
+    background: var(--dark-blue-darker-bg);
+    border: 2px solid var(--pink-border);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.id-card-photo::after {
+    content: "PLACEHOLDER";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 153, 169, 0.1);
+    color: var(--pink-text);
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.2rem;
+}
+
+.id-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.detail-item strong {
+    color: var(--pink-text);
+    font-weight: 700;
+    display: inline-block;
+    min-width: 100px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.detail-item span {
+    color: var(--white-text);
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+.id-card-footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 153, 169, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.security-stamp {
+    font-family: 'Space Mono', monospace;
+    color: var(--pink-text);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.clearance-level {
+    background: linear-gradient(45deg, var(--pink-main), var(--red-main));
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.grid-item-certif {
+    grid-template-columns: 1fr;
+    background: none;
+    padding: 0;
+}
