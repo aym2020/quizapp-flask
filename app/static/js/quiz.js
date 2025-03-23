@@ -7,12 +7,7 @@ let currentIndex = 0;
 let selectedAnswers = [];
 let hotspotAnswers = [];
 let dragDropAnswer = "";
-let isDragging = false;
 let certifDetails = null;
-let dragStartX = 0;
-let dragStartY = 0;
-let initialModalX = 0;
-let initialModalY = 0;
 
 
 // Initialization
@@ -45,12 +40,6 @@ async function initializeQuiz() {
     }
     certifDetails = await certifResponse.json();
     
-    // Initialize progress bar with actual counts
-    updateCertifProgress(
-      Math.round(certifDetails.progress/100 * certifDetails.total_questions),
-      certifDetails.total_questions
-    );
-
     // Initialize progress bar with actual counts
     const initialCorrect = Math.round((certifDetails.progress / 100) * certifDetails.total_questions);
     updateCertifProgress(initialCorrect, certifDetails.total_questions);
@@ -129,10 +118,6 @@ function initializeQuestion() {
 // Helper functions
 function getWeightClass(weight) {
   return weight < 50 ? 'easy' : weight < 150 ? 'medium' : 'hard';
-}
-
-function getDifficultyText(weight) {
-  return weight < 50 ? 'Easy' : weight < 150 ? 'Medium' : 'Hard';
 }
 
 // Setup all event listeners
@@ -259,7 +244,6 @@ function checkAnswer() {
             isCorrect = validateStandardAnswer(currentQuestion);
     }
 
-    // showResult(isCorrect);
     highlightCorrectAnswers(currentQuestion);
 
     disableInteractions();
