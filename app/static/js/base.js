@@ -371,15 +371,7 @@ function startMessageCycle() {
 function typeRobotMessage(message, element) {
     let i = 0;
     element.textContent = '';
-    
-    // Reset rainbow effect
-    element.classList.remove('rainbow-text');
-    
-    // Add rainbow class for special messages
-    if (message.includes('42') || message.includes('BENDER')) {
-        element.classList.add('rainbow-text');
-    }
-    
+        
     function type() {
         if (i < message.length) {
             element.textContent += message.charAt(i);

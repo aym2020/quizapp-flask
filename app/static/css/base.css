@@ -4,6 +4,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"');
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+
 
 html {
   -webkit-font-smoothing: antialiased;  /* macOS, Safari, Chrome */
@@ -18,6 +25,7 @@ html {
 
 :root {
   --main-font: "Nunito", sans-serif;
+  --retro-font: "Press Start 2P", system-ui;
 
   --fs-base: 1rem;
   --fs-question: 0.9rem;
@@ -526,7 +534,7 @@ width: fit-content;
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
 .grid-item {
@@ -910,7 +918,7 @@ input {
 
 .robot-message {
   color: var(--pink-main);
-  font-family: 'Courier New', monospace;
+  font-family: "Courrier New", monospace;
   font-size: 0.9rem;
   font-weight: 600;
   min-height: 24px;
@@ -920,16 +928,6 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/* Add rainbow animation for special messages */
-@keyframes rainbow {
-  0% { color: #ff61d0; }
-  20% { color: #7d6bff; }
-  40% { color: #6be2ff; }
-  60% { color: #6bff72; }
-  80% { color: #ffeb6b; }
-  100% { color: #ff61d0; }
 }
 
 .rainbow-text {
@@ -960,6 +958,47 @@ input {
   border-right: 2px solid var(--pink-main);
 }
 
+/* ---------------------------------------------- */
+/* USER STATS */
+/* ---------------------------------------------- */
+
+.user-stats-container {
+  margin-top: 10px;
+  display: flex;
+  background-color: transparent;
+  padding: 1rem 2rem;
+}
+
+.user-stats {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.7rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  color: var(--pink-text);
+
+}
+
+.current-streak-container,
+.max-streak-container,
+.total-answers-container,
+.score-container,
+.rank-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+@keyframes rainbow {
+  0% { color: #ff61d0; }
+  20% { color: #7d6bff; }
+  40% { color: #6be2ff; }
+  60% { color: #6bff72; }
+  80% { color: #ffeb6b; }
+  100% { color: #ff61d0; }
+}
 
 /* ---------------------------------------------- */
 /* NOTIF */
@@ -1063,6 +1102,7 @@ input {
   animation: shineSweep 2.5s linear infinite;
   pointer-events: none;
 }
+
 @keyframes shineSweep {
   0% {
     background-position: -100% 0;
@@ -1071,3 +1111,5 @@ input {
     background-position: 200% 0;
   }
 }
+
+
