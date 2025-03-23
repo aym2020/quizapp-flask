@@ -42,10 +42,10 @@
                 {% endif %}
 
                 <!-- UNDER CONSTRUCTION-->
-                <div class="grid-item color-scheme-blue" style="display: block">
-                    <p class="text-create-profile">Upload a new question manually!</p>
-                    <button type="button" class="button primary-btn full-width-button scheme-button" id="manualForm">
-                        <span class="button-text">USE THE FORM</span>
+                <div class="grid-item color-scheme-blue">
+                    <p class="text-create-profile">Explore the exiting questions!</p>
+                    <button type="button" class="button primary-btn full-width-button scheme-button" id="questionsTable">
+                        <span class="button-text">TAKE A LOOK</span>
                         <span class="loading-dots"></span>
                     </button>
                 </div>
@@ -59,6 +59,11 @@
     const CURRENT_USER = {{ current_user | tojson | safe }};
 </script>
 <script src="/static/js/training.js"></script>
+<script type="module">
+    document.getElementById('questionsTable')?.addEventListener('click', () => {
+        window.location.href = "{{ url_for('questions') }}";
+    });
+</script>
 
 
 {% endblock %}

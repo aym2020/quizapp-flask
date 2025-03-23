@@ -19,7 +19,7 @@
 .form-group label {
   display: block;
   color: var(--white-text);
-  font-size: 16px;
+  font-size: var(--fs-base);
   margin-bottom: 8px;
   font-weight: 700;
 }
@@ -32,7 +32,7 @@
   border-radius: 12px;
   color: var(--white-text);
   padding: 12px 16px;
-  font-size: 16px;
+  font-size: var(--fs-base);
   transition: border-color 0.3s ease;
 }
 
@@ -196,9 +196,9 @@
 
 /* Column width distribution */
 .questions-table th:nth-child(1) { width: 8%; } /* # */
-.questions-table th:nth-child(2) { width: 62%; } /* Question */
+.questions-table th:nth-child(2) { width: 61%; } /* Question */
 .questions-table th:nth-child(3) { width: 18%; } /* Type */
-.questions-table th:nth-child(4) { width: 8%; } /* Status */
+.questions-table th:nth-child(4) { width: 9%; } /* Status */
 .questions-table th:nth-child(5) { width: 10%; } /* Action */
 
 .questions-table th {
@@ -263,7 +263,6 @@
 
 .questions-table tr:hover {
   background-color: #13152347;
-  cursor: pointer;
 }
 
 /* More compact table cells */
@@ -332,7 +331,7 @@
   border: 2px solid var(--grey-border);
   background: var(--dark-blue-darker-bg);
   color: var(--white-text);
-  font-size: 14px;
+  font-size: 0.9rem;
   transition: border-color 0.3s ease;
 }
 

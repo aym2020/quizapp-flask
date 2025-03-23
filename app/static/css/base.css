@@ -20,6 +20,7 @@ html {
   --main-font: "Nunito", sans-serif;
 
   --fs-base: 1rem;
+  --fs-question: 0.9rem;
 
   --fw400: 400;
   --fw700: 700;
@@ -77,6 +78,7 @@ html {
   --hover-question: #42465c;
   --border-question-grey: #7b7b7b;
   --grey-question-text: #b8b8b8;
+
 
   --fox: #ff9600;  
   --bee: #ffc800;
@@ -147,6 +149,9 @@ html {
   color: var(--scheme-main);
 }
 
+.form-field {
+  cursor: pointer;
+}
 
 
 body, html {

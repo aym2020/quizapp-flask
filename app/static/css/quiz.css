@@ -223,7 +223,6 @@ code {
 
 .choice-text {
     color: var(--grey-text);
-    font-weight: var(--fw700);
 }
 
 #choices-container {
@@ -236,7 +235,7 @@ code {
     background-color: var(--dark-blue-panel);
     padding: 5px 10px;
     border: 2px solid var(--border-question);
-    font-size: 10pt;
+    font-size: var(--fs-question);
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
@@ -264,7 +263,6 @@ code {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-weight: var(--fw700);
     transition: all 0.2s ease;
 }
 
@@ -335,7 +333,7 @@ code {
     background-color: var(--dark-blue-panel);
     padding: 5px 1.2em;
     border: 2px solid var(--border-question);
-    font-size: 0.9rem;
+    font-size: var(--fs-question);
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
@@ -347,7 +345,7 @@ code {
 }
 
 .statement-text {
-    font-size: 0.9rem;
+    font-size: var(--fs-question);
     color: var(--grey-text);
 }
 
@@ -401,7 +399,7 @@ code {
 
 #explanation-text {
     line-height: 1.6;
-    font-size: 0.9rem;
+    font-size: var(--fs-question);
     color: var(--grey-text);
     white-space: pre-line; /* Handles \n as line breaks */
 }
@@ -438,16 +436,17 @@ code {
 
 /* Drop Zones Column */
 #dropzones {
-    border: 2px dashed #cbd5e0;
-    padding: 10px;
-    border-radius: 12px;
+    border-radius: 6px;
     min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
+
 .dropzone {
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 10px;
-    margin-bottom: 10px;
+    border: 2px dashed var(--border-question);
+    border-radius: 6px;
+    padding: 20px;
     min-height: 50px;
     display: flex;
     align-items: center;
@@ -456,6 +455,15 @@ code {
 .dropzone-number {
     font-weight: bold;
     margin-right: 5px;
+    font-size: var(--fs-question);
+    color: var(--grey-text);
+}
+
+.dropzone-text {
+    padding-right: 10px;
+    padding-left: 5px;
+    font-size: var(--fs-question);
+    color: var(--grey-text);
 }
 
 /* Draggables Column */
@@ -472,9 +480,8 @@ code {
     border-radius: 6px;
     cursor: grab;
     transition: all 0.2s ease;
-    font-size: 10pt;
+    font-size: var(--fs-question);
     color: var(--grey-text);
-    font-weight: 700;
 }
 
 .draggable:active {
@@ -497,11 +504,7 @@ code {
     color: white !important;
 }
 
-.dropzone-text {
-    padding-right: 10px;
-    padding-left: 5px;
-    font-size: 10pt;
-}
+
 
 
 
@@ -517,7 +520,7 @@ code {
     gap: 0.8rem;
     padding: 0.6rem 1.2rem;
     border-radius: 25px;
-    font-size: 0.9rem;
+    font-size: var(--fs-question);
     font-weight: var(--fw700);
     transition: all 0.3s ease;
 }

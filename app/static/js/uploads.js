@@ -42,7 +42,7 @@ function initUploads() {
         previewImage: document.getElementById('previewImage'),
         uploadForm: document.getElementById('uploadForm'),
         certifCode: document.getElementById('certifCode'),
-        pasteContainer: document.body // Added here
+        pasteContainer: document.body
     };
 
     // Populate dropdown
