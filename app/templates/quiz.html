@@ -61,7 +61,7 @@
 
           <div id="result-container" style="display: none;">
             <div id="buttons-container">
-              <button class="button primary-btn scheme-button color-scheme-pink" id="explanation-btn">
+              <button class="button primary-btn scheme-button color-scheme-blue" id="explanation-btn">
                 <span class="button-text">SHOW EXPLANATION</span>
                 <div class="loader" style="display: none;"></div>
               </button>
@@ -84,12 +84,13 @@
 
   <!-- Explanation Modal -->
   <div id="explanation-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h3>Explanation</h3>
-        <span class="close">&times;</span>
-        </div>
-        <p id="explanation-text"></p>
+    <div class="modal-top">
+      <div class="modal-content" id="modal-content-explanation">
+          <div class="modal-header">
+            <span class="close">&times;</span>
+          </div>
+          <span id="explanation-text"></span>
+      </div>
     </div>
   </div>
 

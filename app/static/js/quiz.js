@@ -9,6 +9,10 @@ let hotspotAnswers = [];
 let dragDropAnswer = "";
 let isDragging = false;
 let certifDetails = null;
+let dragStartX = 0;
+let dragStartY = 0;
+let initialModalX = 0;
+let initialModalY = 0;
 
 
 // Initialization
@@ -145,9 +149,6 @@ function setupEventListeners() {
 
   // Modal interactions
   document.querySelector('.close').addEventListener('click', closeExplanation);
-  document.querySelector('.modal-header').addEventListener('mousedown', startDragging);
-  document.addEventListener('mousemove', dragModal);
-  document.addEventListener('mouseup', stopDragging);
 
   // Drag and Drop Event Listeners (delegated)
   document.addEventListener('dragstart', (e) => {
@@ -238,6 +239,7 @@ function checkAnswer() {
     const currentQuestion = questions[currentIndex];
     let isCorrect = false;
     let userAnswer = null;
+    
 
     switch (currentQuestion.questiontype) {
         case 'hotspot':
@@ -259,6 +261,7 @@ function checkAnswer() {
 
     // showResult(isCorrect);
     highlightCorrectAnswers(currentQuestion);
+
     disableInteractions();
     document.getElementById('buttons-container').style.display = 'none';
     document.getElementById('result-container').style.display = 'block';
@@ -266,6 +269,8 @@ function checkAnswer() {
     // Submit quiz answer to update quiz history
     submitQuizAnswer(currentQuestion.id, isCorrect);
 }
+
+
 
 async function submitQuizAnswer(questionId, isCorrect) {
     const payload = {
@@ -367,7 +372,6 @@ function validateDragDropAnswer(question) {
     const expected = question.answer_area.map(item => item.correct_answer).join('');
     return dragDropAnswer === expected;
 }
-
 
 function validateStandardAnswer(question) {
   const correctAnswers = [...question.answer].sort();
@@ -567,8 +571,8 @@ function createHotspotContainer(question) {
         div.innerHTML = `
         <p class="statement-text">${statement.statement} (Y/N)</p>
         <div class="yn-buttons">
-            <button class="yn-btn" data-value="Y" data-statement-index="${index}">Yes</button>
-            <button class="yn-btn" data-value="N" data-statement-index="${index}">No</button>
+            <button class="yn-btn" data-value="Y" data-statement-index="${index}">YES</button>
+            <button class="yn-btn" data-value="N" data-statement-index="${index}">NO</button>
         </div>
         `;
         container.appendChild(div);
@@ -614,8 +618,8 @@ function createYesNoContainer() {
   const container = document.createElement('div');
   container.id = 'yesno-container';
   container.innerHTML = `
-    <button class="yesno-btn" data-letter="Y">Yes</button>
-    <button class="yesno-btn" data-letter="N">No</button>
+    <button class="yesno-btn" data-letter="Y">YES</button>
+    <button class="yesno-btn" data-letter="N">NO</button>
   `;
   return container;
 }
@@ -634,32 +638,6 @@ function createMultipleChoiceContainer(question) {
     container.appendChild(btn);
   });
   return container;
-}
-
-// Modal Dragging Functions
-function startDragging(e) {
-  isDragging = true;
-  const modalContent = document.querySelector('.modal-content');
-  dragStartX = e.clientX;
-  dragStartY = e.clientY;
-  const rect = modalContent.getBoundingClientRect();
-  initialModalX = rect.left;
-  initialModalY = rect.top;
-}
-
-function dragModal(e) {
-  if (isDragging) {
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    const modalContent = document.querySelector('.modal-content');
-    modalContent.style.left = `${initialModalX + dx}px`;
-    modalContent.style.top = `${initialModalY + dy}px`;
-    modalContent.style.position = 'absolute';
-  }
-}
-
-function stopDragging() {
-  isDragging = false;
 }
 
 // Explanation Modal Functions
