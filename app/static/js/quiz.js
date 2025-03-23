@@ -92,11 +92,11 @@ function initializeQuestion() {
   const header = document.createElement('div');
   header.id = 'question-header';
   header.innerHTML = `
-    <div class="question-header-top">
-      <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
-    </div>
-    <pre><code id="question-code" class="language-json"></code></pre>
-
+  <div class="question-header-top">
+    <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
+    <span class="weight-display">Weight: ${currentQuestion.weight}</span>
+  </div>
+  <pre><code id="question-code" class="language-json"></code></pre>
 `;
 
   const questionText = header.querySelector('#question-code');
@@ -273,32 +273,35 @@ function checkAnswer() {
 
 
 async function submitQuizAnswer(questionId, isCorrect) {
-    const payload = {
-        certif: certif,
-        answers: [{ question_id: questionId, is_correct: isCorrect }]
-    };
+  const payload = {
+      certif: certif,
+      answers: [{ question_id: questionId, is_correct: isCorrect }]
+  };
 
-    try {
-        // Submit the answer
-        const response = await fetch('/submit_quiz', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+  try {
+      // Submit the answer
+      const response = await fetch('/submit_quiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+      });
 
-        // Refresh certification progress after submission
-        const updatedCertifResponse = await fetch(`/get_certif_details/${certif}`);
-        if (updatedCertifResponse.ok) {
-          certifDetails = await updatedCertifResponse.json();
-          const correctCount = Math.round((certifDetails.progress / 100) * certifDetails.total_questions);
-          updateCertifProgress(correctCount, certifDetails.total_questions);
-        }
-        
-        // Fetch the updated question data
-        await fetchUpdatedQuestion(questionId);
-    } catch (error) {
-        console.error('Error submitting quiz results:', error);
-    }
+      // Remove current question from storage after submission
+      localStorage.removeItem(`currentQuestion_${certif}`);
+
+      // Refresh certification progress after submission
+      const updatedCertifResponse = await fetch(`/get_certif_details/${certif}`);
+      if (updatedCertifResponse.ok) {
+        certifDetails = await updatedCertifResponse.json();
+        const correctCount = Math.round((certifDetails.progress / 100) * certifDetails.total_questions);
+        updateCertifProgress(correctCount, certifDetails.total_questions);
+      }
+      
+      // Fetch the updated question data
+      await fetchUpdatedQuestion(questionId);
+  } catch (error) {
+      console.error('Error submitting quiz results:', error);
+  }
 }
 
 async function fetchUpdatedQuestion(questionId) {
@@ -333,27 +336,24 @@ async function fetchUpdatedQuestion(questionId) {
     header.innerHTML = `<div class="error-message">${message}</div>`;
 }
   
-  // Start the quiz
-  document.addEventListener('DOMContentLoaded', initializeQuiz);
+// Start the quiz
+document.addEventListener('DOMContentLoaded', initializeQuiz);
 
 function updateQuestionWeight(newWeight) {
-    // Use more specific selector to target the active question's weight
-    const weightIndicator = document.querySelector('#question-header .weight-indicator');
-    if (!weightIndicator) return;
-
-    // Update weight value display
-    const weightValueEl = weightIndicator.querySelector('.weight-value');
-    if (weightValueEl) weightValueEl.textContent = `(Weight: ${newWeight})`;
-
-    // Update difficulty class and text
-    const difficultyTextEl = weightIndicator.querySelector('.difficulty-text');
-    weightIndicator.className = `weight-indicator weight-${
-        newWeight < 50 ? 'easy' : 
-        newWeight < 150 ? 'medium' : 'hard'
-    }`;
-    difficultyTextEl.textContent = 
-        newWeight < 50 ? 'Easy' : 
-        newWeight < 150 ? 'Medium' : 'Hard';
+  const questionHeader = document.getElementById('question-header');
+  if (!questionHeader) return;
+  
+  let weightDisplay = questionHeader.querySelector('.weight-display');
+  
+  // Create element if it doesn't exist
+  if (!weightDisplay) {
+      weightDisplay = document.createElement('span');
+      weightDisplay.className = 'weight-display';
+      const headerTop = questionHeader.querySelector('.question-header-top');
+      if (headerTop) headerTop.appendChild(weightDisplay);
+  }
+  
+  weightDisplay.textContent = `Weight: ${newWeight}`;
 }
 
 function validateHotspotAnswer(question) {
@@ -497,25 +497,23 @@ function updateQuestionContent() {
   const currentQuestion = questions[currentIndex];
   const container = document.getElementById('question-container');
 
-  // Ensure header exists
-  let header = container.querySelector('#question-header');
-  if (!header) {
-    header = document.createElement('div');
-    header.id = 'question-header';
-    container.prepend(header); // Add at the top
-  }
-
   // Update header content
+  const header = container.querySelector('#question-header') || document.createElement('div');
+  header.id = 'question-header';
   header.innerHTML = `
     <div class="question-header-top">
       <p id="question-id">Question ${currentQuestion.exam_topic_id}</p>
+      <span class="weight-display">Weight: ${currentQuestion.weight}</span>
     </div>
     <pre><code id="question-code" class="language-json"></code></pre>
+  `;
 
-`;
-
+  // Update question text
   const questionText = header.querySelector('#question-code');
   questionText.textContent = currentQuestion.main_question;
+
+  // Update weight display
+  updateQuestionWeight(currentQuestion.weight);
 
   // Handle question body
   let questionBody = container.querySelector('.dynamic-content');
