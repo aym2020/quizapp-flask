@@ -134,5 +134,16 @@ def add_exam_topic_id_num():
             continue
                 
 
+def migrate_existing_users():
+    users = list(users_container.query_items(
+        query="SELECT * FROM c",
+        enable_cross_partition_query=True
+    ))
+    
+    for user in users:
+        if 'avatar' not in user:
+            user['avatar'] = ''
+            users_container.replace_item(user['id'], user)
+
 if __name__ == "__main__":
-    add_exam_topic_id_num()
+    migrate_existing_users()

@@ -199,10 +199,23 @@ def questions():
 @app.route("/profile")
 def profile():
     current_user = fetch_current_user()
+    if current_user:
+        # Format the registration date
+        created_at = current_user.get('created_at')
+        if created_at:
+            try:
+                # Convert ISO format to more readable format
+                dt = datetime.fromisoformat(created_at.replace('Z', ''))
+                current_user['formatted_created_at'] = dt.strftime('%Y-%m-%d')
+            except:
+                current_user['formatted_created_at'] = 'UNKNOWN'
+        else:
+            current_user['formatted_created_at'] = 'UNKNOWN'
+    
     return render_template(
         "profile.html",
         current_user=current_user,
-        current_page='profile'  # This matches the navigation check
+        current_page='profile'
     )
 
 
@@ -528,6 +541,7 @@ def create_new_user(pseudo, password):
         "id": f"user_{pseudo}",
         "pseudo": pseudo,
         "password": hashed_password,
+        "created_at": datetime.utcnow().isoformat() + "Z",
         "quiz_history": {}
     }
     users_container.create_item(new_user)

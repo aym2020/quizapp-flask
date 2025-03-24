@@ -1,3 +1,5 @@
+<!-- profile.html -->
+
 {% extends "base.html" %}
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
@@ -11,7 +13,7 @@
             <div class="top-part-left"> 
                 <div class="top-row-part-left"></div>
                 <div class="panel-top-left">
-                    <span class="text-top-left">WHO ARE YOU ?</span>
+                    <span class="text-top-left">IDENTIFICATION</span>
                 </div>
             </div>
             
@@ -19,18 +21,21 @@
             <div class="main-grid-certif">
                 <div class="grid-item-certif" id="id-card-container">
                     <div class="id-card">
+                        <div class="holographic-effect"></div>
                         <div class="id-card-content">
                             <div class="id-card-header">
                                 <h2 class="id-card-title">Galactic Explorer ID</h2>
                             </div>
                             <div class="id-card-body">
                                 <div class="id-card-photo">
-                                    <!-- Add user avatar here if available -->
+                                    <img src="{{ url_for('static', filename='images/avatar/' + current_user.avatar) }}" 
+                                         alt="User Avatar" 
+                                         class="avatar-image">
                                 </div>
                                 <div class="id-card-details">
                                     <div class="detail-item">
                                         <strong>Agent Name:</strong>
-                                        <span>{{ current_user.username | default('CLASSIFIED') }}</span>
+                                        <span>{{ current_user.pseudo | default('CLASSIFIED') }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <strong>Security Clearance:</strong>
@@ -38,7 +43,7 @@
                                     </div>
                                     <div class="detail-item">
                                         <strong>Member Since:</strong>
-                                        <span>2023-11-15</span> <!-- Replace with actual date -->
+                                        <span>{{ current_user.formatted_created_at if current_user else 'UNKNOWN' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <strong>Current Rank:</strong>
@@ -70,47 +75,26 @@
         <!-- Right Panel: Grid of blocks -->
         <div class="panel right">
             <div class="grid">
-                {{ robot_speaking() }}
-                
-                {% if not current_user %}
-                    {{ auth_promo() }}
-                {% endif %}
-
-                <!-- UNDER CONSTRUCTION-->
                 <div class="grid-item color-scheme-blue">
-                    <p class="text-create-profile">Explore the exiting questions!</p>
+                    <p class="text-create-profile">Change your identity!</p>
                     <button type="button" class="button primary-btn full-width-button scheme-button" id="questionsTable">
-                        <span class="button-text">TAKE A LOOK</span>
+                        <span class="button-text">USE A NEW NAME</span>
                         <span class="loading-dots"></span>
                     </button>
                 </div>
-                <!-- UNDER CONSTRUCTION-->
+                <div class="grid-item color-scheme-blue">
+                    <p class="text-create-profile">Change your face!</p>
+                    <button type="button" class="button primary-btn full-width-button scheme-button" id="questionsTable">
+                        <span class="button-text">GET A NEW HEAD</span>
+                        <span class="loading-dots"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Scripts -->
-<script src="/static/js/training.js"></script>
-<script>
-// Add holographic tilt effect for ID card
-document.querySelectorAll('.id-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        card.style.transform = `
-            perspective(1000px)
-            rotateX(${(y - rect.height/2) / 15}deg)
-            rotateY(${-(x - rect.width/2) / 15}deg)
-            scale(1.02)
-        `;
-    });
+<script src="/static/js/profile.js"></script>
 
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-    });
-});
-</script>
 {% endblock %}
