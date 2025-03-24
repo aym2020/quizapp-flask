@@ -17,7 +17,7 @@
     transform-style: preserve-3d;
     z-index: 1;
     box-shadow: 0 0 5px rgba(255, 153, 169, 0.4);
-    max-width: 700px;
+    max-width: 630px;
     will-change: transform, box-shadow;
     transition: transform 0.6s ease-out, 
                 box-shadow 0.6s ease-out,
@@ -48,13 +48,12 @@
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    letter-spacing: 2px;
     text-shadow: 0 0 5px rgba(255, 153, 169, 0.4);
 }
 
 .id-card-body {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 125px 1fr;
     gap: 2rem;
     font-family: 'Space Mono', monospace;
 }
@@ -65,6 +64,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 75%;
 }
 
 .id-card-photo::after {
@@ -84,8 +84,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-left: 3px solid white;
-    border-right: 3px solid white;
 }
 
 .id-card-details {
@@ -233,7 +231,7 @@
         linear-gradient(
             to right,
             transparent 0%,
-            rgba(255,255,255,0.05) 50%,
+            rgba(255,255,255,0.05) 70%,
             transparent 100%
         ),
         var(--texture-noise);
@@ -260,12 +258,12 @@
     background-image: 
         linear-gradient(135deg, 
             transparent 49%,
-            rgba(255,255,255,0.1) 50%,
+            rgba(255,255,255,0.1) 70%,
             transparent 51%
         ),
         linear-gradient(-45deg, 
             transparent 49%,
-            rgba(255,255,255,0.1) 50%,
+            rgba(255,255,255,0.1) 70%,
             transparent 51%
         );
     background-size: 3px 3px;

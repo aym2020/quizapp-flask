@@ -12,7 +12,7 @@
 {% macro robot_speaking() %}
     <div class="container-profil-user">
       <div class="container-avatar-user">
-          <img id="avatar" src="{{ url_for('static', filename='images/avatar/avatar20.svg') }}" alt="User Avatar">
+          <img id="avatar" src="{{ url_for('static', filename='images/avatar/' + current_user.avatar) }}" alt="User Avatar">
       </div>
     </div>
 
