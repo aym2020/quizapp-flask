@@ -397,4 +397,3 @@ window.addEventListener('beforeunload', () => {
         clearTimeout(messageTimeout);
     }
 });
-

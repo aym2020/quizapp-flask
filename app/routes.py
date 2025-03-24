@@ -61,9 +61,25 @@ questions_container = db.get_container_client("questions")
 users_container = db.get_container_client("users")
 certif_container = db.get_container_client("certifications")
 
-# ------------------------------------------------------------
+
+
+
+# ====================================================
+# Template Context Processor
+# ====================================================
+@app.context_processor
+def inject_user_data():
+    """Automatically inject current_user and user_data into all templates"""
+    current_user = fetch_current_user()
+    return {
+        'current_user': current_user,
+        'user_data': create_user_data(current_user)
+    }
+
+
+# ====================================================
 # Home page
-# ------------------------------------------------------------
+# ====================================================
 def fetch_certification_counts(current_user=None):
     """
     Fetch certification question counts.
@@ -133,15 +149,14 @@ def root_redirect():
     return redirect("/home")
 
 @app.route("/home")
-def home():  # Changed function name from 'leaderboard' to 'home'
-    current_user = fetch_current_user()
+def home():
+    current_user = fetch_current_user()  # Needed for certification counts
     certif_results = fetch_certification_counts(current_user)
     
     response = make_response(render_template(
         MAIN_HOME_PAGE,
         certifs=certif_results,
-        current_user=current_user,
-        current_page='home'  # Changed from 'leaderboard' to 'home'
+        current_page='home'
     ))
     
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -151,77 +166,94 @@ def home():  # Changed function name from 'leaderboard' to 'home'
     return response
 
 
-# ------------------------------------------------------------
+# ====================================================
 # Uploads page
-# ------------------------------------------------------------
+# ====================================================
 
 @app.route("/uploads")
 def uploads():
     current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
     return render_template(
         "uploads.html",
-        current_user=current_user,
-        current_page='uploads'  # This matches the navigation check
+        current_page='uploads'
     )
     
 
-# ------------------------------------------------------------
+# ====================================================
 # Training page
-# ------------------------------------------------------------
+# ====================================================
  
 @app.route("/training")
 def training():
     current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
     return render_template(
         "training.html",
-        current_user=current_user,
-        current_page='training'  # This matches the navigation check
+        current_page='training'
     )
     
 
-# ------------------------------------------------------------
+# ====================================================
 # Questions page
-# ------------------------------------------------------------
+# ====================================================
  
 @app.route("/questions")
 def questions():
     current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
     return render_template(
         "questions.html",
-        current_user=current_user,
-        current_page='questions'  # This matches the navigation check
+        current_page='questions'
     )
 
-# ------------------------------------------------------------
+
+# ====================================================
 # Profile page
-# ------------------------------------------------------------
+# ====================================================
  
 @app.route("/profile")
 def profile():
-    current_user = fetch_current_user()
-    if current_user:
-        # Format the registration date
-        created_at = current_user.get('created_at')
-        if created_at:
-            try:
-                # Convert ISO format to more readable format
-                dt = datetime.fromisoformat(created_at.replace('Z', ''))
-                current_user['formatted_created_at'] = dt.strftime('%Y-%m-%d')
-            except:
-                current_user['formatted_created_at'] = 'UNKNOWN'
-        else:
-            current_user['formatted_created_at'] = 'UNKNOWN'
-    
-    return render_template(
-        "profile.html",
-        current_user=current_user,
-        current_page='profile'
-    )
+    return render_template("profile.html", current_page='profile')
 
 
-# ------------------------------------------------------------
+@app.route("/update_pseudo", methods=["POST"])
+def update_pseudo():
+    if "user_id" not in session:
+        return jsonify({"success": False, "error": "Not authenticated"}), 401
+
+    data = request.get_json()
+    new_pseudo = data.get("new_pseudo", "").strip()
+
+    if not new_pseudo:
+        return jsonify({"success": False, "error": "Username cannot be empty"}), 400
+
+    if len(new_pseudo) > 20:
+        return jsonify({"success": False, "error": "Username too long (max 20 chars)"}), 400
+
+    # Check if username is already taken
+    existing_users = list(users_container.query_items(
+        query="SELECT * FROM c WHERE c.pseudo = @pseudo",
+        parameters=[{"name": "@pseudo", "value": new_pseudo}],
+        enable_cross_partition_query=True
+    ))
+
+    if existing_users:
+        return jsonify({"success": False, "error": "Username already taken"}), 409
+
+    try:
+        user = users_container.read_item(session["user_id"], session["user_id"])
+        user["pseudo"] = new_pseudo
+        users_container.replace_item(user["id"], user)
+        return jsonify({"success": True})
+    except Exception as e:
+        logging.error(f"Username update error: {str(e)}")
+        return jsonify({"success": False, "error": "Database error"}), 500
+
+
+# ====================================================
 # Get questions for a specific certification
-# ------------------------------------------------------------
+# ====================================================
 def fetch_questions(certif, limit=10, current_user=None):
     # Get all questions for certification
     questions = list(questions_container.query_items(
@@ -301,9 +333,9 @@ def get_question(certif, question_id):
         return jsonify({"error": "Question not found"}), 404
 
 
-# ------------------------------------------------------------
+# ====================================================
 # Processing the Quiz
-# ------------------------------------------------------------
+# ====================================================
 def process_hotspot_question(q, lines):
     main_lines = []
     statements = []
@@ -402,22 +434,19 @@ QUESTION_PROCESSORS = {
 
 @app.route("/quiz/<certif>", methods=["GET"])
 def quiz(certif):
-    print(f"Rendering template: {MAIN_QUIZ_PAGE}")
     current_user = fetch_current_user()
-    # Fetch just one question initially (or adjust as needed)
+    user_data = create_user_data(current_user)
     raw_questions = fetch_questions(certif, limit=1, current_user=current_user)
     
     if not raw_questions:
         return redirect(url_for('home'))
 
     processed_questions = [process_question(q) for q in raw_questions]
-    return render_template(MAIN_QUIZ_PAGE, 
-                         questions=processed_questions,
-                         certif=certif)
+    return render_template(MAIN_QUIZ_PAGE, questions=processed_questions, certif=certif)
 
-# ------------------------------------------------------------
+# ====================================================
 # Upload questions from JSON file
-# ------------------------------------------------------------
+# ====================================================
 @app.route("/", methods=["POST"])
 def upload_questions():
     try:
@@ -514,9 +543,9 @@ class InvalidRequestError(Exception):
         self.status_code = status_code
     
 
-# ------------------------------------------------------------
+# ====================================================
 # User authentication
-# ------------------------------------------------------------
+# ====================================================
 bcrypt = Bcrypt()
 
 def query_user_by_pseudo(pseudo):
@@ -576,9 +605,9 @@ def register():
         app.logger.error(f"Registration error: {str(e)}", exc_info=True)
         return jsonify({"error": "Server error"}), 500
 
-# ------------------------------------------------------------
+# ====================================================
 # Session management
-# ------------------------------------------------------------
+# ====================================================
 def get_user_by_id(user_id):
     """
     Retrieve a user by their ID from the users container.
@@ -588,6 +617,29 @@ def get_user_by_id(user_id):
     except Exception as e:
         logging.error(f"Error fetching user by id: {e}")
         return None
+    
+def create_user_data(current_user):
+    """Helper to create user_data dict from current_user"""
+    if not current_user:
+        return {
+            'avatar': 'default.svg',
+            'pseudo': 'CLASSIFIED',
+            'formatted_created_at': 'UNKNOWN'
+        }
+    
+    try:
+        created_at = datetime.fromisoformat(
+            current_user.get('created_at', '').replace('Z', ''))
+        formatted_date = created_at.strftime('%Y-%m-%d')
+    except:
+        formatted_date = 'UNKNOWN'
+    
+    return {
+        'avatar': current_user.get('avatar', 'default.svg'),
+        'pseudo': current_user.get('pseudo', 'CLASSIFIED'),
+        'formatted_created_at': formatted_date
+    }
+
     
 # Login user
 @app.route("/login", methods=["POST"])
@@ -632,19 +684,20 @@ def current_user():
     return jsonify({"pseudo": None})
 
 
-# ------------------------------------------------------------
+# ====================================================
 # Adding a Question
-# ------------------------------------------------------------
+# ====================================================
 @app.route("/confirm_question", methods=["GET"])
 def confirm_question():
-    if 'pending_question' not in session:
-        return redirect(url_for('uploads'))  # Redirect to uploads if no pending question
+    current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
     
-    return render_template(
-        "confirm_question.html",
-        question_data=session['pending_question'],
-        current_page='confirm_question'  # Add this line
-    )
+    if 'pending_question' not in session:
+        return redirect(url_for('uploads'))
+    
+    return render_template("confirm_question.html",
+                         question_data=session['pending_question'],
+                         current_page='confirm_question')
 
 # GPT Configuration
 GPT_ENDPOINT = "https://api.openai.com/v1/chat/completions"
@@ -1046,7 +1099,9 @@ def clear_pending_question():
 
 @app.route("/manual_question", methods=["GET"])
 def manual_question():
-    # Get certification codes from Cosmos DB
+    current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
+    
     certif_codes = list(certif_container.query_items(
         query="SELECT DISTINCT c.certifcode FROM c",
         enable_cross_partition_query=True
@@ -1155,9 +1210,9 @@ def get_total_questions(certifcode):
     result = list(questions_container.query_items(query=query, parameters=params, enable_cross_partition_query=True))
     return result[0] if result else 0
 
-# ------------------------------------------------------------
+# ====================================================
 # Fetch question
-# ------------------------------------------------------------
+# ====================================================
 
 # Get by exam_topic_id (display ID)
 @app.route("/get_question_by_exam_id/<certif>/<exam_topic_id>", methods=["GET"])
@@ -1180,9 +1235,9 @@ def get_question_by_exam_id(certif, exam_topic_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ------------------------------------------------------------
+# ====================================================
 # FETCH CERTIF CODES
-# ------------------------------------------------------------
+# ====================================================
 def get_all_certifications():
     try:
         items = list(certif_container.query_items(
@@ -1295,9 +1350,9 @@ def get_single_certif_details(certif):
         return jsonify({"error": "Server error"}), 500
 
 
-# ------------------------------------------------------------
+# ====================================================
 # FETCH QUESTIONS TABLE
-# ------------------------------------------------------------
+# ====================================================
 @app.route("/api/questions")
 def api_questions():
     try:
@@ -1376,12 +1431,12 @@ def api_questions():
 
 @app.route("/question/<question_id>")
 def question_detail(question_id):
-    # Get question from CosmosDB
-    query = "SELECT * FROM c WHERE c.id = @id"
-    parameters = [dict(name="@id", value=question_id)]
+    current_user = fetch_current_user()
+    user_data = create_user_data(current_user)
+    
     items = list(questions_container.query_items(
-        query=query,
-        parameters=parameters,
+        query="SELECT * FROM c WHERE c.id = @id",
+        parameters=[dict(name="@id", value=question_id)],
         enable_cross_partition_query=True
     ))
     
@@ -1391,7 +1446,7 @@ def question_detail(question_id):
     return render_template(
         "question_admin.html",
         question_data=items[0],
-        current_page='question_admin'
+        current_page='question_admin',
     )
 
 
@@ -1448,8 +1503,8 @@ def update_question(question_id):
     except Exception as e:
         return jsonify({"error": f"Update failed: {str(e)}"}), 500
     
-# ------------------------------------------------------------
+# ====================================================
 # Run app
-# ------------------------------------------------------------
+# ====================================================
 if __name__ == "__main__":
     app.run(debug=True)

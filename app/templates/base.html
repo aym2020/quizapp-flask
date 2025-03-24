@@ -10,15 +10,16 @@
 {% endmacro %}
 
 {% macro robot_speaking() %}
+    {% if current_user %}
     <div class="container-profil-user">
       <div class="container-avatar-user">
-          <img id="avatar" src="{{ url_for('static', filename='images/avatar/' + current_user.avatar) }}" alt="User Avatar">
+          <img id="avatar" src="{{ url_for('static', filename='images/avatar/' + user_data.avatar) }}" alt="User Avatar">
       </div>
     </div>
-
     <div class="robot-message-container">
       <div class="robot-message" id="robotMessage"></div>
     </div>
+    {% endif %}
 {% endmacro %}
 
 <!DOCTYPE html>
@@ -192,7 +193,6 @@
   </div>
 
   <script type="module" src="{{ url_for('static', filename='js/base.js') }}"></script>
-
 
 </body>
 </html>
