@@ -286,8 +286,18 @@ def fetch_questions(certif, limit=10, current_user=None):
         q['weight'] = weight  # Update question weight
         weighted_pool.extend([q] * weight)
     
-    random.shuffle(weighted_pool)
-    return weighted_pool[:limit]
+    # Filter out questions with weight less than 70
+    filtered_pool = [q for q in weighted_pool if q['weight'] >= 90]
+    
+    if not filtered_pool:
+        # Fallback to all questions if filtered pool is empty
+        filtered_pool = questions.copy()
+        random.shuffle(filtered_pool)
+    else:
+        # Shuffle the filtered pool
+        random.shuffle(filtered_pool)
+    
+    return filtered_pool[:limit]
 
 @app.route("/questions/<certif>", methods=["GET"])
 def get_questions(certif):
@@ -1166,9 +1176,9 @@ def submit_quiz():
             # Update weight based on performance
             current_weight = question_data["weight"]
             if is_correct:
-                new_weight = max(current_weight - 10, 10)  # Minimum weight 10
+                new_weight = max(current_weight - 50, 10)  # Minimum weight 10
             else:
-                new_weight = min(current_weight + 20, 200)  # Maximum weight 200
+                new_weight = min(current_weight + 10, 200)  # Maximum weight 200
 
             # Update question statistics
             question_data.update({
