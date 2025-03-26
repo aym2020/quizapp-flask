@@ -8,6 +8,7 @@ let selectedAnswers = [];
 let hotspotAnswers = [];
 let dragDropAnswer = "";
 let certifDetails = null;
+let questionCount = 0;
 
 
 // Initialization
@@ -436,6 +437,9 @@ async function loadNextQuestion() {
   const quizContent = document.querySelector('.quiz-content');
   const questionContainer = document.getElementById('question-container');
   const actionButtons = document.getElementById('action-buttons');
+  
+  questionCount++;
+  const forceNew = questionCount % 5 === 0;
 
   try {
     // Disable buttons during transition
@@ -452,7 +456,7 @@ async function loadNextQuestion() {
     resetQuestionState();
     
     // Fetch new question in the background
-    const response = await fetch(`/questions/${certif}?limit=1`);
+    const response = await fetch(`/questions/${certif}?limit=1&force_new=${forceNew}`);
     const newQuestions = await response.json();
 
     if (newQuestions.length > 0) {
