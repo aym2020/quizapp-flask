@@ -262,30 +262,69 @@ def fetch_questions(certif, limit=10, current_user=None):
         enable_cross_partition_query=True
     ))
     
+    force_new = request.args.get('force_new', 'false').lower() == 'true'
+
     if not current_user:
         for q in questions:
-            q['weight'] = 100  # Add default weight
+            q['weight'] = 100
         random.shuffle(questions)
         return questions[:limit]
 
-    # For logged-in users - ensure fresh user data
     try:
-        # Re-fetch user to get latest quiz history
         current_user = users_container.read_item(current_user['id'], current_user['id'])
     except Exception as e:
         logging.error(f"Error refreshing user data: {str(e)}")
-    
+
     quiz_history = current_user.get("quiz_history", {}).get(certif, {})
     details = quiz_history.get("details", {})
+
+    # Weight parameters
+    WEIGHTS = {
+        'new': 300,
+        'incorrect_base': 80,
+        'incorrect_factor': 30,
+        'correct_base': 10,
+        'correct_factor': 5
+    }
+
+    # Categorize questions
+    new_qs, incorrect_qs, correct_qs = [], [], []
     
-    # Create weighted pool with latest weights
-    weighted_pool = []
     for q in questions:
         qid = q['id']
-        weight = details.get(qid, {}).get("weight", 100)
-        q['weight'] = weight  # Update question weight
-        weighted_pool.extend([q] * weight)
-    
+        detail = details.get(qid, {})
+        
+        if not detail:
+            # New question
+            q['category'] = 'new'
+            q['weight'] = WEIGHTS['new']
+            new_qs.append(q)
+        else:
+            attempts = detail.get('attempts', 0)
+            if not detail.get('correct', False):
+                # Incorrect question
+                q['category'] = 'incorrect'
+                q['weight'] = WEIGHTS['incorrect_base'] + (attempts * WEIGHTS['incorrect_factor'])
+                incorrect_qs.append(q)
+            else:
+                # Correct question
+                q['category'] = 'correct'
+                q['weight'] = WEIGHTS['correct_base'] + (attempts * WEIGHTS['correct_factor'])
+                correct_qs.append(q)
+
+    # Force new question if requested and available
+    if force_new and new_qs:
+        return random.sample(new_qs, min(limit, len(new_qs)))
+
+    # Create weighted pool
+    weighted_pool = []
+    for q in new_qs + incorrect_qs + correct_qs:
+        weighted_pool.extend([q] * q['weight'])
+
+    # Fallback to all questions if no weighted pool
+    if not weighted_pool:
+        weighted_pool = questions.copy()
+
     random.shuffle(weighted_pool)
     return weighted_pool[:limit]
 
@@ -1168,9 +1207,9 @@ def submit_quiz():
             # Update weight based on performance
             current_weight = question_data["weight"]
             if is_correct:
-                new_weight = max(current_weight - 10, 10)  # Minimum weight 10
+                new_weight = max(current_weight - 50, 10)  # Minimum weight 10
             else:
-                new_weight = min(current_weight + 20, 200)  # Maximum weight 200
+                new_weight = min(current_weight + 10, 200)  # Maximum weight 200
 
             # Update question statistics
             question_data.update({
