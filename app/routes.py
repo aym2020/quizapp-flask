@@ -1012,6 +1012,11 @@ def process_question_image():
         return jsonify({"error": f"Processing failed: {str(e)}"}), 500
 
 
+def extract_number(id_str):
+    """Extract numeric part from alphanumeric ID"""
+    match = re.match(r'^\d+', id_str)
+    return int(match.group()) if match else 0
+
 @app.route("/submit_question", methods=["POST"])
 def submit_question():
     question_data = request.get_json()
@@ -1030,11 +1035,8 @@ def submit_question():
     if not question_type:
         return jsonify({"error": "Missing question type"}), 400
 
-    try:
-        exam_topic_id_num = int(exam_topic_id)
-    except ValueError:
-        return jsonify({"error": "exam_topic_id must be a numeric value"}), 400
-
+    exam_topic_id_num = extract_number(exam_topic_id)
+    
     # Base question structure
     final_question = {
         "id": str(uuid.uuid4()),
