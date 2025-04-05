@@ -37,7 +37,7 @@ CloudyGang is a full-stack Flask web application designed to help users train fo
 
 ---
 
-![image](https://github.com/user-attachments/assets/0cf1548a-6a2d-4c9a-a15d-d4a9de684d60)
+![image](https://github.com/user-attachments/assets/4b777ae3-e8c2-48f3-9bc7-b8632ce3b94e)
 
-![image](https://github.com/user-attachments/assets/de9ed4c7-7b14-44f1-ba97-86ea21746bd1)
+![image](https://github.com/user-attachments/assets/ac25fdd3-0f3e-40ed-bc15-3cfad1e88375)
 
